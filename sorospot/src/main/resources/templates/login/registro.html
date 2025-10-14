@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${pageTitle}">Minha aplicação</title>
+  <link rel="stylesheet" th:href="@{/css/login/login.css}">
+</head>
+<body>
+  <main>
+    <th:block th:insert="~{${contentTemplate} :: content}"></th:block>
+  </main>
+</body>
+</html>
