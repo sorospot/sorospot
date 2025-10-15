@@ -12,6 +12,16 @@ CREATE TABLE category
 	last_updated datetime
 )
 
+
+CREATE TABLE user_role
+(
+	id int primary key identity not null,
+	user_role varchar(500) unique not null,
+	deleted bit not null,
+	created_at datetime not null,
+	last_updated datetime
+)
+
 CREATE TABLE users
 (
 	id int primary key identity not null,
@@ -33,15 +43,6 @@ CREATE TABLE occurrence
 	photo varchar(100),
 	status varchar(100),
 	address varchar(100),
-	deleted bit not null,
-	created_at datetime not null,
-	last_updated datetime
-)
-
-CREATE TABLE user_role
-(
-	id int primary key identity not null,
-	user_role varchar(500) unique not null,
 	deleted bit not null,
 	created_at datetime not null,
 	last_updated datetime
