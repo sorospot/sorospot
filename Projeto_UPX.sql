@@ -15,11 +15,12 @@ CREATE TABLE category
 CREATE TABLE users
 (
 	id int primary key identity not null,
-	cpf int not null,
+	name varchar(100) not null,
+	cpf int unique not null,
 	telephone int not null,
 	email varchar(100) not null,
 	password varchar(100) not null,
-	photo varchar(100),
+	photo varchar(255),
 	role_id int references user_role(id) not null
 )
 
