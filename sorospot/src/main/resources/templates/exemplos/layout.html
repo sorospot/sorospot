@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${pageTitle}">Minha aplicação</title>
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <div th:replace="~{fragments/exemplos/header :: header}"></div>
+
+  <!-- Conteúdo principal -->
+  <main>
+    <th:block th:insert="~{${contentTemplate} :: content}"></th:block>
+  </main>
+
+</body>
+</html>
