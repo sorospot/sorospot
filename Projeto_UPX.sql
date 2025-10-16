@@ -43,6 +43,8 @@ CREATE TABLE occurrence
 	photo varchar(100),
 	status varchar(100),
 	address varchar(100),
+	latitude decimal(10,8) not null,
+	longitude decimal(11,8) not null,
 	deleted bit not null,
 	created_at datetime not null,
 	last_updated datetime
