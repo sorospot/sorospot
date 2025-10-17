@@ -9,7 +9,8 @@
 
   <!-- Conteúdo principal -->
   <main>
-    <th:block th:insert="~{${contentTemplate} :: content}"></th:block>
+    <!-- Use variable-based fragment expression; avoid ~{ } wrapper which may resolve too early -->
+    <th:block th:insert="${contentTemplate} :: content"></th:block>
   </main>
 
 </body>
