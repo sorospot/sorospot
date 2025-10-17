@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local environment variables file
+.env
+
+# H2 database files (local development)
+data/
+
+# Temporary markers file
+markers.json
