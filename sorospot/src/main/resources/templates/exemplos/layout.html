@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <title th:text="${pageTitle}">Minha aplicação</title>
-</head>
-<body>
-  <!-- Cabeçalho -->
-  <div th:replace="~{fragments/exemplos/header :: header}"></div>
+  <head>
+    <title th:text="${pageTitle}">Minha aplicação</title>
+  </head>
+  <body>
+    <!-- Cabeçalho -->
+    <div th:replace="~{fragments/exemplos/header :: header}"></div>
 
-  <!-- Conteúdo principal -->
-  <main>
-    <!-- Use variable-based fragment expression; avoid ~{ } wrapper which may resolve too early -->
-    <th:block th:insert="${contentTemplate} :: content"></th:block>
-  </main>
-
-</body>
+    <!-- Conteúdo principal -->
+    <main>
+      <!-- Use variable-based fragment expression; avoid ~{ } wrapper which may resolve too early -->
+      <th:block th:insert="${contentTemplate} :: content"></th:block>
+    </main>
+  </body>
 </html>

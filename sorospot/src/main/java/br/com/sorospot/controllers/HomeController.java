@@ -11,7 +11,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         model.addAttribute("pageTitle", "Página Inicial");
-        model.addAttribute("contentTemplate", "exemplos/home");
+        model.addAttribute("contentTemplate", "exemplos/layout");
         return "exemplos/layout";
     }
 

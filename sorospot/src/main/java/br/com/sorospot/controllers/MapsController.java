@@ -2,16 +2,20 @@ package br.com.sorospot.controllers;
 
 import br.com.sorospot.services.GeocodeResult;
 import br.com.sorospot.services.GoogleMapsService;
-import br.com.sorospot.services.Marker;
 import br.com.sorospot.domains.Category;
 import br.com.sorospot.domains.Occurrence;
 import br.com.sorospot.repositories.CategoryRepository;
 import br.com.sorospot.repositories.OccurrenceRepository;
 import br.com.sorospot.repositories.UserRepository;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
     
@@ -50,8 +54,13 @@ public class MapsController {
         return googleMapsService.reverseGeocode(lat, lng);
     }
 
-    @PostMapping(value = "/markers", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public java.util.Map<String,Object> addMarker(@RequestBody Marker marker) {
+    @PostMapping(value = "/markers", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public java.util.Map<String,Object> addMarkerMultipart(@RequestParam double lat,
+                                                           @RequestParam double lng,
+                                                           @RequestParam String title,
+                                                           @RequestParam String description,
+                                                           @RequestParam String color,
+                                                           @RequestParam(required = false) MultipartFile image) throws IOException {
 
         Category cat = categoryRepository.findAll().stream().findFirst().orElse(null);
         if (cat == null) {
@@ -60,37 +69,55 @@ public class MapsController {
             cat.setColor("#888888");
             cat = categoryRepository.save(cat);
         }
-
-    Occurrence o = new Occurrence();
+        Occurrence o = new Occurrence();
         o.setCategory(cat);
-        o.setDescription(marker.getTitle() != null ? marker.getTitle() : marker.getDescription());
-
-        String addr = String.format("lat:%s,lng:%s", marker.getLat(), marker.getLng());
+        o.setDescription(description);
+        o.setTitle(title);
+        o.setLatitude(new java.math.BigDecimal(lat));
+        o.setLongitude(new java.math.BigDecimal(lng));
+        String addr = String.format("lat:%s,lng:%s", lat, lng);
         o.setAddress(addr);
-        o.setPhoto(null);
         o.setStatus("novo");
 
-    userRepository.findAll().stream().filter(u -> "demo@sorospot.local".equals(u.getEmail())).findFirst().ifPresent(o::setUser);
-    Occurrence saved = occurrenceRepository.save(o);
+        if (image != null && !image.isEmpty()) {
+            Path uploadDir = Paths.get("uploads");
+            if (!Files.exists(uploadDir)) Files.createDirectories(uploadDir);
+            String filename = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+            Path target = uploadDir.resolve(filename);
+            Files.copy(image.getInputStream(), target);
+            o.setPhoto(filename);
+        }
 
-    java.util.Map<String,Object> resp = Map.of(
-        "id", saved.getId(),
-        "title", saved.getDescription(),
-        "description", "",
-        "address", saved.getAddress(),
-        "category", saved.getCategory() != null ? saved.getCategory().getType() : null
-    );
-    return resp;
+        userRepository.findAll().stream().filter(u -> "demo@sorospot.local".equals(u.getEmail())).findFirst().ifPresent(o::setUser);
+        Occurrence saved = occurrenceRepository.save(o);
+
+        java.util.Map<String,Object> resp = Map.of(
+                "id", saved.getId(),
+                "title", saved.getTitle(),
+                "description", saved.getDescription(),
+                "address", saved.getAddress(),
+                "latitude", saved.getLatitude(),
+                "longitude", saved.getLongitude(),
+                "photo", saved.getPhoto(),
+                "category", saved.getCategory() != null ? saved.getCategory().getType() : null,
+                "user", saved.getUser() != null ? saved.getUser().getName() : null
+        );
+        return resp;
     }
 
     @GetMapping(value = "/occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
     public java.util.List<?> listOccurrences() {
-        return occurrenceRepository.findAll().stream().map(o -> Map.of(
-                "id", o.getId(),
-                "category", o.getCategory() != null ? o.getCategory().getType() : null,
-                "description", o.getDescription(),
-                "address", o.getAddress(),
-                "createdAt", o.getCreatedAt()
-        )).collect(Collectors.toList());
+    return occurrenceRepository.findAll().stream().map(o -> Map.of(
+        "id", o.getId(),
+        "title", o.getTitle(),
+        "category", o.getCategory() != null ? o.getCategory().getType() : null,
+        "description", o.getDescription(),
+        "address", o.getAddress(),
+        "latitude", o.getLatitude(),
+        "longitude", o.getLongitude(),
+        "photo", o.getPhoto(),
+        "user", o.getUser() != null ? o.getUser().getName() : null,
+        "createdAt", o.getCreatedAt()
+    )).collect(Collectors.toList());
     }
 }

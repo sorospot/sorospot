@@ -17,6 +17,9 @@ public class Occurrence {
     @Column(length = 500)
     private String description;
     private String photo;
+    private String title;
+    private java.math.BigDecimal latitude;
+    private java.math.BigDecimal longitude;
     private String status;
     private String address;
     private boolean deleted;
@@ -37,6 +40,12 @@ public class Occurrence {
     public void setDescription(String description) { this.description = description; }
     public String getPhoto() { return photo; }
     public void setPhoto(String photo) { this.photo = photo; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public java.math.BigDecimal getLatitude() { return latitude; }
+    public void setLatitude(java.math.BigDecimal latitude) { this.latitude = latitude; }
+    public java.math.BigDecimal getLongitude() { return longitude; }
+    public void setLongitude(java.math.BigDecimal longitude) { this.longitude = longitude; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public String getAddress() { return address; }
