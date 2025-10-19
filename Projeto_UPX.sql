@@ -22,7 +22,7 @@ CREATE TABLE user_role
 	last_updated datetime
 )
 
-CREATE TABLE users
+CREATE TABLE user
 (
 	id int primary key identity not null,
 	name varchar(100) not null,
