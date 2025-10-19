@@ -22,7 +22,7 @@ CREATE TABLE user_role
 	last_updated datetime
 )
 
-CREATE TABLE user
+CREATE TABLE [user]
 (
 	id int primary key identity not null,
 	name varchar(100) not null,
@@ -31,6 +31,9 @@ CREATE TABLE user
 	email varchar(100) not null,
 	password varchar(100) not null,
 	photo varchar(255),
+	deleted bit not null,
+    created_at datetime not null,
+    last_updated datetime,
 	role_id int references user_role(id) not null
 )
 
