@@ -1,11 +1,11 @@
 <div th:fragment="content">
     <section id="formContent">
         <img th:src="@{/images/sorospot-nobg.png}" alt="Sorospot Logo" class="logo">
-        <form action="" method="post">
+        <form th:action="@{/signIn}" method="post">
             <input type="email" id="email" name="email" placeholder="Email" required>
-            <input type="password" id="senha" name="senha" placeholder="Senha" required>
+            <input type="password" id="password" name="password" placeholder="Senha" required>
             <button type="submit">Entrar</button>
         </form>
-        <a th:href="@{/registro}">Não tenho uma conta</a>
+        <a th:href="@{/signUp}">Não tenho uma conta</a>
     </section>
 </div>

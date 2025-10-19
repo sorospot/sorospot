@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    @GetMapping("/login")
-    public String mostrarFormularioLogin(Model model) {
+    @GetMapping("/signIn")
+    public String showLoginForm(Model model) {
         model.addAttribute("pageTitle", "Login - Sorospot");
-        model.addAttribute("contentTemplate", "login/form");
-        return "login/registro";
+        model.addAttribute("contentTemplate", "signIn/_form");
+        return "signIn/auth";
     }
 
-    @PostMapping("/login")
-    public String processarLogin(
+    @PostMapping("/signIn")
+    public String processLogin(
             @RequestParam("email") String email,
-            @RequestParam("senha") String senha,
+            @RequestParam("password") String password,
             Model model) {
         
         return "redirect:/";

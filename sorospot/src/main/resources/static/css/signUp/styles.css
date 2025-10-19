@@ -8,7 +8,7 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: "Poppins", sans-serif;
-    background-color: #a3d7ff
+    background-color: #a3d7ff;
 }
 
 #formContent {
@@ -38,12 +38,12 @@ form input {
     padding: 13px;
 }
 
-#nomeCompleto {
+#fullName {
     display: flex;
     gap: 10px;
 }
 
-#nomeCompleto input {
+#fullName input {
     width: 125px;
 }
 
