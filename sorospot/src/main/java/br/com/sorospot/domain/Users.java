@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "users")
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,7 @@ public class User {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @Column(unique = true, nullable = false, length = 11)
+    @Column(unique = true, nullable = false, length = 14)
     private String cpf;
 
     @Column(nullable = false, length = 15)
@@ -42,9 +42,9 @@ public class User {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    public User() {}
+    public Users() {}
 
-    public User(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
+    public Users(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
     UserRole role, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.id = id;
         this.name = name;

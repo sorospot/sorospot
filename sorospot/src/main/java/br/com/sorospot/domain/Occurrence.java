@@ -1,5 +1,6 @@
 package br.com.sorospot.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
@@ -13,7 +14,7 @@ public class Occurrence {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -32,10 +33,10 @@ public class Occurrence {
     private String address;
 
     @Column(nullable = false, precision = 10, scale = 8)
-    private Double latitude;
+    private BigDecimal latitude;
 
     @Column(nullable = false, precision = 11, scale = 8)
-    private Double longitude;
+    private BigDecimal longitude;
 
     @Column(nullable = false)
     private Boolean deleted;
@@ -48,8 +49,8 @@ public class Occurrence {
 
     public Occurrence() {}
 
-    public Occurrence(User user, Category category, String description, String photo, String status, String address, 
-    Double latitude, Double longitude, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
+    public Occurrence(Users user, Category category, String description, String photo, String status, String address, 
+    BigDecimal latitude, BigDecimal longitude, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.user = user;
         this.category = category;
         this.description = description;
@@ -63,11 +64,11 @@ public class Occurrence {
         this.lastUpdated = lastUpdated;
     }
 
-    public User getUser() {
+    public Users getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Users user) {
         this.user = user;
     }
 
@@ -111,19 +112,19 @@ public class Occurrence {
         this.address = address;
     }
 
-    public Double getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
 
@@ -155,8 +156,8 @@ public class Occurrence {
     public String toString() {
         return "Occurrence{" +
                 "id=" + id +
-                ", user=" + (user != null ? user.getName() : "null") +
-                ", category=" + (category != null ? category.getType() : "null") +
+                ", user=" + user.getName() +
+                ", category=" + category.getType() +
                 ", description='" + description + '\'' +
                 ", photo='" + photo + '\'' +
                 ", status='" + status + '\'' +
