@@ -16,7 +16,10 @@ public class Occurrence {
     private Category category;
     @Column(length = 500)
     private String description;
+    //@deprecated migrated to Photo entity
+    @Deprecated
     private String photo;
+    private String color;
     private String title;
     private java.math.BigDecimal latitude;
     private java.math.BigDecimal longitude;
@@ -25,6 +28,9 @@ public class Occurrence {
     private boolean deleted;
     private LocalDateTime createdAt;
     private LocalDateTime lastUpdated;
+
+    @OneToMany(mappedBy = "occurrence", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Photo> photos = new java.util.ArrayList<>();
 
     @PrePersist
     public void prePersist() { createdAt = LocalDateTime.now(); }
@@ -40,6 +46,10 @@ public class Occurrence {
     public void setDescription(String description) { this.description = description; }
     public String getPhoto() { return photo; }
     public void setPhoto(String photo) { this.photo = photo; }
+    public java.util.List<Photo> getPhotos() { return photos; }
+    public void setPhotos(java.util.List<Photo> photos) { this.photos = photos; }
+    public String getColor() { return color; }
+    public void setColor(String color) { this.color = color; }
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
     public java.math.BigDecimal getLatitude() { return latitude; }

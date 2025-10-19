@@ -1,20 +1,15 @@
 <div th:fragment="content">
   <h2>Mapa</h2>
-  <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px">
-    <input id="address" placeholder="Pesquisar endereço" style="flex:1" />
+  <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px">
+    <input id="address" placeholder="Pesquisar endereço" style="flex: 1" />
     <button id="searchBtn">Buscar</button>
     <button id="centerBtn">Ir para minha localização</button>
+    <button id="myPinsBtn">Meus pins</button>
   </div>
-  <div id="map" style="width: 100%; height: 600px;"></div>
+  <div id="map" style="width: 100%; height: 600px"></div>
 
-  <style>
-    /* Simple modal */
-    .modal { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.5); align-items:center; justify-content:center; }
-    .modal .panel { background:#fff; padding:16px; border-radius:6px; width:400px; max-width:95%; }
-    .color-swatch { width:22px; height:22px; border-radius:4px; display:inline-block; vertical-align:middle; margin-left:8px; border:1px solid #ccc }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/map.css}" />
 
-  <!-- Modal -->
   <div id="pinModal" class="modal">
     <div class="panel">
       <h3>Adicionar ocorrência</h3>
@@ -22,19 +17,133 @@
         <input type="hidden" id="pinLat" name="lat" />
         <input type="hidden" id="pinLng" name="lng" />
         <div>
-          <label>Título<br><input id="pinTitle" name="title" required style="width:100%"/></label>
+          <label
+            >Título<br /><input
+              id="pinTitle"
+              name="title"
+              required
+              style="width: 100%"
+          /></label>
         </div>
         <div>
-          <label>Descrição<br><textarea id="pinDesc" name="description" style="width:100%"></textarea></label>
+          <label
+            >Descrição<br /><textarea
+              id="pinDesc"
+              name="description"
+              style="width: 100%"
+            ></textarea>
+          </label>
         </div>
         <div>
-          <label>Cor do pin<br><input id="pinColor" name="color" type="color" value="#ff0000"/></label>
+          <label
+            >Cor do pin<br /><input
+              id="pinColor"
+              name="color"
+              type="color"
+              value="#ff0000"
+          /></label>
         </div>
         <div>
-          <label>Imagem<br><input id="pinImage" name="image" type="file" accept="image/*"/></label>
+          <label
+            >Imagem<br /><input
+              id="pinImage"
+              name="image"
+              type="file"
+              accept="image/*"
+          /></label>
         </div>
-        <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:8px">
+        <div
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 8px;
+          "
+        >
           <button type="button" id="cancelPin">Cancelar</button>
+          <button type="submit">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="deleteModal" class="modal">
+    <div class="panel">
+      <h3>Confirmar exclusão</h3>
+      <p>Deseja realmente excluir este pin?</p>
+      <div style="display: flex; gap: 8px; justify-content: flex-end">
+        <button id="cancelDelete">Cancelar</button>
+        <button id="confirmDelete">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="myPinsModal" class="modal">
+    <div class="panel">
+      <h3>Meus pins</h3>
+      <div id="myPinsList" style="max-height: 400px; overflow: auto"></div>
+      <div
+        style="
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          margin-top: 8px;
+        "
+      >
+        <button id="closeMyPins">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal">
+    <div class="panel">
+      <h3>Editar ocorrência</h3>
+      <form id="editForm">
+        <input type="hidden" id="editId" />
+        <div>
+          <label
+            >Título<br /><input id="editTitle" style="width: 100%"
+          /></label>
+        </div>
+        <div>
+          <label
+            >Descrição<br /><textarea
+              id="editDesc"
+              style="width: 100%"
+            ></textarea>
+          </label>
+        </div>
+        <div>
+          <label
+            >Cor<br /><input id="editColor" type="color" value="#ff0000"
+          /></label>
+        </div>
+        <div>
+          <label
+            >Fotos atuais
+            <div
+              id="editPhotos"
+              style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px"
+            ></div
+          ></label>
+        </div>
+        <div>
+          <label
+            >Adicionar foto<br /><input
+              id="editImage"
+              type="file"
+              accept="image/*"
+          /></label>
+        </div>
+        <div
+          style="
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 8px;
+          "
+        >
+          <button type="button" id="cancelEdit">Cancelar</button>
           <button type="submit">Salvar</button>
         </div>
       </form>
@@ -43,99 +152,17 @@
 
   <script th:inline="javascript">
     /*<![CDATA[*/
-    const googleMapsApiKey = /*[[${googleMapsApiKey}]]*/ "";
+    // expose Thymeleaf variables on window for external JS
+    window.SOROSPOT_GOOGLE_MAPS_API_KEY = /*[[${googleMapsApiKey}]]*/ "";
+    window.SOROSPOT_CURRENT_USER_EMAIL =
+      /*[[${currentUserEmail}]]*/ "demo@sorospot.local";
     /*]]>*/
   </script>
 
-  <script th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap|" async defer></script>
-
-  <script>
-    let map;
-    let markers = [];
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById("map"), { zoom: 13, center: { lat: -23.5015, lng: -47.4526 } });
-
-      // try geolocation
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((pos) => {
-          const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          map.setCenter(p);
-        }, (err) => { console.warn('Geolocation failed', err); });
-      }
-
-      // load occurrences
-      fetch('/api/maps/occurrences').then(r => r.json()).then(list => {
-        list.forEach(o => {
-          const lat = o.latitude ? parseFloat(o.latitude) : (o.address && o.address.startsWith('lat:') ? parseFloat(o.address.split(',')[0].split(':')[1]) : null);
-          const lng = o.longitude ? parseFloat(o.longitude) : (o.address && o.address.startsWith('lat:') ? parseFloat(o.address.split(',')[1].split(':')[1]) : null);
-          if (lat && lng) addMarkerToMap({ id: o.id, title: o.title || o.description, description: o.description, lat, lng, color: '#ff0000', photo: o.photo, user: o.user });
-        });
-      });
-
-      map.addListener('click', (e) => {
-        openPinModal(e.latLng.lat(), e.latLng.lng());
-      });
-
-      document.getElementById('searchBtn').addEventListener('click', () => {
-        const q = document.getElementById('address').value;
-        if (!q) return;
-        fetch('/api/maps/geocode-simple?address=' + encodeURIComponent(q)).then(r => r.json()).then(result => {
-          if (!result || !result.formattedAddress) { alert('Nenhum resultado'); return; }
-          map.setCenter({ lat: result.lat, lng: result.lng }); map.setZoom(16);
-        }).catch(e => alert('Erro: ' + e));
-      });
-
-      document.getElementById('centerBtn').addEventListener('click', () => {
-        if (navigator.geolocation) navigator.geolocation.getCurrentPosition(p => map.setCenter({ lat: p.coords.latitude, lng: p.coords.longitude }));
-      });
-
-      // modal handlers
-      const modal = document.getElementById('pinModal');
-      document.getElementById('cancelPin').addEventListener('click', () => modal.style.display = 'none');
-      document.getElementById('pinForm').addEventListener('submit', (ev) => {
-        ev.preventDefault();
-        const f = new FormData();
-        f.append('lat', document.getElementById('pinLat').value);
-        f.append('lng', document.getElementById('pinLng').value);
-        f.append('title', document.getElementById('pinTitle').value);
-        f.append('description', document.getElementById('pinDesc').value);
-        f.append('color', document.getElementById('pinColor').value);
-        const file = document.getElementById('pinImage').files[0];
-        if (file) f.append('image', file);
-
-        fetch('/api/maps/markers', { method: 'POST', body: f }).then(r => r.json()).then(m => {
-          addMarkerToMap({ id: m.id, title: m.title, description: m.description, lat: parseFloat(m.latitude), lng: parseFloat(m.longitude), color: document.getElementById('pinColor').value, photo: m.photo, user: m.user });
-          modal.style.display = 'none';
-        }).catch(e => alert('Erro ao salvar: ' + e));
-      });
-
-      function openPinModal(lat, lng) {
-        modal.style.display = 'flex';
-        document.getElementById('pinLat').value = lat;
-        document.getElementById('pinLng').value = lng;
-        document.getElementById('pinTitle').value = '';
-        document.getElementById('pinDesc').value = '';
-        document.getElementById('pinImage').value = '';
-      }
-
-    }
-
-    function addMarkerToMap(m) {
-      const icon = {
-        path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-        scale: 5,
-        fillColor: m.color || '#ff0000',
-        fillOpacity: 1,
-        strokeWeight: 1
-      };
-      const gMarker = new google.maps.Marker({ position: { lat: m.lat, lng: m.lng }, map: map, title: m.title, icon });
-      const content = `<div style="max-width:240px"><strong>${escapeHtml(m.title)}</strong><div>${escapeHtml(m.description || '')}</div>${m.photo ? `<div><img src="/uploads/${m.photo}" style="max-width:100%"></div>`: ''}<div style="font-size:0.9em;color:#666">Por: ${escapeHtml(m.user || 'Anônimo')}</div></div>`;
-      const infow = new google.maps.InfoWindow({ content });
-      gMarker.addListener('click', () => infow.open(map, gMarker));
-      markers.push(gMarker);
-    }
-
-    function escapeHtml(str) { return String(str).replace(/[&<>\"']/g, function (s) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]); }); }
-  </script>
+  <script
+    th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap|"
+    async
+    defer
+  ></script>
+  <script th:src="@{/js/map.js}" defer></script>
 </div>

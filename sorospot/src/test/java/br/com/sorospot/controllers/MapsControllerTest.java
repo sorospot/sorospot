@@ -20,7 +20,9 @@ public class MapsControllerTest {
     OccurrenceRepository occurrenceRepository = Mockito.mock(OccurrenceRepository.class);
     CategoryRepository categoryRepository = Mockito.mock(CategoryRepository.class);
     UserRepository userRepository = Mockito.mock(UserRepository.class);
-    MapsController controller = new MapsController(googleMapsService, occurrenceRepository, categoryRepository, userRepository);
+    br.com.sorospot.repositories.PhotoRepository photoRepository = Mockito.mock(br.com.sorospot.repositories.PhotoRepository.class);
+    br.com.sorospot.repositories.UserRoleRepository userRoleRepository = Mockito.mock(br.com.sorospot.repositories.UserRoleRepository.class);
+    MapsController controller = new MapsController(googleMapsService, occurrenceRepository, photoRepository, categoryRepository, userRepository, userRoleRepository);
         WebTestClient webTestClient = WebTestClient.bindToController(controller).build();
 
         webTestClient.get()

@@ -12,7 +12,7 @@ public class HomeController {
     public String home(Model model) {
         model.addAttribute("pageTitle", "Página Inicial");
         model.addAttribute("contentTemplate", "exemplos/layout");
-        return "exemplos/layout";
+        return "exemplos/home";
     }
 
     @Value("${google.maps.apiKey}")
@@ -23,6 +23,8 @@ public class HomeController {
         model.addAttribute("pageTitle", "Mapa");
         model.addAttribute("contentTemplate", "exemplos/map");
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+        // simulando usuario logado
+        model.addAttribute("currentUserEmail", "demo@sorospot.local");
         return "exemplos/layout";
     }
 }
