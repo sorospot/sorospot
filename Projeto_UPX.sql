@@ -27,7 +27,7 @@ CREATE TABLE [user]
 	id int primary key identity not null,
 	name varchar(100) not null,
 	cpf varchar(14) unique not null,
-	telephone varchar(15) int not null,
+	telephone varchar(15) not null,
 	email varchar(100) not null,
 	password varchar(100) not null,
 	photo varchar(255),
