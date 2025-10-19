@@ -22,22 +22,25 @@ CREATE TABLE user_role
 	last_updated datetime
 )
 
-CREATE TABLE users
+CREATE TABLE [user]
 (
 	id int primary key identity not null,
 	name varchar(100) not null,
-	cpf int unique not null,
-	telephone int not null,
+	cpf varchar(14) unique not null,
+	telephone varchar(15) not null,
 	email varchar(100) not null,
 	password varchar(100) not null,
 	photo varchar(255),
+	deleted bit not null,
+    created_at datetime not null,
+    last_updated datetime,
 	role_id int references user_role(id) not null
 )
 
 CREATE TABLE occurrence
 (
 	id int primary key identity not null,
-	user_id int references users(id) not null,
+	user_id int references [user](id) not null,
 	category_id int references category(id) not null,
 	description varchar(500) not null,
 	photo varchar(100),
