@@ -37,6 +37,14 @@ public class SorospotApplication {
 						String masked = value.length() > 8 ? value.substring(0, 4) + "..." + value.substring(value.length() - 4) : "****";
 						System.out.println("[bootstrap] GOOGLE_MAPS_API_KEY carregada (mascarada): " + masked);
 					}
+						// Also check MSSQL related env vars and log masked values to help debugging
+						String jdbc = System.getProperty("MSSQL_JDBC_URL", System.getenv("MSSQL_JDBC_URL"));
+						String user = System.getProperty("MSSQL_DB_USER", System.getenv("MSSQL_DB_USER"));
+						if (jdbc != null || user != null) {
+							String maskedJdbc = jdbc == null ? "(not set)" : (jdbc.length() > 20 ? jdbc.substring(0, 20) + "..." : jdbc);
+							String maskedUser = user == null ? "(not set)" : (user.length() > 2 ? user.substring(0, 1) + "..." + user.substring(user.length()-1) : "*");
+							System.out.println("[bootstrap] MSSQL config detected - JDBC=" + maskedJdbc + " user=" + maskedUser);
+						}
 				}
 			} catch (IOException e) {
 				System.err.println("Não foi possível ler .env: " + e.getMessage());

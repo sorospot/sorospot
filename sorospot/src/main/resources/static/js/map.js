@@ -16,7 +16,7 @@ function initMap() {
       (pos) => {
         const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         map.setCenter(p);
-        map.setZoom(15);
+        map.setZoom(16);
         new google.maps.Marker({ position: p, map, title: "Você" });
       },
       (err) => console.warn("Geolocation failed", err)
@@ -74,8 +74,12 @@ function initMap() {
   document.getElementById("centerBtn").addEventListener("click", () => {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition((p) =>
-        map.setCenter({ lat: p.coords.latitude, lng: p.coords.longitude })
+        map.setCenter({
+          lat: p.coords.latitude,
+          lng: p.coords.longitude,
+        })
       );
+    map.setZoom(16);
   });
 
   document.getElementById("myPinsBtn").addEventListener("click", () => {
@@ -145,6 +149,13 @@ function aumentarImagem(t) {
 }
 
 function addMarkerToMap(m) {
+  const occurrenceIcon = {
+    text: "\ue530",
+    fontFamily: "Material Icons",
+    color: "#fff",
+    fontSize: "18px",
+  };
+
   const icon = {
     path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
     scale: 5,
@@ -156,7 +167,12 @@ function addMarkerToMap(m) {
     position: { lat: m.lat, lng: m.lng },
     map: map,
     title: m.title,
-    icon,
+    label: {
+      text: "\uF567",
+      fontFamily: "Material Symbols Outlined",
+      color: "#ffffff",
+      fontSize: "18px",
+    },
   });
   const isOwner =
     (m.ownerEmail && m.ownerEmail === window.SOROSPOT_CURRENT_USER_EMAIL) ||
@@ -286,6 +302,7 @@ function openMyPinsModal() {
         b.addEventListener("click", (ev) => {
           const id = ev.target.getAttribute("data-id");
           const item = arr.find((x) => x.id == id);
+          modal.style.display = "none";
           if (item && item.latitude && item.longitude) {
             map.setCenter({
               lat: parseFloat(item.latitude),

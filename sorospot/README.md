@@ -25,7 +25,22 @@ Using a .env file (local dev)
 
 ## Additional notes and API
 
-This repository includes a simple pin/occurrence API used by the map UI. The backend stores occurrences in an H2 file database (jdbc:h2:file:./data/projeto_upx) and uploaded photos in the `uploads/` folder.
+This repository includes a simple pin/occurrence API used by the map UI. The backend stores occurrences in a Microsoft SQL Server database when run in production profiles; uploaded photos are stored in the `uploads/` folder.
+
+## Running with Microsoft SQL Server (MSSQL)
+
+If you want to run the application using SQL Server instead of the default H2, start the app with the `mssql` Spring profile and provide the database connection via environment variables:
+
+PowerShell example:
+
+```powershell
+$env:MSSQL_JDBC_URL = 'jdbc:sqlserver://db.example.local:1433;databaseName=Projeto_UPX'
+$env:MSSQL_DB_USER = 'appuser'
+$env:MSSQL_DB_PASSWORD = 'secret'
+.\mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=mssql
+```
+
+When the `mssql` profile is active, Flyway will also load migrations from `classpath:db/migration/mssql` which contain SQL Server-compatible DDL.
 
 Endpoints (overview)
 
