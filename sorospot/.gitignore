@@ -33,3 +33,6 @@ build/
 .vscode/
 
 .sdkmanrc
+
+# Ignorar configuração local do Spring Boot
+/src/main/resources/application.properties
