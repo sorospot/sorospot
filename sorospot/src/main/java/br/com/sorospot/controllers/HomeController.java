@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
+    @GetMapping("/exemplos")
     public String home(Model model) {
         model.addAttribute("pageTitle", "Página Inicial");
         model.addAttribute("contentTemplate", "exemplos/home");

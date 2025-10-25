@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LoginController {
 
-    @GetMapping("/signIn")
+    @GetMapping({"/", "/signIn"})
     public String showLoginForm(Model model) {
         model.addAttribute("pageTitle", "Login - Sorospot");
         model.addAttribute("contentTemplate", "signIn/_form");
