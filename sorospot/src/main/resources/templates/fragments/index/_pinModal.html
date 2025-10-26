@@ -1,28 +1,58 @@
-<div id="pinModal" class="modal" th:fragment="pinModal" onclick="fechaModal(event, this)">
+<div
+  id="pinModal"
+  class="modal"
+  th:fragment="pinModal"
+  onclick="fechaModal(event, this)"
+>
   <div class="panel">
-    <h3>Adicionar ocorrência</h3>
+    <h2>Adicionar ocorrência</h2>
     <form id="pinForm">
       <input type="hidden" id="pinLat" name="lat" />
       <input type="hidden" id="pinLng" name="lng" />
+
       <div>
-        <label>Título<br /><input id="pinTitle" name="title" required style="width: 100%" /></label>
+        <label for="pinTitle">Título<br /></label>
+        <input
+          id="pinTitle"
+          name="title"
+          required
+          style="width: 100%"
+          placeholder="Insira um breve título..."
+        />
       </div>
+
       <div>
-        <label>Descrição<br /><textarea id="pinDesc" name="description" style="width: 100%"></textarea>
-        </label>
+        <label for="pinDesc">Descrição<br /></label>
+        <textarea
+          id="pinDesc"
+          name="description"
+          style="width: 100%"
+          placeholder="Descreva o problema..."
+        ></textarea>
       </div>
-      <div>
-        <label>Cor do pin<br /><input id="pinColor" name="color" type="color" value="#ff0000" /></label>
+
+      <div class="colorImg">
+        <div>
+          <label for="pinColor" style="text-align: center;">Cor do pin<br /></label>
+          <input id="pinColor" name="color" type="color" value="#ff0000" />
+        </div>
+
+        <div class="imgDiv">
+          <label for="pinImage" id="imgLabel">Imagem<br /></label>
+          <button id="btnImg" type="button">
+            <span class="material-symbols-outlined"> add </span>
+          </button>
+          <img id="previewImagem"/>
+          <div id="btnsImg">
+            <button id="trocarImagem" type="button">Trocar imagem</button>
+            <button id="removerImagem" type="button">Remover imagem</button>
+          </div>
+          
+          <input id="pinImage" name="image" type="file" accept="image/*" />
+        </div>
       </div>
-      <div>
-        <label>Imagem<br /><input id="pinImage" name="image" type="file" accept="image/*" /></label>
-      </div>
-      <div style="
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-          margin-top: 8px;
-        ">
+
+      <div class="modalFooter">
         <button type="button" id="cancelPin">Cancelar</button>
         <button type="submit">Salvar</button>
       </div>

@@ -19,7 +19,7 @@ window.initMap = function () {
         map.setZoom(16);
         new google.maps.Marker({ position: p, map, title: "Você" });
       },
-      (err) => console.warn("Geolocation failed", err)
+      (err) => console.warn("Geolocalização Falhou.", err)
     );
   }
 
@@ -61,7 +61,6 @@ window.initMap = function () {
     if (ev.key === "Enter") document.getElementById("searchBtn").click();
   });
 
-
   document.getElementById("searchBtn").addEventListener("click", () => {
     const q = document.getElementById("address").value;
     if (!q) return;
@@ -95,7 +94,7 @@ window.initMap = function () {
   const modal = document.getElementById("pinModal");
   document
     .getElementById("cancelPin")
-    .addEventListener("click", () => (modal.classList.toggle("open")));
+    .addEventListener("click", () => modal.classList.toggle("open"));
   document.getElementById("pinForm").addEventListener("submit", (ev) => {
     ev.preventDefault();
     const latVal = document.getElementById("pinLat").value;
@@ -131,7 +130,7 @@ window.initMap = function () {
           user: m.user,
           ownerEmail: m.userEmail || "demo@sorospot.local",
         });
-        modal.style.display = "none";
+        modal.classList.remove("open");
       })
       .catch((e) => alert("Erro ao salvar: " + e));
   });
@@ -145,38 +144,26 @@ window.initMap = function () {
     document.getElementById("pinDesc").value = "";
     document.getElementById("pinImage").value = "";
   }
-}
+};
 
 function fechaModal(event, t) {
-    const innerModal = t.firstElementChild;
-    if (!innerModal.contains(event.target)) {
-        t.classList.remove('open');
-    }
+  const innerModal = t.firstElementChild;
+  if (!innerModal.contains(event.target)) {
+    t.classList.remove("open");
+  }
 }
 
-function aumentarImagem(t) {
-  t.addEventListener("click", () => {
-    if (t.requestFullscreen) t.requestFullscreen();
-    else if (t.webkitRequestFullscreen) t.webkitRequestFullscreen();
-    else if (t.msRequestFullscreen) t.msRequestFullscreen();
-  });
+const aumentarImagem = (t) => {
+  const fullscreen = document.fullscreenElement;
+
+  if (fullscreen === t) {
+    document.exitFullscreen?.();
+  } else {
+    t.requestFullscreen?.();
+  }
 }
 
 function addMarkerToMap(m) {
-  const occurrenceIcon = {
-    text: "\ue530",
-    fontFamily: "Material Icons",
-    color: "#fff",
-    fontSize: "18px",
-  };
-
-  const icon = {
-    path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
-    scale: 5,
-    fillColor: m.color || "#ff0000",
-    fillOpacity: 1,
-    strokeWeight: 1,
-  };
   const gMarker = new google.maps.Marker({
     position: { lat: m.lat, lng: m.lng },
     map: map,
@@ -188,25 +175,45 @@ function addMarkerToMap(m) {
       fontSize: "18px",
     },
   });
+
   const isOwner =
     (m.ownerEmail && m.ownerEmail === window.SOROSPOT_CURRENT_USER_EMAIL) ||
     false;
   const deleteBtn = isOwner
-    ? `<div style="text-align:right;margin-top:8px"><button data-id="${m.id}" class="delete-btn">Excluir</button></div>`
+    ? `<div class="pinTooltipDelete" data-id="${m.id}">
+        <span class="material-symbols-outlined">delete</span>
+        <button class="delete-btn">Excluir</button>
+      </div>`
     : "";
-  const content = `<div style="max-width:240px"><strong>${escapeHtml(
-    m.title
-  )}</strong><div>${escapeHtml(m.description || "")}</div>${
-    m.photo && Object.keys(m.photo).length > 0
-      ? `<div style="display:flex;gap:4px;margin-top:6px"><img src="/uploads/${m.photo}" onclick="aumentarImagem(this)" style="width:72px;height:72px;object-fit:cover;border-radius:4px"></div>`
-      : ""
-  }<div style="font-size:0.9em;color:#666">Por: ${escapeHtml(
-    m.user || "Anônimo"
-  )}</div>${deleteBtn}</div>`;
+  const content = `<div class="pinTooltip">
+      <div class="tooltipHeader">
+        <strong class="pinTooltipTitle">${escapeHtml(m.title)}</strong>
+        <button class="fechaTooltip" type="button">&times;</button>
+      </div>
+      <div class="tooltipBody">
+        <div class="pinTooltipDesc">${escapeHtml(m.description || "")}</div>
+        ${
+          m.photo && Object.keys(m.photo).length > 0
+            ? `<div class="pinTooltipImg">
+            <img src="/uploads/${m.photo}" onclick="aumentarImagem(this)" style="width:72px;height:72px;object-fit:cover;border-radius:4px">
+          </div>`
+            : ""
+        }
+        <div class="pinTooltipOwner"><strong>Por:</strong> ${escapeHtml(
+          m.user || "Anônimo"
+        )}</div>
+        ${deleteBtn}
+      </div>
+    </div>`;
+
   const infow = new google.maps.InfoWindow({ content });
   gMarker.addListener("click", () => infow.open(map, gMarker));
   google.maps.event.addListener(infow, "domready", () => {
-    const btn = document.querySelector('.delete-btn[data-id="' + m.id + '"]');
+    document.querySelector(".fechaTooltip").addEventListener("click", () => {
+      infow.close();
+    });
+
+    const btn = document.querySelector('.pinTooltipDelete[data-id="' + m.id + '"]');
     if (btn)
       btn.addEventListener("click", () => {
         openDeleteModal(m.id, () => {
@@ -222,6 +229,7 @@ function addMarkerToMap(m) {
         });
       });
   });
+
   markers.push(gMarker);
 }
 
@@ -239,31 +247,35 @@ function escapeHtml(str) {
 
 function openDeleteModal(id, onConfirm) {
   const modal = document.getElementById("deleteModal");
-  modal.classList.add("open");
   const cancel = document.getElementById("cancelDelete");
   const confirm = document.getElementById("confirmDelete");
-  const innerModal = modal.firstElementChild;
-  innerModal.addEventListener('click', () => cancel.dispatchEvent(clique));
-  const clique = new MouseEvent('click', {
-    bubbles: true,
-    cancelable: true,
-    view: window
-  });
-    
-  const cleanup = () => {
-    modal.classList.remove("open")
-    cancel.removeEventListener("click", cancelFn);
-    confirm.removeEventListener("click", confirmFn);
-    innerModal.removeEventListener('click', () => cancel.dispatchEvent(clique));
+  const innerModal = modal.querySelector(".panel");
+
+  const clickOutsideHandler = (event) => {
+    if (!innerModal.contains(event.target)) {
+      modal.classList.remove("open");
+      document.removeEventListener("click", clickOutsideHandler);
+    }
   };
-  const cancelFn = () => cleanup();
+
+  const cancelFn = () => {
+    modal.classList.remove("open");
+    confirm.removeEventListener("click", confirmFn);
+    document.removeEventListener("click", clickOutsideHandler);
+  };
+
   const confirmFn = () => {
-    cleanup();
+    modal.classList.remove("open");
+    confirm.removeEventListener("click", confirmFn);
+    document.removeEventListener("click", clickOutsideHandler);
     if (onConfirm) onConfirm();
   };
+
   cancel.addEventListener("click", cancelFn, { once: true });
   confirm.addEventListener("click", confirmFn, { once: true });
-  innerModal.addEventListener('click', () => cancel.dispatchEvent(clique));
+  modal.addEventListener("click", clickOutsideHandler, { once: true });
+
+  modal.classList.add("open");
 }
 
 function openMyPinsModal() {
@@ -326,7 +338,7 @@ function openMyPinsModal() {
         b.addEventListener("click", (ev) => {
           const id = ev.target.getAttribute("data-id");
           const item = arr.find((x) => x.id == id);
-          modal.classList.toggle("open")
+          modal.classList.toggle("open");
           if (item && item.latitude && item.longitude) {
             map.setCenter({
               lat: parseFloat(item.latitude),
@@ -351,7 +363,7 @@ function openMyPinsModal() {
     });
   document
     .getElementById("closeMyPins")
-    .addEventListener("click", () => (modal.classList.remove("open")));
+    .addEventListener("click", () => modal.classList.remove("open"));
 }
 
 function openEditModal(item) {
@@ -389,7 +401,7 @@ function openEditModal(item) {
   });
 
   document.getElementById("cancelEdit").onclick = () =>
-    (modal.classList.toggle("open"));
+    modal.classList.toggle("open");
   document.getElementById("editForm").onsubmit = function (ev) {
     ev.preventDefault();
     const id = document.getElementById("editId").value;
@@ -421,7 +433,7 @@ function openEditModal(item) {
       })
       .then((res) => {
         alert("Atualizado");
-        modal.classList.toggle("open")
+        modal.classList.toggle("open");
         openMyPinsModal();
         window.location.reload();
       })
