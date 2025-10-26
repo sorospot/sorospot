@@ -1,0 +1,20 @@
+<header th:fragment="header">
+    <nav class="navbar">
+        <div class="navbar-left">
+            <a th:href="@{/}" class="navbar-logo">
+                <img th:src="@{/images/sorospot-nobg.png}" alt="Logo do sistema">
+            </a>
+        </div>
+        
+        <div class="navbar-right">
+            <button class="navbar-toggle" aria-label="Menu" aria-expanded="false">
+                &#9776;
+            </button>
+            
+            <ul class="navbar-menu">
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/}">Meu Perfil</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
