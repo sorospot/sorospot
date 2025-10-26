@@ -1,9 +1,9 @@
 package br.com.sorospot.controllers;
 
-import br.com.sorospot.services.GeocodeResult;
 import br.com.sorospot.services.GoogleMapsService;
 import br.com.sorospot.domains.Category;
 import br.com.sorospot.domains.Occurrence;
+import br.com.sorospot.dtos.GeocodeResult;
 import br.com.sorospot.repositories.CategoryRepository;
 import br.com.sorospot.repositories.OccurrenceRepository;
 import br.com.sorospot.repositories.PhotoRepository;
@@ -84,6 +84,7 @@ public class MapsController {
         o.setCategory(cat);
         o.setDescription(description);
         o.setTitle(title);
+        o.setDeleted(false);
         o.setLatitude(new java.math.BigDecimal(lat));
         o.setLongitude(new java.math.BigDecimal(lng));
         String addr = String.format("lat:%s,lng:%s", lat, lng);
@@ -149,6 +150,7 @@ public class MapsController {
     java.util.Map<String,Object> resp = new java.util.HashMap<>();
     resp.put("id", saved.getId());
     resp.put("title", saved.getTitle());
+    resp.put("deleted", saved.getDeleted());
     resp.put("description", saved.getDescription());
     resp.put("address", saved.getAddress());
     resp.put("latitude", saved.getLatitude());

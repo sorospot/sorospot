@@ -1,0 +1,31 @@
+<div id="pinModal" class="modal" th:fragment="pinModal" onclick="fechaModal(event, this)">
+  <div class="panel">
+    <h3>Adicionar ocorrência</h3>
+    <form id="pinForm">
+      <input type="hidden" id="pinLat" name="lat" />
+      <input type="hidden" id="pinLng" name="lng" />
+      <div>
+        <label>Título<br /><input id="pinTitle" name="title" required style="width: 100%" /></label>
+      </div>
+      <div>
+        <label>Descrição<br /><textarea id="pinDesc" name="description" style="width: 100%"></textarea>
+        </label>
+      </div>
+      <div>
+        <label>Cor do pin<br /><input id="pinColor" name="color" type="color" value="#ff0000" /></label>
+      </div>
+      <div>
+        <label>Imagem<br /><input id="pinImage" name="image" type="file" accept="image/*" /></label>
+      </div>
+      <div style="
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          margin-top: 8px;
+        ">
+        <button type="button" id="cancelPin">Cancelar</button>
+        <button type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

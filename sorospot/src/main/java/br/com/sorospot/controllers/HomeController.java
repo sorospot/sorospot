@@ -8,23 +8,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("pageTitle", "Página Inicial");
-        model.addAttribute("contentTemplate", "exemplos/layout");
-        return "exemplos/home";
-    }
-
     @Value("${google.maps.apiKey}")
     private String googleMapsApiKey;
 
-    @GetMapping("/mapa")
+    @GetMapping("/")
     public String mapa(Model model) {
         model.addAttribute("pageTitle", "Mapa");
-        model.addAttribute("contentTemplate", "exemplos/map");
+        model.addAttribute("contentTemplate", "Index/_map");
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
         // simulando usuario logado
         model.addAttribute("currentUserEmail", "demo@sorospot.local");
-        return "exemplos/layout";
+        return "Index/index";
     }
 }

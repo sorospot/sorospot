@@ -2,6 +2,9 @@ package br.com.sorospot.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.sorospot.dtos.Marker;
+
 import org.springframework.stereotype.Service;
 
 import java.io.File;

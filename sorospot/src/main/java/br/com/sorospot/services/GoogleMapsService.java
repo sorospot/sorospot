@@ -8,6 +8,9 @@ import reactor.core.publisher.Mono;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import br.com.sorospot.dtos.GeocodeResult;
+
 import java.util.Optional;
 
 @Service

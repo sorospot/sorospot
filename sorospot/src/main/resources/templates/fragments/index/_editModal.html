@@ -1,0 +1,40 @@
+<div id="editModal" class="modal" th:fragment="editModal" onclick="fechaModal(event, this)">
+  <div class="panel">
+    <h3>Editar ocorrência</h3>
+    <form id="editForm">
+      <input type="hidden" id="editId" />
+      <div>
+        <label>Título<br /><input id="editTitle" style="width: 100%" /></label>
+      </div>
+      <div>
+        <label>Descrição<br /><textarea id="editDesc" style="width: 100%"></textarea>
+        </label>
+      </div>
+      <div>
+        <label>Cor<br /><input id="editColor" type="color" value="#ff0000" /></label>
+      </div>
+      <div>
+        <label>Fotos atuais
+          <div id="editPhotos" style="
+              display: flex;
+              gap: 8px;
+              flex-wrap: wrap;
+              margin-top: 6px;
+            "></div>
+        </label>
+      </div>
+      <div>
+        <label>Adicionar foto<br /><input id="editImage" type="file" accept="image/*" /></label>
+      </div>
+      <div style="
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          margin-top: 8px;
+        ">
+        <button type="button" id="cancelEdit">Cancelar</button>
+        <button type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

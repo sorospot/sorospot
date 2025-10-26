@@ -6,26 +6,80 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "user_role")
 public class UserRole {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "user_role", unique = true, nullable = false)
+
+    @Column(name = "user_role", nullable = false, length = 500, unique = true)
     private String userRole;
-    private boolean deleted;
+
+    @Column(nullable = true)
+    private Boolean deleted;
+
+    @Column(name = "created_at", nullable = true)
     private LocalDateTime createdAt;
+
+    @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    @PrePersist
-    public void prePersist() { createdAt = LocalDateTime.now(); }
+    public UserRole() {}
 
-    // getters/setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-    public String getUserRole() { return userRole; }
-    public void setUserRole(String userRole) { this.userRole = userRole; }
-    public boolean isDeleted() { return deleted; }
-    public void setDeleted(boolean deleted) { this.deleted = deleted; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getLastUpdated() { return lastUpdated; }
-    public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
+    public UserRole(String userRole, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
+        this.userRole = userRole;
+        this.deleted = deleted;
+        this.createdAt = createdAt;
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRole{" +
+                "id=" + id +
+                ", userRole='" + userRole + '\'' +
+                ", deleted=" + deleted +
+                ", createdAt=" + createdAt +
+                ", lastUpdated=" + lastUpdated +
+                '}';
+    }
 }

@@ -1,0 +1,30 @@
+<header th:fragment="header">
+    <img th:src="@{/images/sorospot-lettering.png}" alt="Logo">
+    <nav>
+        <div class="searchBar">
+            <input id="address" type="search" placeholder="Pesquisar endereço" style="flex: 1" />
+            <span class="material-symbols-outlined" id="searchBtn" title="Buscar">search</span>
+        </div>
+
+        <div class="buttons">
+            <button id="centerBtn">
+                Meu Local
+                <span class="material-symbols-outlined" id="locationIcon">my_location</span>
+            </button>
+
+            <button id="myPinsBtn">
+                Meus Pins
+                <span class="material-symbols-outlined" id="pinsIcon">
+                    location_on
+                </span>
+            </button>
+
+            <button id="accountBtn">
+                Meu Perfil
+                <span class="material-symbols-outlined" id="accountIcon">
+                    account_circle
+                </span>
+            </button>
+        </div>
+    </nav>
+</header>

@@ -5,7 +5,7 @@
 let map;
 let markers = [];
 
-function initMap() {
+window.initMap = function () {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: { lat: -23.5015, lng: -47.4526 },
@@ -57,6 +57,11 @@ function initMap() {
     openPinModal(e.latLng.lat(), e.latLng.lng());
   });
 
+  document.getElementById("address").addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") document.getElementById("searchBtn").click();
+  });
+
+
   document.getElementById("searchBtn").addEventListener("click", () => {
     const q = document.getElementById("address").value;
     if (!q) return;
@@ -90,7 +95,7 @@ function initMap() {
   const modal = document.getElementById("pinModal");
   document
     .getElementById("cancelPin")
-    .addEventListener("click", () => (modal.style.display = "none"));
+    .addEventListener("click", () => (modal.classList.toggle("open")));
   document.getElementById("pinForm").addEventListener("submit", (ev) => {
     ev.preventDefault();
     const latVal = document.getElementById("pinLat").value;
@@ -117,6 +122,7 @@ function initMap() {
         addMarkerToMap({
           id: m.id,
           title: m.title,
+          deleted: false,
           description: m.description,
           lat: parseFloat(m.latitude),
           lng: parseFloat(m.longitude),
@@ -131,13 +137,21 @@ function initMap() {
   });
 
   function openPinModal(lat, lng) {
-    modal.style.display = "flex";
+    const pinModal = document.getElementById("pinModal");
+    pinModal.classList.toggle("open");
     document.getElementById("pinLat").value = lat;
     document.getElementById("pinLng").value = lng;
     document.getElementById("pinTitle").value = "";
     document.getElementById("pinDesc").value = "";
     document.getElementById("pinImage").value = "";
   }
+}
+
+function fechaModal(event, t) {
+    const innerModal = t.firstElementChild;
+    if (!innerModal.contains(event.target)) {
+        t.classList.remove('open');
+    }
 }
 
 function aumentarImagem(t) {
@@ -225,28 +239,38 @@ function escapeHtml(str) {
 
 function openDeleteModal(id, onConfirm) {
   const modal = document.getElementById("deleteModal");
-  modal.style.display = "flex";
+  modal.classList.add("open");
   const cancel = document.getElementById("cancelDelete");
   const confirm = document.getElementById("confirmDelete");
+  const innerModal = modal.firstElementChild;
+  innerModal.addEventListener('click', () => cancel.dispatchEvent(clique));
+  const clique = new MouseEvent('click', {
+    bubbles: true,
+    cancelable: true,
+    view: window
+  });
+    
   const cleanup = () => {
-    modal.style.display = "none";
+    modal.classList.remove("open")
     cancel.removeEventListener("click", cancelFn);
     confirm.removeEventListener("click", confirmFn);
+    innerModal.removeEventListener('click', () => cancel.dispatchEvent(clique));
   };
   const cancelFn = () => cleanup();
   const confirmFn = () => {
     cleanup();
     if (onConfirm) onConfirm();
   };
-  cancel.addEventListener("click", cancelFn);
-  confirm.addEventListener("click", confirmFn);
+  cancel.addEventListener("click", cancelFn, { once: true });
+  confirm.addEventListener("click", confirmFn, { once: true });
+  innerModal.addEventListener('click', () => cancel.dispatchEvent(clique));
 }
 
 function openMyPinsModal() {
   const modal = document.getElementById("myPinsModal");
   const list = document.getElementById("myPinsList");
   list.innerHTML = "Carregando...";
-  modal.style.display = "flex";
+  modal.classList.toggle("open");
   fetch("/api/maps/my-occurrences", {
     headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
   })
@@ -302,7 +326,7 @@ function openMyPinsModal() {
         b.addEventListener("click", (ev) => {
           const id = ev.target.getAttribute("data-id");
           const item = arr.find((x) => x.id == id);
-          modal.style.display = "none";
+          modal.classList.toggle("open")
           if (item && item.latitude && item.longitude) {
             map.setCenter({
               lat: parseFloat(item.latitude),
@@ -327,12 +351,12 @@ function openMyPinsModal() {
     });
   document
     .getElementById("closeMyPins")
-    .addEventListener("click", () => (modal.style.display = "none"));
+    .addEventListener("click", () => (modal.classList.remove("open")));
 }
 
 function openEditModal(item) {
   const modal = document.getElementById("editModal");
-  modal.style.display = "flex";
+  modal.classList.toggle("open");
   document.getElementById("editId").value = item.id;
   document.getElementById("editTitle").value = item.title || "";
   document.getElementById("editDesc").value = item.description || "";
@@ -365,7 +389,7 @@ function openEditModal(item) {
   });
 
   document.getElementById("cancelEdit").onclick = () =>
-    (modal.style.display = "none");
+    (modal.classList.toggle("open"));
   document.getElementById("editForm").onsubmit = function (ev) {
     ev.preventDefault();
     const id = document.getElementById("editId").value;
@@ -397,7 +421,7 @@ function openEditModal(item) {
       })
       .then((res) => {
         alert("Atualizado");
-        modal.style.display = "none";
+        modal.classList.toggle("open")
         openMyPinsModal();
         window.location.reload();
       })

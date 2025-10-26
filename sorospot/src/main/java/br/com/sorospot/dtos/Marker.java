@@ -1,4 +1,4 @@
-package br.com.sorospot.services;
+package br.com.sorospot.dtos;
 
 public class Marker {
     private String id;
