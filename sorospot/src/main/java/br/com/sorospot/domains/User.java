@@ -33,7 +33,7 @@ public class User {
     @JoinColumn(name = "role_id", nullable = false)
     private UserRole role;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean deleted;
 
     @Column(name = "created_at", nullable = true)

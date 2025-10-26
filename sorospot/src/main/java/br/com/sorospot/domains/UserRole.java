@@ -14,7 +14,7 @@ public class UserRole {
     @Column(name = "user_role", nullable = false, length = 500, unique = true)
     private String userRole;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean deleted;
 
     @Column(name = "created_at", nullable = true)

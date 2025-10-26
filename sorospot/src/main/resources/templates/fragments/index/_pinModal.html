@@ -32,22 +32,35 @@
       </div>
 
       <div class="colorImg">
-        <div>
-          <label for="pinColor" style="text-align: center;">Cor do pin<br /></label>
+        <div style="display: flex !important; flex-direction: column">
+          <label for="pinColor" style="text-align: center"
+            >Cor do pin<br
+          /></label>
           <input id="pinColor" name="color" type="color" value="#ff0000" />
         </div>
 
         <div class="imgDiv">
           <label for="pinImage" id="imgLabel">Imagem<br /></label>
-          <button id="btnImg" type="button">
+          <label id="btnImg" type="button" for="pinImage">
             <span class="material-symbols-outlined"> add </span>
-          </button>
-          <img id="previewImagem"/>
+          </label>
+          <img id="previewImagem" />
           <div id="btnsImg">
-            <button id="trocarImagem" type="button">Trocar imagem</button>
-            <button id="removerImagem" type="button">Remover imagem</button>
+            <label
+              id="trocarImagem"
+              type="button"
+              for="pinImage"
+              state="disabled"
+            >
+              Trocar imagem
+              <span class="material-symbols-outlined"> restart_alt </span>
+            </label>
+            <label id="removerImagem" type="button" state="disabled">
+              <span class="material-symbols-outlined"> backspace </span>
+              Remover imagem
+            </label>
           </div>
-          
+
           <input id="pinImage" name="image" type="file" accept="image/*" />
         </div>
       </div>

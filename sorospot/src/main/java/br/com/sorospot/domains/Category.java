@@ -16,7 +16,7 @@ public class Category {
     @Column(nullable = false, length = 50)
     private String color;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean deleted;
 
     @Column(name = "created_at", nullable = true)

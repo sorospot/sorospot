@@ -70,7 +70,7 @@ form#pinForm div {
 }
 form#pinForm input,
 form#pinForm textarea,
-#btnsImg button {
+#btnsImg label {
   background-color: unset;
   border: 2px solid var(--bg-color-secondary);
   color: var(--bg-color-secondary);
@@ -81,7 +81,7 @@ form#pinForm textarea,
 }
 form#pinForm input:focus,
 form#pinForm textarea:focus,
-#btnsImg button:focus {
+#btnsImg label:focus {
   outline: none;
   border-color: var(--bg-color-primary);
 }
@@ -99,41 +99,46 @@ form#pinForm textarea::placeholder {
   gap: 1rem;
 }
 .colorImg div {
-  height: 8rem;
-  display: flex !important;
-  flex-direction: column;
+  height: 100%;
 }
 input#pinColor {
   flex: 1;
-  width: 6rem;
+  width: 8rem;
 }
 
 #imgLabel {
   text-align: start;
+  grid-area: label;
 }
 
 .imgDiv {
-  flex: 1;
+  display: grid !important;
   width: 100%;
-  flex-flow: wrap;
-  justify-content: end;
+  grid-template-areas:
+    "label label label label"
+    "btnAdd btnAdd btnAdd inputs"
+    "btnAdd btnAdd btnAdd inputs";
 }
-#pinImage {
+#pinImage,
+#previewImagem {
   display: none;
 }
 
-button#btnImg {
-  flex: 1;
-  width: 6rem;
-  aspect-ratio: 1 / 1;
+#btnImg {
+  height: 100%;
+  width: 100%;
   background: 0;
+  display: grid;
+  place-items: center;
   border-radius: 0.6rem;
   border: 2px solid var(--bg-color-secondary);
   color: var(--bg-color-secondary);
   cursor: pointer;
+  grid-area: btnAdd;
   transition: 0.4s;
 }
-button#btnImg:hover {
+#btnImg:hover,
+#btnsImg label:hover {
   border: 2px solid var(--bg-color-primary);
   color: var(--bg-color-primary);
 }
@@ -147,7 +152,36 @@ button#btnImg:hover {
 
 #btnsImg {
   justify-content: end;
+  grid-area: inputs;
+  height: 100%;
+  gap: 0.4rem;
 }
-#btnsImg button {
-  flex: 1;
+#btnsImg label {
+  text-align: center;
+  margin-bottom: 0 !important;
+  position: relative;
+  transition: 0.4s;
+}
+#btnsImg label span {
+  position: absolute;
+  left: -3.2rem;
+  align-self: center;
+}
+
+label[state="disabled"] {
+  pointer-events: none;
+  opacity: 0.2;
+}
+label[state="enable"] {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+#previewImagem {
+  height: 100%;
+  width: 12.9rem;
+  max-height: 7rem;
+  border-radius: 0.8rem;
+  object-fit: cover;
+  grid-area: btnAdd;
 }

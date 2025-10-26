@@ -39,7 +39,7 @@ public class Occurrence {
     @Column(nullable = false, precision = 11, scale = 8)
     private BigDecimal longitude;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Boolean deleted;
 
     @Column(name = "created_at", nullable = true)
