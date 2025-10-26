@@ -89,8 +89,8 @@ strong.pinTooltipTitle,
   padding-top: 0.6rem;
   padding: 0.2rem 0.4rem;
   margin-top: 0.4rem;
-  color: #ff1b1b;
-  box-shadow: inset 0 -10px 10px -10px #ff252575;
+  color: var(--bg-color-secondary);
+  box-shadow: inset 0 -10px 10px -10px #007ee74d;
   transition: 0.4s;
 }
 .pinTooltipDelete span {
@@ -100,7 +100,7 @@ strong.pinTooltipTitle,
   transition: 0.4s;
 }
 .pinTooltipDelete button {
-  color: #ff1b1b;
+  color: var(--bg-color-secondary);
   font-weight: 900;
 }
 .pinTooltipDelete:hover span,
