@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <title th:text="${pageTitle}">Minha aplicação</title>
-</head>
-<body>
-  <!-- Cabeçalho -->
-  <div th:replace="~{fragments/exemplos/header :: header}"></div>
+  <head>
+    <title th:text="${pageTitle}">Minha aplicação</title>
 
-  <!-- Conteúdo principal -->
-  <main>
-    <th:block th:insert="~{${contentTemplate} :: content}"></th:block>
-  </main>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" th:href="@{/css/utils/variables.css}" />
+    <link rel="stylesheet" th:href="@{/css/utils/header.css}" />
+  </head>
+  <body>
+    <!-- Cabeçalho -->
+    <header th:replace="utils/_header :: header"></header>
 
-</body>
+    <!-- Conteúdo principal -->
+    <main>
+      <th:block th:insert="~{${contentTemplate} :: content}"></th:block>
+    </main>
+  </body>
 </html>
