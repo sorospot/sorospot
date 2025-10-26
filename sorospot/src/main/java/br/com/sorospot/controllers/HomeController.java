@@ -9,17 +9,25 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/")
-    public String home(Model model, HttpSession session) {
-        model.addAttribute("pageTitle", "Página Inicial");
-        model.addAttribute("contentTemplate", "exemplos/home");
-        
+    public String home(HttpSession session) {
         String userName = (String) session.getAttribute("userName");
         if (userName != null) {
-            model.addAttribute("userName", userName);
-            model.addAttribute("isLoggedIn", true);
-        } else {
-            model.addAttribute("isLoggedIn", false);
+            return "redirect:/home";
         }
+        return "redirect:/signIn";
+    }
+
+    @GetMapping("/home")
+    public String homePage(Model model, HttpSession session) {
+        String userName = (String) session.getAttribute("userName");
+        if (userName == null) {
+            return "redirect:/signIn";
+        }
+
+        model.addAttribute("pageTitle", "Página Inicial");
+        model.addAttribute("contentTemplate", "exemplos/home");
+        model.addAttribute("userName", userName);
+        model.addAttribute("isLoggedIn", true);
         
         return "exemplos/layout";
     }

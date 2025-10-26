@@ -6,6 +6,7 @@ import br.com.sorospot.exceptions.auth.EmailAlreadyExistsException;
 import br.com.sorospot.exceptions.auth.PasswordMismatchException;
 import br.com.sorospot.exceptions.validation.ValidationException;
 import br.com.sorospot.services.auth.AuthService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,10 @@ public class RegisterController {
     private AuthService authService;
 
     @GetMapping("/signUp")
-    public String showRegisterForm(Model model) {
+    public String showRegisterForm(HttpSession session, Model model) {
+        if (session.getAttribute("loggedUser") != null) {
+            return "redirect:/home";
+        }
         prepareRegisterModel(model, new RegisterDTO());
         return "signUp/auth";
     }
