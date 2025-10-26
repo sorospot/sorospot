@@ -1,0 +1,184 @@
+header {
+  display: grid;
+  padding: 2rem;
+  gap: 0.6rem;
+  height: 10rem;
+  color: var(--fs-color-primary);
+}
+
+header img {
+  height: 4rem;
+  display: block;
+  margin: auto;
+}
+
+header nav {
+  display: flex;
+  gap: 2rem;
+  height: 4rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.searchBar {
+  width: 100%;
+  display: flex;
+  height: 100%;
+  position: relative;
+  justify-content: end;
+  align-items: center;
+}
+span#searchBtn {
+  position: absolute;
+  border-radius: 100vw;
+  height: 90%;
+  right: 0.4rem;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: var(--fs-color-secondary);
+  background: var(--fs-color-primary);
+  transition: 0.4s;
+}
+span#searchBtn:hover {
+  color: var(--fs-color-shover);
+  scale: 0.94;
+}
+#address {
+  height: 100%;
+  border-radius: 1.6rem;
+  padding: 0.4rem 1.6rem;
+  border: 2px solid var(--bg-color-primary);
+  font-size: var(--fs-md);
+  color: var(--fs-color-secondary);
+}
+#address:focus {
+  outline: none;
+  border-color: var(--fs-color-secondary);
+}
+#address::placeholder {
+  color: #b0b0b0;
+  font-weight: 500;
+  font-family: "Lato", sans-serif;
+}
+
+.buttons {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+#centerBtn,
+#myPinsBtn,
+#accountBtn {
+  color: transparent;
+  font-family: "Lilita One", sans-serif;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 5rem;
+  isolation: isolate;
+  padding: 0.4rem;
+  transition: 0.4s 0.2s;
+}
+#myPinsBtn::before,
+#centerBtn::before,
+#accountBtn::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3rem;
+  opacity: 0;
+  background: linear-gradient(to bottom, #158ceb, transparent);
+  top: 3.4rem;
+  bottom: 0rem;
+  transition: opacity 0.2s;
+  border-radius: 100vw;
+}
+#myPinsBtn:hover::before,
+#centerBtn:hover::before,
+#accountBtn:hover::before {
+  content: "";
+  bottom: -3rem;
+  top: 3.5rem;
+  opacity: 0.8;
+  transition: opacity 1.2s;
+}
+
+#centerBtn:hover,
+#myPinsBtn:hover,
+#accountBtn:hover {
+  color: var(--sf-color-secondary);
+  border-radius: 1rem;
+  box-shadow: inset 0px 20px 20px -10px #ffffffab;
+  margin-top: -4rem;
+  font-weight: 100;
+}
+#centerBtn:hover #locationIcon,
+#myPinsBtn:hover #pinsIcon,
+#accountBtn:hover #accountIcon {
+  margin-bottom: -8rem;
+  transition: 0.2s 0.2s;
+}
+
+#pinsIcon,
+#locationIcon,
+#accountIcon {
+  color: var(--fs-color-primary);
+  font-size: 2.4rem;
+  position: absolute;
+  width: 4rem;
+  aspect-ratio: 1 / 1;
+  border: 0.4rem double var(--fs-color-primary);
+  border-radius: 100vw;
+  display: grid;
+  place-items: center;
+  z-index: -1;
+  transition: 0.4s 0.2s;
+}
+
+@media (max-width: 740px) {
+  header nav {
+    display: grid;
+    gap: 0;
+    height: 10rem;
+    justify-content: unset;
+    align-self: unset;
+  }
+  main {
+    padding-top: 8rem;
+  }
+
+  #myPinsBtn:hover::before,
+  #centerBtn:hover::before,
+  #accountBtn:hover::before {
+    all: unset;
+  }
+  #centerBtn:hover,
+  #myPinsBtn:hover,
+  #accountBtn:hover {
+    color: var(--sf-color-secondary);
+    border-radius: 1rem;
+    box-shadow: inset 0px 20px 20px -10px #ffffffab;
+    margin-top: 0;
+    font-weight: 100;
+  }
+  #centerBtn,
+  #myPinsBtn,
+  #accountBtn {
+    margin-top: 0;
+    font-weight: 100;
+  }
+  #centerBtn:hover #locationIcon,
+  #myPinsBtn:hover #pinsIcon,
+  #accountBtn:hover #accountIcon {
+    margin-bottom: 8rem;
+    opacity: 0.3;
+    transition: 0.2s 0.2s;
+  }
+}

@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lilita+One&display=swap");
+* {
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+html {
+  font-size: 62.5%;
+  background: radial-gradient(
+    var(--bg-color-primary),
+    var(--bg-color-secondary)
+  );
+}
+
+:root {
+  --fs-sm: 1.2rem;
+  --fs-md: 1.4rem;
+  --fs-lg: 1.6rem;
+  --fs-xl: 2.2rem;
+  --fs-color-primary: #fff;
+  --fs-color-secondary: #0c64de;
+  --fs-color-phover: #ffffffd3;
+  --fs-color-shover: #3184f9e6;
+  --bg-color-primary: #65c1fa;
+  --bg-color-secondary: #007ee7;
+}
