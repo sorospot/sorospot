@@ -1,13 +1,12 @@
-package br.com.sorospot.domain;
+package br.com.sorospot.domains;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "category")
 public class Category {
-
-    @Id
+     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -35,6 +34,9 @@ public class Category {
         this.createdAt = createdAt;
         this.lastUpdated = lastUpdated;
     }
+
+    @PrePersist
+    public void prePersist() { createdAt = LocalDateTime.now(); }
 
     public Integer getId() {
         return id;

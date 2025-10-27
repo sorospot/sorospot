@@ -1,8 +1,8 @@
-package br.com.sorospot.domain;
+package br.com.sorospot.domains;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "occurrence")
@@ -14,7 +14,7 @@ public class Occurrence {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -23,6 +23,7 @@ public class Occurrence {
     @Column(length = 500, nullable = false)
     private String description;
 
+    @Deprecated
     @Column(length = 100)
     private String photo;
 
@@ -47,9 +48,20 @@ public class Occurrence {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
+    @Column(name = "title", length = 100)
+    private String title;
+
+    private String color;
+
     public Occurrence() {}
 
-    public Occurrence(Users user, Category category, String description, String photo, String status, String address, 
+    @OneToMany(mappedBy = "occurrence", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Photo> photos = new java.util.ArrayList<>();
+
+    @PrePersist
+    public void prePersist() { createdAt = LocalDateTime.now(); }
+
+    public Occurrence(User user, Category category, String description, String photo, String status, String address, 
     BigDecimal latitude, BigDecimal longitude, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.user = user;
         this.category = category;
@@ -64,11 +76,18 @@ public class Occurrence {
         this.lastUpdated = lastUpdated;
     }
 
-    public Users getUser() {
+    public Integer getId() { 
+        return id;
+    }
+    public void setId(Integer id) {
+         this.id = id;
+    }
+
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -86,14 +105,6 @@ public class Occurrence {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(String photo) {
-        this.photo = photo;
     }
 
     public String getStatus() {
@@ -150,6 +161,38 @@ public class Occurrence {
 
     public void setLastUpdated(LocalDateTime lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public String getPhoto() {
+         return photo; 
+    }
+
+    public void setPhoto(String photo) {
+         this.photo = photo; 
+    }
+
+    public java.util.List<Photo> getPhotos() {
+         return photos; 
+    }
+
+    public void setPhotos(java.util.List<Photo> photos) {
+         this.photos = photos; 
+    }
+
+    public String getColor() {
+         return color; 
+    }
+
+    public void setColor(String color) {
+         this.color = color; 
+    }
+
+    public String getTitle() {
+         return title;
+    }
+
+    public void setTitle(String title) {
+         this.title = title; 
     }
 
     @Override

@@ -1,0 +1,74 @@
+<div
+  id="pinModal"
+  class="modal"
+  th:fragment="pinModal"
+  onclick="fechaModal(event, this)"
+>
+  <div class="panel">
+    <h2>Adicionar ocorrência</h2>
+    <form id="pinForm">
+      <input type="hidden" id="pinLat" name="lat" />
+      <input type="hidden" id="pinLng" name="lng" />
+
+      <div>
+        <label for="pinTitle">Título<br /></label>
+        <input
+          id="pinTitle"
+          name="title"
+          required
+          style="width: 100%"
+          placeholder="Insira um breve título..."
+        />
+      </div>
+
+      <div>
+        <label for="pinDesc">Descrição<br /></label>
+        <textarea
+          id="pinDesc"
+          name="description"
+          style="width: 100%"
+          placeholder="Descreva o problema..."
+        ></textarea>
+      </div>
+
+      <div class="colorImg">
+        <div style="display: flex !important; flex-direction: column">
+          <label for="pinColor" style="text-align: center"
+            >Cor do pin<br
+          /></label>
+          <input id="pinColor" name="color" type="color" value="#ff0000" />
+        </div>
+
+        <div class="imgDiv">
+          <label for="pinImage" id="imgLabel">Imagem<br /></label>
+          <label id="btnImg" type="button" for="pinImage">
+            <span class="material-symbols-outlined"> add </span>
+          </label>
+          <img id="previewImagem" />
+          <div id="btnsImg">
+            <label
+              id="trocarImagem"
+              type="button"
+              for="pinImage"
+              state="disabled"
+            >
+              Trocar imagem
+              <span class="material-symbols-outlined"> restart_alt </span>
+            </label>
+            <label id="removerImagem" type="button" state="disabled">
+              <span class="material-symbols-outlined"> backspace </span>
+              Remover imagem
+            </label>
+          </div>
+
+          <input id="pinImage" name="image" type="file" accept="image/*" />
+        </div>
+      </div>
+
+      <div class="modalFooter">
+        <button type="button" id="cancelPin">Cancelar</button>
+        <button type="submit">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,11 +1,11 @@
-package br.com.sorospot.domain;
+package br.com.sorospot.domains;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,9 +42,9 @@ public class Users {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    public Users() {}
+    public User() {}
 
-    public Users(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
+    public User(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
     UserRole role, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.id = id;
         this.name = name;
