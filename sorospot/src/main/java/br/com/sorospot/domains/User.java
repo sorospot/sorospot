@@ -59,6 +59,12 @@ public class User {
         this.lastUpdated = lastUpdated;
     }
 
+    @PrePersist
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now();
+    }
+
     public String getName() {
         return name;
     }
