@@ -1,7 +1,7 @@
-package br.com.sorospot.domain;
+package br.com.sorospot.domains;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_role")
