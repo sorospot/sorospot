@@ -22,7 +22,7 @@ public class LoginController {
     @GetMapping("/signIn")
     public String showLoginForm(HttpSession session, Model model) {
         if (session.getAttribute("loggedUser") != null) {
-            return "redirect:/home";
+            return "redirect:/mapa";
         }
         prepareLoginModel(model, new LoginDTO());
         return "signIn/auth";
@@ -42,7 +42,7 @@ public class LoginController {
                 session.setAttribute("userName", user.getName());
                 session.setAttribute("userEmail", user.getEmail());
                 session.setAttribute("userRole", user.getRole().getUserRole());
-                return "redirect:/home";
+                return "redirect:/mapa";
             }
         } catch (AuthenticationException e) {
             model.addAttribute("errorMessage", e.getMessage());
