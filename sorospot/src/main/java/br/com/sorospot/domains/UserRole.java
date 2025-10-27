@@ -1,4 +1,4 @@
-package br.com.sorospot.domain;
+package br.com.sorospot.domains;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.*;

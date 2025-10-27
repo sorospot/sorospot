@@ -1,6 +1,6 @@
 package br.com.sorospot.controllers;
 
-import br.com.sorospot.domain.Users;
+import br.com.sorospot.domains.User;
 import br.com.sorospot.dtos.auth.LoginDTO;
 import br.com.sorospot.exceptions.auth.AuthenticationException;
 import br.com.sorospot.exceptions.validation.ValidationException;
@@ -35,7 +35,7 @@ public class LoginController {
             Model model) {
         
         try {
-            Users user = authService.authenticate(loginDTO.getEmail(), loginDTO.getPassword());
+            User user = authService.authenticate(loginDTO.getEmail(), loginDTO.getPassword());
             
             if (user != null) {
                 session.setAttribute("loggedUser", user);

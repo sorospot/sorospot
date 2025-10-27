@@ -1,7 +1,7 @@
 package br.com.sorospot.services.auth;
 
-import br.com.sorospot.domain.UserRole;
-import br.com.sorospot.domain.Users;
+import br.com.sorospot.domains.UserRole;
+import br.com.sorospot.domains.User;
 import br.com.sorospot.dtos.auth.RegisterDTO;
 import br.com.sorospot.exceptions.auth.AuthenticationException;
 import br.com.sorospot.exceptions.auth.CpfAlreadyExistsException;
@@ -33,7 +33,7 @@ public class AuthService {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Transactional
-    public Users register(RegisterDTO registerDTO) {
+    public User register(RegisterDTO registerDTO) {
         // Validar campos do DTO
         validationService.validateRegisterDTO(registerDTO);
 
@@ -58,7 +58,7 @@ public class AuthService {
                 .orElseGet(() -> createDefaultUserRole());
 
         // Criar novo usuário
-        Users user = new Users();
+        User user = new User();
         user.setName(registerDTO.getName().trim() + " " + registerDTO.getLastName().trim());
         user.setCpf(cpfLimpo);
         user.setTelephone(registerDTO.getTelephone().replaceAll("[^0-9]", ""));
@@ -79,7 +79,7 @@ public class AuthService {
         return userRoleRepository.save(role);
     }
 
-    public Users authenticate(String email, String password) {
+    public User authenticate(String email, String password) {
         if (email == null || email.trim().isEmpty()) {
             throw new AuthenticationException("Email é obrigatório");
         }
@@ -88,13 +88,13 @@ public class AuthService {
             throw new AuthenticationException("Senha é obrigatória");
         }
 
-        Optional<Users> userOpt = usersRepository.findByEmailAndDeletedFalse(email.toLowerCase().trim());
+        Optional<User> userOpt = usersRepository.findByEmailAndDeletedFalse(email.toLowerCase().trim());
         
         if (!userOpt.isPresent()) {
             throw new AuthenticationException("Email ou senha inválidos");
         }
 
-        Users user = userOpt.get();
+        User user = userOpt.get();
         
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new AuthenticationException("Email ou senha inválidos");
@@ -103,7 +103,7 @@ public class AuthService {
         return user;
     }
 
-    public Users getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         return usersRepository.findByEmailAndDeletedFalse(email.toLowerCase().trim()).orElse(null);
     }
 }

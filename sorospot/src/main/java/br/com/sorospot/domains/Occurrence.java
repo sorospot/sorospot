@@ -1,4 +1,4 @@
-package br.com.sorospot.domain;
+package br.com.sorospot.domains;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ public class Occurrence {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
@@ -49,7 +49,7 @@ public class Occurrence {
 
     public Occurrence() {}
 
-    public Occurrence(Users user, Category category, String description, String photo, String status, String address, 
+    public Occurrence(User user, Category category, String description, String photo, String status, String address, 
     BigDecimal latitude, BigDecimal longitude, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.user = user;
         this.category = category;
@@ -64,11 +64,11 @@ public class Occurrence {
         this.lastUpdated = lastUpdated;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

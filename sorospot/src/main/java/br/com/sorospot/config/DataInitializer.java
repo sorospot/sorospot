@@ -1,7 +1,7 @@
 package br.com.sorospot.config;
 
-import br.com.sorospot.domain.UserRole;
-import br.com.sorospot.domain.UserRoleEnum;
+import br.com.sorospot.domains.UserRole;
+import br.com.sorospot.domains.UserRoleEnum;
 import br.com.sorospot.repositories.user.UserRoleRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
