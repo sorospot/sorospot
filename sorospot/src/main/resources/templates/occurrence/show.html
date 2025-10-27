@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title th:text="'Ocorrência #' + ${occurrence.id}"></title>
+        <link rel="stylesheet" th:href="@{/css/show.css}">
+        <link rel="stylesheet" th:href="@{/css/utils/header.css}">
+        <link rel="stylesheet" th:href="@{/css/utils/variables.css}">
+    </head>
+    <body>
+        <div th:replace="~{utils/_header :: header}"></div>
+
+        <main class="occurrence-show-container">
+            <section th:replace="~{occurrence/show/_summary :: summary(occurrence=${occurrence})}"></section>
+
+            <section th:replace="~{occurrence/show/_details :: details(occurrence=${occurrence})}"></section>
+
+            <section th:replace="~{occurrence/show/_photos :: photos(occurrence=${occurrence})}"></section>
+
+            <section th:replace="~{occurrence/show/_history :: history(occurrence=${occurrence})}"></section>
+
+            <!-- <section th:replace="~{occurrence/show/_actions :: actions(occurrence=${occurrence}, user=${user})}"></section> -->
+        </main>
+    </body>
+</html>
