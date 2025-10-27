@@ -35,8 +35,11 @@ public class Category {
         this.lastUpdated = lastUpdated;
     }
 
-    @PrePersist
-    public void prePersist() { createdAt = LocalDateTime.now(); }
+     @PrePersist
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now();
+    }
 
     public Integer getId() {
         return id;
