@@ -1,7 +1,7 @@
 package br.com.sorospot.domains;
 
-import java.time.LocalDateTime;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_role")
@@ -22,6 +22,12 @@ public class UserRole {
 
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
+    
+    @PrePersist
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now();
+    }
 
     public UserRole() {}
 

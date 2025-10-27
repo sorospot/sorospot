@@ -1,0 +1,187 @@
+.modal {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: 0.2s;
+}
+.modal.open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal .panel {
+  background: #fff;
+  padding: 1.6rem;
+  border-radius: 0.6rem;
+  row-gap: 1rem;
+  display: grid;
+  width: 40rem;
+  max-width: 95%;
+  scale: 0.9;
+  transition: 0.4s;
+}
+.modal.open .panel {
+  scale: 1;
+}
+
+.panel h2 {
+  font-weight: 900;
+  color: var(--bg-color-secondary);
+}
+
+.color-swatch {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.4rem;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.8rem;
+  border: 0.1rem solid #ccc;
+}
+
+.map-thumb {
+  width: 4.8rem;
+  height: 4.8rem;
+  object-fit: cover;
+  border-radius: 0.4rem;
+  margin-right: 0.4rem;
+}
+
+form#pinForm {
+  display: grid;
+  row-gap: 1rem;
+}
+form#pinForm label {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--bg-color-secondary);
+  margin-bottom: 0.4rem;
+}
+form#pinForm div {
+  display: grid;
+}
+form#pinForm input,
+form#pinForm textarea,
+#btnsImg label {
+  background-color: unset;
+  border: 2px solid var(--bg-color-secondary);
+  color: var(--bg-color-secondary);
+  border-radius: 0.6rem;
+  padding: 0.6rem;
+  cursor: pointer;
+  resize: none;
+}
+form#pinForm input:focus,
+form#pinForm textarea:focus,
+#btnsImg label:focus {
+  outline: none;
+  border-color: var(--bg-color-primary);
+}
+form#pinForm input::placeholder,
+form#pinForm textarea::placeholder {
+  color: var(--bg-color-primary);
+  font-weight: 500;
+  font-family: "Lato", sans-serif;
+}
+
+.colorImg {
+  display: flex !important;
+  justify-content: space-evenly;
+  align-items: self-start;
+  gap: 1rem;
+}
+.colorImg div {
+  height: 100%;
+}
+input#pinColor {
+  flex: 1;
+  width: 8rem;
+}
+
+#imgLabel {
+  text-align: start;
+  grid-area: label;
+}
+
+.imgDiv {
+  display: grid !important;
+  width: 100%;
+  grid-template-areas:
+    "label label label label"
+    "btnAdd btnAdd btnAdd inputs"
+    "btnAdd btnAdd btnAdd inputs";
+}
+#pinImage,
+#previewImagem {
+  display: none;
+}
+
+#btnImg {
+  height: 100%;
+  width: 100%;
+  background: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 0.6rem;
+  border: 2px solid var(--bg-color-secondary);
+  color: var(--bg-color-secondary);
+  cursor: pointer;
+  grid-area: btnAdd;
+  transition: 0.4s;
+}
+#btnImg:hover,
+#btnsImg label:hover {
+  border: 2px solid var(--bg-color-primary);
+  color: var(--bg-color-primary);
+}
+
+.modalFooter {
+  display: flex !important;
+  gap: 0.8rem;
+  justify-content: flex-end;
+  margin-top: 0.8rem;
+}
+
+#btnsImg {
+  justify-content: end;
+  grid-area: inputs;
+  height: 100%;
+  gap: 0.4rem;
+}
+#btnsImg label {
+  text-align: center;
+  margin-bottom: 0 !important;
+  position: relative;
+  transition: 0.4s;
+}
+#btnsImg label span {
+  position: absolute;
+  left: -3.2rem;
+  align-self: center;
+}
+
+label[state="disabled"] {
+  pointer-events: none;
+  opacity: 0.2;
+}
+label[state="enable"] {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+#previewImagem {
+  height: 100%;
+  width: 12.9rem;
+  max-height: 7rem;
+  border-radius: 0.8rem;
+  object-fit: cover;
+  grid-area: btnAdd;
+}

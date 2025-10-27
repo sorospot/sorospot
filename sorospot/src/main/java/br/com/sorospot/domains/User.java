@@ -44,6 +44,12 @@ public class User {
 
     public User() {}
 
+    @PrePersist
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now();
+    }
+
     public User(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
     UserRole role, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.id = id;
@@ -58,7 +64,7 @@ public class User {
         this.createdAt = createdAt;
         this.lastUpdated = lastUpdated;
     }
-
+    
     public String getName() {
         return name;
     }

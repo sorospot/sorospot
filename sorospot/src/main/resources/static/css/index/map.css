@@ -1,0 +1,132 @@
+main {
+  padding: 4rem 2rem;
+}
+
+#map {
+  border-radius: 2rem;
+  width: 100%;
+  height: calc(100vh - 16rem);
+}
+
+.gm-style-iw-chr {
+  display: none !important;
+}
+
+.pinTooltip {
+  padding: 1rem 0.2rem 0.5rem 0.2rem;
+  display: grid;
+  row-gap: 0.6rem;
+  max-width: 25rem;
+  width: 100%;
+  aspect-ratio: 8 / 1;
+}
+
+.tooltipHeader {
+  display: flex;
+  justify-content: start;
+  align-items: flex-end;
+  padding-right: 2rem;
+}
+
+.tooltipHeader .pinTooltipTitle,
+.tooltipHeader button {
+  font-size: var(--fs-lg);
+  text-transform: capitalize;
+}
+
+strong.pinTooltipTitle,
+.pinTooltipDesc,
+.pinTooltipOwner {
+  overflow: hidden;
+  width: 100%;
+  max-width: 20rem;
+  text-overflow: ellipsis;
+}
+.pinTooltip button {
+  border: 0;
+  background: unset;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.tooltipHeader button {
+  font-size: var(--fs-xl);
+  background: var(--fs-color-primary);
+  font-weight: 500;
+  border-radius: 100vw;
+  width: 2.4rem;
+  transition: 0.4s;
+  position: fixed;
+  right: 0.5rem;
+  top: 0.7rem;
+}
+.pinTooltip button:hover {
+  color: #00000075;
+}
+
+.pinTooltipDesc {
+  line-break: anywhere;
+}
+
+.tooltipBody {
+  display: grid;
+  row-gap: 0.3rem;
+}
+
+.pinTooltipOwner strong,
+.pinTooltipDelete button {
+  font-family: "Lato", sans-serif;
+  font-weight: 700;
+}
+
+.pinTooltipDelete {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  flex-direction: row-reverse;
+  justify-self: end;
+  border-radius: 0.4rem;
+  padding-top: 0.6rem;
+  padding: 0.2rem 0.4rem;
+  margin-top: 0.4rem;
+  color: var(--bg-color-secondary);
+  box-shadow: inset 0 -10px 10px -10px #007ee74d;
+  transition: 0.4s;
+}
+.pinTooltipDelete span {
+  font-size: var(--fs-md);
+  align-self: end;
+  cursor: pointer;
+  transition: 0.4s;
+}
+.pinTooltipDelete button {
+  color: var(--bg-color-secondary);
+  font-weight: 900;
+}
+.pinTooltipDelete:hover span,
+.pinTooltipDelete:hover button {
+  color: #ffffff;
+}
+.pinTooltipDelete:hover {
+  box-shadow: inset 0 -30px 30px 0px #ff1b1b;
+  padding-top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+}
+
+.pinTooltipImg {
+  display: flex;
+}
+.pinTooltipImg img {
+  flex: 1;
+  object-fit: cover;
+  cursor: pointer;
+  transition: padding 0.4s;
+}
+.pinTooltipImg img:hover {
+  padding: 0.1rem;
+  border-radius: 0.4rem;
+}
+
+.pinTooltipImg img:fullscreen {
+  padding: 10rem;
+}
