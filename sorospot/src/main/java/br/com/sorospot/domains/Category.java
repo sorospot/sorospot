@@ -25,6 +25,12 @@ public class Category {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
+     @PrePersist
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now();
+    }
+
     public Category() {}
 
     public Category(String type, String color, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
@@ -33,12 +39,6 @@ public class Category {
         this.deleted = deleted;
         this.createdAt = createdAt;
         this.lastUpdated = lastUpdated;
-    }
-
-     @PrePersist
-    public void prePersist() {
-        if (deleted == null) deleted = false;
-        createdAt = LocalDateTime.now();
     }
 
     public Integer getId() {
