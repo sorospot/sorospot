@@ -19,7 +19,7 @@ public class LoginController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/signIn")
+    @GetMapping({"/", "/signIn"})
     public String showLoginForm(HttpSession session, Model model) {
         if (session.getAttribute("loggedUser") != null) {
             return "redirect:/mapa";
