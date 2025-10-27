@@ -39,8 +39,17 @@
 
     <script th:src="@{/js/index/map.js}" defer></script>
     <script th:src="@{/js/index/images.js}" defer></script>
+
+    <script>
+      window.delayedInitMap = function () {
+        setTimeout(() => {
+          window.initMap();
+        }, 1000);
+      };
+    </script>
+
     <script
-      th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap|"
+      th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=delayedInitMap|"
       async
       defer
     ></script>
