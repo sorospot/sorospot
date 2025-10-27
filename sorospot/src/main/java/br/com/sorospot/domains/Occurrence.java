@@ -59,7 +59,10 @@ public class Occurrence {
     private java.util.List<Photo> photos = new java.util.ArrayList<>();
 
     @PrePersist
-    public void prePersist() { createdAt = LocalDateTime.now(); }
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now(); 
+    }
 
     public Occurrence(User user, Category category, String description, String photo, String status, String address, 
     BigDecimal latitude, BigDecimal longitude, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
