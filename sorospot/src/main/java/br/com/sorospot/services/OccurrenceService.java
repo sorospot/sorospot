@@ -6,9 +6,14 @@ import br.com.sorospot.domains.Photo;
 import br.com.sorospot.domains.User;
 import br.com.sorospot.repositories.CategoryRepository;
 import br.com.sorospot.repositories.OccurrenceRepository;
+
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -74,10 +79,11 @@ public class OccurrenceService {
         return buildOccurrenceResponse(saved);
     }
 
-    @Transactional
-    public boolean deleteOccurrence(Integer id, String userEmail) {
+    private void checkAuthorization(Integer id, String userEmail) {
         var opt = occurrenceRepository.findById(id);
-        if (opt.isEmpty()) return false;
+        if (opt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Occurrence não encontrada!");
+        }
         
         var occ = opt.get();
         var ownerEmail = occ.getUser() != null ? occ.getUser().getEmail() : null;
@@ -86,9 +92,20 @@ public class OccurrenceService {
         if (ownerEmail == null || !ownerEmail.equals(actor)) {
             throw new SecurityException("Unauthorized");
         }
+    }
+
+    @Transactional
+    public boolean deleteOccurrence(Integer id, String userEmail) {
         
-        occurrenceRepository.delete(occ);
-        return true;
+        checkAuthorization(id, userEmail);
+        
+        try {
+            occurrenceRepository.deleteById(id);
+            occurrenceRepository.flush(); // Força a execução imediata
+            return true;
+         }catch (OptimisticLockingFailureException | EmptyResultDataAccessException e) {
+            return false;
+        }
     }
 
     public List<Map<String, Object>> getMyOccurrences(String userEmail) {
