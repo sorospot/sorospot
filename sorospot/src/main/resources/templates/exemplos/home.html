@@ -1,4 +1,12 @@
 <div th:fragment="content">
-  <h2>Bem-vindo!</h2>
-  <p>Essa é a página inicial.</p>
+  <div th:if="${isLoggedIn}">
+    <h2>Bem-vindo, <span th:text="${userName}">Usuário</span>!</h2>
+    <p>É ótimo ter você de volta.</p>
+    <a href="/logout" class="btn btn-danger">Sair</a>
+  </div>
+  
+  <div th:unless="${isLoggedIn}">
+    <h2>Bem-vindo!</h2>
+    <p>Faça <a href="/signIn">login</a> ou <a href="/signUp">cadastre-se</a> para continuar.</p>
+  </div>
 </div>

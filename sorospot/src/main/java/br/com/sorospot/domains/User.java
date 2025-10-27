@@ -42,13 +42,13 @@ public class User {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
+    public User() {}
+
     @PrePersist
     public void prePersist() {
         if (deleted == null) deleted = false;
         createdAt = LocalDateTime.now();
     }
-
-    public User() {}
 
     public User(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
     UserRole role, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
