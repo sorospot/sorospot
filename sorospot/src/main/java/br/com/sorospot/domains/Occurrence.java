@@ -42,7 +42,7 @@ public class Occurrence {
     @Column(nullable = false)
     private Boolean deleted;
 
-    @Column(name = "created_at", nullable = true)
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "last_updated")
