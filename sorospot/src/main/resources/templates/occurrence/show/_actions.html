@@ -1,0 +1,29 @@
+<section th:fragment="actions(occurrence, user)">
+    <div class="occurrence-actions">
+        <h2>Ações</h2>
+
+        <!-- Usuário simples dono da ocorrência -->
+        <div th:if="${user.role.userRole == 'USER' and user.id == occurrence.user.id}">
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/edit'}" class="btn">Editar</a>
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/delete'}" class="btn btn-danger">Excluir</a>
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/status'}" class="btn btn-secondary">Alterar Status</a>
+        </div>
+
+        <!-- Usuário simples que não é dono -->
+        <div th:if="${user.role.userRole == 'USER' and user.id != occurrence.user.id}">
+            <p>Você pode apenas visualizar esta ocorrência.</p>
+        </div>
+
+        <!-- Usuário intermediário -->
+        <div th:if="${user.role.userRole == 'INTERMEDIATE'}">
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/status'}" class="btn btn-secondary">Alterar Status</a>
+        </div>
+
+        <!-- Admin -->
+        <div th:if="${user.role.userRole == 'ADMIN'}">
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/edit'}" class="btn">Editar</a>
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/delete'}" class="btn btn-danger">Excluir</a>
+            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/status'}" class="btn btn-secondary">Alterar Status</a>
+        </div>
+    </div>
+</section>
