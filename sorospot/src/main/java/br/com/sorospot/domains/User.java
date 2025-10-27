@@ -42,6 +42,12 @@ public class User {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
+    @PrePersist
+    public void prePersist() {
+        if (deleted == null) deleted = false;
+        createdAt = LocalDateTime.now();
+    }
+
     public User() {}
 
     public User(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
@@ -58,7 +64,7 @@ public class User {
         this.createdAt = createdAt;
         this.lastUpdated = lastUpdated;
     }
-
+    
     public String getName() {
         return name;
     }
