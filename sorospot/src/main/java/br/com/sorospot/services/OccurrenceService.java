@@ -8,6 +8,7 @@ import br.com.sorospot.repositories.CategoryRepository;
 import br.com.sorospot.repositories.OccurrenceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -73,6 +74,7 @@ public class OccurrenceService {
         return buildOccurrenceResponse(saved);
     }
 
+    @Transactional
     public boolean deleteOccurrence(Integer id, String userEmail) {
         var opt = occurrenceRepository.findById(id);
         if (opt.isEmpty()) return false;
