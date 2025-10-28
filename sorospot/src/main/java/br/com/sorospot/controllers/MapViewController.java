@@ -18,7 +18,7 @@ public class MapViewController {
         model.addAttribute("pageTitle", "Mapa");
         model.addAttribute("contentTemplate", "Index/_map");
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
-        model.addAttribute("currentUserEmail", "demo@sorospot.local");
+        model.addAttribute("currentUserEmail", "demo2@sorospot.local");
         return "Index/index";
     }
 }

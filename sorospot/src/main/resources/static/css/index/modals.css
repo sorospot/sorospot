@@ -145,9 +145,35 @@ input#pinColor {
 
 .modalFooter {
   display: flex !important;
-  gap: 0.8rem;
+  gap: 1.8rem;
   justify-content: flex-end;
   margin-top: 0.8rem;
+}
+.modalFooter button {
+  background: unset;
+  border-radius: 0.6rem;
+  border: 2px solid var(--bg-color-secondary);
+  color: var(--bg-color-secondary);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: 0.4s;
+}
+.modalFooter button:hover {
+  border: 2px solid var(--bg-color-primary);
+  color: var(--bg-color-primary);
+}
+
+.modalFooter button span {
+  position: absolute;
+  right: -0.86rem;
+  font-size: var(--fs-lg);
+  background: var(--fs-color-primary);
+  border-radius: 100vw;
+  transition: 0.4s;
 }
 
 #btnsImg {
