@@ -30,10 +30,8 @@
 
     <script th:inline="javascript">
       /*<![CDATA[*/
-      // expose Thymeleaf variables on window for external JS
       window.SOROSPOT_GOOGLE_MAPS_API_KEY = /*[[${googleMapsApiKey}]]*/ "";
-      window.SOROSPOT_CURRENT_USER_EMAIL =
-        /*[[${currentUserEmail}]]*/ "demo@sorospot.local";
+      window.SOROSPOT_CURRENT_USER_EMAIL = /*[[${currentUserEmail}]]*/ "";
       /*]]>*/
     </script>
 

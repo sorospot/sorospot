@@ -54,6 +54,11 @@ window.initMap = function () {
     });
 
   map.addListener("click", (e) => {
+    if (!window.SOROSPOT_CURRENT_USER_EMAIL) {
+      alert("Você precisa estar logado para criar pins.");
+      window.location.href = "/signIn";
+      return;
+    }
     openPinModal(e.latLng.lat(), e.latLng.lng());
   });
 
@@ -87,6 +92,11 @@ window.initMap = function () {
   });
 
   document.getElementById("myPinsBtn").addEventListener("click", () => {
+    if (!window.SOROSPOT_CURRENT_USER_EMAIL) {
+      alert("Você precisa estar logado para ver seus pins.");
+      window.location.href = "/signIn";
+      return;
+    }
     openMyPinsModal();
   });
 
@@ -114,9 +124,14 @@ window.initMap = function () {
     fetch("/api/maps/markers", {
       method: "POST",
       body: f,
-      headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok)
+          return r.text().then((t) => {
+            throw t || "Não autorizado";
+          });
+        return r.json();
+      })
       .then((m) => {
         addMarkerToMap({
           id: m.id,
@@ -128,7 +143,7 @@ window.initMap = function () {
           color: m.color || document.getElementById("pinColor").value,
           photo: m.photo,
           user: m.user,
-          ownerEmail: m.userEmail || "demo@sorospot.local",
+          ownerEmail: m.userEmail || null,
         });
         modal.classList.remove("open");
       })
@@ -161,7 +176,7 @@ const aumentarImagem = (t) => {
   } else {
     t.requestFullscreen?.();
   }
-}
+};
 
 function addMarkerToMap(m) {
   const gMarker = new google.maps.Marker({
@@ -213,13 +228,14 @@ function addMarkerToMap(m) {
       infow.close();
     });
 
-    const btn = document.querySelector('.pinTooltipDelete[data-id="' + m.id + '"]');
+    const btn = document.querySelector(
+      '.pinTooltipDelete[data-id="' + m.id + '"]'
+    );
     if (btn)
       btn.addEventListener("click", () => {
         openDeleteModal(m.id, () => {
           fetch("/api/maps/markers/" + m.id, {
             method: "DELETE",
-            headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
           })
             .then((r) => {
               if (r.status === 204) gMarker.setMap(null);
@@ -283,10 +299,14 @@ function openMyPinsModal() {
   const list = document.getElementById("myPinsList");
   list.innerHTML = "Carregando...";
   modal.classList.toggle("open");
-  fetch("/api/maps/my-occurrences", {
-    headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
-  })
-    .then((r) => r.json())
+  fetch("/api/maps/my-occurrences")
+    .then((r) => {
+      if (!r.ok)
+        return r.text().then((t) => {
+          throw t || "Não autorizado";
+        });
+      return r.json();
+    })
     .then((arr) => {
       if (!arr.length) {
         list.innerHTML = "<div>Nenhum pin encontrado</div>";
@@ -324,7 +344,6 @@ function openMyPinsModal() {
           openDeleteModal(id, () => {
             fetch("/api/maps/markers/" + id, {
               method: "DELETE",
-              headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
             }).then((r) => {
               if (r.status === 204) {
                 openMyPinsModal();
@@ -422,7 +441,6 @@ function openEditModal(item) {
     fetch("/api/maps/markers/" + id, {
       method: "PUT",
       body: fd,
-      headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
     })
       .then((r) => {
         if (!r.ok)
