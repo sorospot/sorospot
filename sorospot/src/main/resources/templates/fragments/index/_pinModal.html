@@ -33,10 +33,10 @@
 
       <div class="colorImg">
         <div style="display: flex !important; flex-direction: column">
-          <label for="pinColor" style="text-align: center"
+          <label for="pinColor" id="colorLabel" style="text-align: center"
             >Cor do pin<br
           /></label>
-          <input id="pinColor" name="color" type="color" value="#ff0000" />
+          <input class="pinColor" name="color" type="color" value="#ff0000" />
         </div>
 
         <div class="imgDiv">
@@ -44,7 +44,7 @@
           <label id="btnImg" type="button" for="pinImage">
             <span class="material-symbols-outlined"> add </span>
           </label>
-          <img id="previewImagem" />
+          <img id="previewImagem" alt="preview" />
           <div id="btnsImg">
             <label
               id="trocarImagem"

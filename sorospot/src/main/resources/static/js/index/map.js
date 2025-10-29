@@ -102,9 +102,15 @@ window.initMap = function () {
 
   // modal de novo pin
   const modal = document.getElementById("pinModal");
-  document
-    .getElementById("cancelPin")
-    .addEventListener("click", () => modal.classList.toggle("open"));
+  document.getElementById("cancelPin").addEventListener("click", () => {
+    if (
+      window.SOROSPOT_IMAGE_PICKERS &&
+      window.SOROSPOT_IMAGE_PICKERS["pinImage"]
+    ) {
+      window.SOROSPOT_IMAGE_PICKERS["pinImage"].reset();
+    }
+    modal.classList.toggle("open");
+  });
   document.getElementById("pinForm").addEventListener("submit", (ev) => {
     ev.preventDefault();
     const latVal = document.getElementById("pinLat").value;
@@ -117,7 +123,7 @@ window.initMap = function () {
     f.append("lng", document.getElementById("pinLng").value);
     f.append("title", document.getElementById("pinTitle").value);
     f.append("description", document.getElementById("pinDesc").value);
-    f.append("color", document.getElementById("pinColor").value);
+    f.append("color", document.querySelector(".pinColor").value);
     const file = document.getElementById("pinImage").files[0];
     if (file) f.append("image", file);
 
@@ -140,7 +146,7 @@ window.initMap = function () {
           description: m.description,
           lat: parseFloat(m.latitude),
           lng: parseFloat(m.longitude),
-          color: m.color || document.getElementById("pinColor").value,
+          color: m.color || document.querySelector(".pinColor").value,
           photo: m.photo,
           user: m.user,
           ownerEmail: m.userEmail || null,
@@ -164,6 +170,22 @@ window.initMap = function () {
 function fechaModal(event, t) {
   const innerModal = t.firstElementChild;
   if (!innerModal.contains(event.target)) {
+    if (
+      t &&
+      t.id === "pinModal" &&
+      window.SOROSPOT_IMAGE_PICKERS &&
+      window.SOROSPOT_IMAGE_PICKERS["pinImage"]
+    ) {
+      window.SOROSPOT_IMAGE_PICKERS["pinImage"].reset();
+    }
+    if (
+      t &&
+      t.id === "editModal" &&
+      window.SOROSPOT_IMAGE_PICKERS &&
+      window.SOROSPOT_IMAGE_PICKERS["editImage"]
+    ) {
+      window.SOROSPOT_IMAGE_PICKERS["editImage"].reset();
+    }
     t.classList.remove("open");
   }
 }
@@ -309,32 +331,35 @@ function openMyPinsModal() {
     })
     .then((arr) => {
       if (!arr.length) {
-        list.innerHTML = "<div>Nenhum pin encontrado</div>";
+        list.classList.add("no-pins");
+        list.innerHTML =
+          "<h3 class='modalWarning'>Nenhum pin encontrado <span class='material-symbols-outlined'>chat_error</span></h3>";
         return;
       }
       list.innerHTML = "";
       arr.forEach((item) => {
         const div = document.createElement("div");
-        div.style.borderBottom = "1px solid #eee";
-        div.style.padding = "8px 0";
         const thumbs =
           item.photos && item.photos.length
             ? item.photos
                 .slice(0, 3)
-                .map((p) => `<img src="/uploads/${p}" class="map-thumb">`)
+                .map(
+                  (p) =>
+                    `<img src="/uploads/${p}" class="map-thumb" style="margin-right:.8rem">`
+                )
                 .join("")
             : "";
-        div.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div>${thumbs}</div><div style="flex:1"><strong>${escapeHtml(
+        div.innerHTML = `<div style="display:flex;align-items:center"><div>${thumbs}</div><div style="flex:1"><strong>${escapeHtml(
           item.title || "Sem título"
         )}</strong><div style="font-size:0.9em">${escapeHtml(
           item.description || ""
-        )}</div></div></div><div style="margin-top:6px"><button data-id="${
+        )}</div></div></div><div style="margin-top:6px;display:flex;gap: 1.2rem;"><button data-id="${
           item.id
-        }" class="my-edit">Editar</button> <button data-id="${
+        }" class="my-edit">Editar <span class="material-symbols-outlined">edit</span></button> <button data-id="${
           item.id
-        }" class="my-delete">Excluir</button> <button data-id="${
+        }" class="my-delete">Excluir <span class="material-symbols-outlined">delete</span></button> <button data-id="${
           item.id
-        }" class="my-zoom">Ir para</button></div>`;
+        }" class="my-zoom">Ir para <span class="material-symbols-outlined">zoom_in</span></button></div>`;
         list.appendChild(div);
       });
 
@@ -391,52 +416,95 @@ function openEditModal(item) {
   document.getElementById("editId").value = item.id;
   document.getElementById("editTitle").value = item.title || "";
   document.getElementById("editDesc").value = item.description || "";
-  document.getElementById("editColor").value = item.color || "#ff0000";
+  document.querySelector(".pinColor").value = item.color || "#ff0000";
   const photosDiv = document.getElementById("editPhotos");
   photosDiv.innerHTML = "";
+
+  const photosContainer = document.createElement("div");
+  photosContainer.className = "edit-photos-container";
+
+  // Armazenar as fotos marcadas para remoção
+  photosContainer.dataset.toRemove = "";
+
   const photos = item.photos || [];
   photos.forEach((p) => {
     const wrapper = document.createElement("div");
-    wrapper.style.position = "relative";
+    wrapper.className = "edit-photo-wrapper";
+    wrapper.dataset.photo = p;
+
     const img = document.createElement("img");
     img.src = "/uploads/" + p;
-    img.style.width = "96px";
-    img.style.height = "96px";
-    img.style.objectFit = "cover";
-    img.style.borderRadius = "6px";
-    const del = document.createElement("button");
-    del.textContent = "Excluir";
-    del.style.position = "absolute";
-    del.style.right = "4px";
-    del.style.top = "4px";
-    del.style.background = "rgba(255,255,255,0.9)";
-    del.addEventListener("click", () => {
-      wrapper.style.opacity = "0.4";
-      wrapper.dataset.remove = (wrapper.dataset.remove || "") + p + ",";
+    img.className = "edit-photo-img";
+
+    const deleteIcon = document.createElement("span");
+    deleteIcon.className = "material-symbols-outlined edit-photo-delete-icon";
+    deleteIcon.textContent = "delete";
+
+    // Clicar na imagem inteira abre o modal de exclusão
+    wrapper.addEventListener("click", () => {
+      openDeletePhotoModal(wrapper, p, photosContainer);
     });
+
     wrapper.appendChild(img);
-    wrapper.appendChild(del);
-    photosDiv.appendChild(wrapper);
+    wrapper.appendChild(deleteIcon);
+    photosContainer.appendChild(wrapper);
   });
 
-  document.getElementById("cancelEdit").onclick = () =>
+  photosDiv.appendChild(photosContainer);
+
+  if (photos.length > 4) {
+    const prevBtn = document.createElement("button");
+    prevBtn.className = "carousel-nav carousel-prev";
+    prevBtn.type = "button";
+    prevBtn.innerHTML =
+      '<span class="material-symbols-outlined">chevron_left</span>';
+    prevBtn.addEventListener("click", () => {
+      photosContainer.scrollBy({ left: -200, behavior: "smooth" });
+    });
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className = "carousel-nav carousel-next";
+    nextBtn.type = "button";
+    nextBtn.innerHTML =
+      '<span class="material-symbols-outlined">chevron_right</span>';
+    nextBtn.addEventListener("click", () => {
+      photosContainer.scrollBy({ left: 200, behavior: "smooth" });
+    });
+
+    photosDiv.appendChild(prevBtn);
+    photosDiv.appendChild(nextBtn);
+  }
+
+  document.getElementById("cancelEdit").onclick = () => {
+    if (
+      window.SOROSPOT_IMAGE_PICKERS &&
+      window.SOROSPOT_IMAGE_PICKERS["editImage"]
+    ) {
+      window.SOROSPOT_IMAGE_PICKERS["editImage"].reset();
+    }
     modal.classList.toggle("open");
+  };
   document.getElementById("editForm").onsubmit = function (ev) {
     ev.preventDefault();
     const id = document.getElementById("editId").value;
     const fd = new FormData();
     fd.append("title", document.getElementById("editTitle").value);
     fd.append("description", document.getElementById("editDesc").value);
-    fd.append("color", document.getElementById("editColor").value);
+    fd.append("color", document.querySelector(".pinColor").value);
     const file = document.getElementById("editImage").files[0];
     if (file) fd.append("image", file);
-    const toRemove = [];
-    Array.from(photosDiv.children).forEach((w) => {
-      if (w.dataset.remove) {
-        toRemove.push(...w.dataset.remove.split(",").filter((x) => x));
+
+    const photosContainerElement = document.querySelector(
+      "#editPhotos .edit-photos-container"
+    );
+    if (photosContainerElement && photosContainerElement.dataset.toRemove) {
+      const toRemove = photosContainerElement.dataset.toRemove
+        .split(",")
+        .filter((x) => x.trim());
+      if (toRemove.length) {
+        fd.append("removePhotos", toRemove.join(","));
       }
-    });
-    if (toRemove.length) fd.append("removePhotos", toRemove.join(","));
+    }
 
     fetch("/api/maps/markers/" + id, {
       method: "PUT",
@@ -456,5 +524,29 @@ function openEditModal(item) {
         window.location.reload();
       })
       .catch((e) => alert("Erro: " + e));
+  };
+}
+
+function openDeletePhotoModal(wrapper, photoPath, photosContainer) {
+  const deletePhotoModal = document.getElementById("deletePhotoModal");
+  deletePhotoModal.classList.add("open");
+
+  document.getElementById("cancelDeletePhoto").onclick = () => {
+    deletePhotoModal.classList.remove("open");
+  };
+
+  document.getElementById("confirmDeletePhoto").onclick = () => {
+    // Adicionar a foto à lista de remoção
+    const currentToRemove = photosContainer.dataset.toRemove || "";
+    const toRemoveList = currentToRemove ? currentToRemove.split(",") : [];
+    if (!toRemoveList.includes(photoPath)) {
+      toRemoveList.push(photoPath);
+    }
+    photosContainer.dataset.toRemove = toRemoveList.join(",");
+
+    // Remover a imagem visualmente (do DOM)
+    wrapper.remove();
+
+    deletePhotoModal.classList.remove("open");
   };
 }

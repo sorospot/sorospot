@@ -1,4 +1,9 @@
-<div id="editModal" class="modal" th:fragment="editModal" onclick="fechaModal(event, this)">
+<div
+  id="editModal"
+  class="modal"
+  th:fragment="editModal"
+  onclick="fechaModal(event, this)"
+>
   <div class="panel">
     <h2>Editar ocorrência</h2>
     <form id="editForm">
@@ -7,33 +12,65 @@
         <label>Título<br /><input id="editTitle" style="width: 100%" /></label>
       </div>
       <div>
-        <label>Descrição<br /><textarea id="editDesc" style="width: 100%"></textarea>
+        <label
+          >Descrição<br /><textarea
+            id="editDesc"
+            style="width: 100%"
+          ></textarea>
         </label>
       </div>
       <div>
-        <label>Cor<br /><input id="editColor" type="color" value="#ff0000" /></label>
-      </div>
-      <div>
-        <label>Fotos atuais
-          <div id="editPhotos" style="
-              display: flex;
-              gap: 8px;
-              flex-wrap: wrap;
-              margin-top: 6px;
-            "></div>
+        <label
+          >Fotos atuais
+          <div id="editPhotos"></div>
         </label>
       </div>
-      <div>
-        <label>Adicionar foto<br /><input id="editImage" type="file" accept="image/*" /></label>
+      <div class="colorImg">
+        <div style="display: flex !important; flex-direction: column">
+          <label for="pinColor" id="colorLabel_edit" style="text-align: center"
+            >Cor do pin<br
+          /></label>
+          <input class="pinColor" name="color" type="color" value="#ff0000" />
+        </div>
+
+        <div class="imgDiv">
+          <label for="editImage" id="labelEditImage">Imagem<br /></label>
+          <label
+            id="btnImg_edit"
+            type="button"
+            for="editImage"
+            style="margin-bottom: 0; height: 8rem"
+          >
+            <span class="material-symbols-outlined"> add </span>
+          </label>
+          <img id="previewImagem_edit" alt="preview" />
+          <div id="btnsImg_edit">
+            <label
+              id="trocarImagem_edit"
+              type="button"
+              for="editImage"
+              state="disabled"
+            >
+              Trocar imagem
+              <span class="material-symbols-outlined"> restart_alt </span>
+            </label>
+            <label id="removerImagem_edit" type="button" state="disabled">
+              <span class="material-symbols-outlined"> backspace </span>
+              Remover imagem
+            </label>
+          </div>
+
+          <input id="editImage" name="image" type="file" accept="image/*" />
+        </div>
       </div>
-      <div style="
-          display: flex;
-          gap: 8px;
-          justify-content: flex-end;
-          margin-top: 8px;
-        ">
-        <button type="button" id="cancelEdit">Cancelar</button>
-        <button type="submit">Salvar</button>
+      <div class="modalFooter">
+        <button type="button" id="cancelEdit">
+          Cancelar
+          <span class="material-symbols-outlined"> arrow_left_alt </span>
+        </button>
+        <button type="submit">
+          Salvar <span class="material-symbols-outlined"> done_outline </span>
+        </button>
       </div>
     </form>
   </div>
