@@ -4,6 +4,7 @@
 
 let map;
 let markers = [];
+let currentOpenInfoWindow = null;
 
 window.initMap = function () {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -244,28 +245,81 @@ function addMarkerToMap(m) {
     </div>`;
 
   const infow = new google.maps.InfoWindow({ content });
-  gMarker.addListener("click", () => infow.open(map, gMarker));
-  google.maps.event.addListener(infow, "domready", () => {
-    document.querySelector(".fechaTooltip").addEventListener("click", () => {
-      infow.close();
-    });
+  let isDeleting = false;
 
-    const btn = document.querySelector(
-      '.pinTooltipDelete[data-id="' + m.id + '"]'
-    );
-    if (btn)
-      btn.addEventListener("click", () => {
-        openDeleteModal(m.id, () => {
-          fetch("/api/maps/markers/" + m.id, {
-            method: "DELETE",
-          })
-            .then((r) => {
-              if (r.status === 204) gMarker.setMap(null);
-              else r.text().then((t) => alert("Erro: " + t));
-            })
-            .catch((e) => alert("Erro: " + e));
+  gMarker.addListener("click", () => {
+    if (currentOpenInfoWindow && currentOpenInfoWindow !== infow) {
+      currentOpenInfoWindow.close();
+    }
+
+    infow.open(map, gMarker);
+    currentOpenInfoWindow = infow;
+  });
+
+  google.maps.event.addListener(infow, "closeclick", () => {
+    if (currentOpenInfoWindow === infow) {
+      currentOpenInfoWindow = null;
+    }
+  });
+
+  google.maps.event.addListener(infow, "domready", () => {
+    setTimeout(() => {
+      const iwContainer = document.querySelector(".gm-style-iw-c");
+      if (!iwContainer) return;
+
+      const closeBtn = iwContainer.querySelector(".fechaTooltip");
+      if (closeBtn && !closeBtn.dataset.listenerAdded) {
+        closeBtn.dataset.listenerAdded = "true";
+
+        closeBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          infow.close();
+          if (currentOpenInfoWindow === infow) {
+            currentOpenInfoWindow = null;
+          }
         });
-      });
+      }
+
+      const deleteBtn = iwContainer.querySelector(
+        '.pinTooltipDelete[data-id="' + m.id + '"]'
+      );
+      if (deleteBtn && !deleteBtn.dataset.listenerAdded) {
+        deleteBtn.dataset.listenerAdded = "true";
+
+        deleteBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (isDeleting) return;
+
+          openDeleteModal(m.id, () => {
+            if (isDeleting) return;
+            isDeleting = true;
+
+            fetch("/api/maps/markers/" + m.id, {
+              method: "DELETE",
+              headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
+            })
+              .then((r) => {
+                if (r.status === 204 || r.status === 200) {
+                  gMarker.setMap(null);
+                  infow.close();
+                  if (currentOpenInfoWindow === infow) {
+                    currentOpenInfoWindow = null;
+                  }
+                } else {
+                  r.text().then((t) => alert("Erro: " + t));
+                }
+              })
+              .catch((e) => alert("Erro: " + e))
+              .finally(() => {
+                isDeleting = false;
+              });
+          });
+        });
+      }
+    }, 50);
   });
 
   markers.push(gMarker);

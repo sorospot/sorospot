@@ -8,7 +8,10 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: "Poppins", sans-serif;
-    background-color: #a3d7ff;
+    background: radial-gradient(
+        var(--bg-color-primary),
+        var(--bg-color-secondary)
+    );
 }
 
 #formContent {
