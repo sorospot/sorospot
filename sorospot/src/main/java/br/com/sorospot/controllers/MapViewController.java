@@ -1,5 +1,6 @@
 package br.com.sorospot.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +15,20 @@ public class MapViewController {
     private String googleMapsApiKey;
 
     @GetMapping
-    public String showMap(Model model) {
+    public String showMap(HttpSession session, Model model) {
+        // Verificar se o usuário está autenticado
+        if (session.getAttribute("loggedUser") == null) {
+            return "redirect:/signIn";
+        }
+        
         model.addAttribute("pageTitle", "Mapa");
         model.addAttribute("contentTemplate", "Index/_map");
         model.addAttribute("googleMapsApiKey", googleMapsApiKey);
-        model.addAttribute("currentUserEmail", "demo@sorospot.local");
+        
+        // Usar o email do usuário logado da sessão
+        String userEmail = (String) session.getAttribute("userEmail");
+        model.addAttribute("currentUserEmail", userEmail != null ? userEmail : "");
+        
         return "Index/index";
     }
 }

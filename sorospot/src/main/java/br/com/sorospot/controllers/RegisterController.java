@@ -24,7 +24,7 @@ public class RegisterController {
     @GetMapping("/signUp")
     public String showRegisterForm(HttpSession session, Model model) {
         if (session.getAttribute("loggedUser") != null) {
-            return "redirect:/home";
+            return "redirect:/mapa";
         }
         prepareRegisterModel(model, new RegisterDTO());
         return "signUp/auth";
