@@ -11,10 +11,32 @@
 
 html {
   font-size: 62.5%;
+  scroll-behavior: smooth;
   background: radial-gradient(
     var(--bg-color-primary),
     var(--bg-color-secondary)
   );
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--fs-color-secondary);
+}
+body::-webkit-scrollbar-track {
+  background: var(--bg-color-secondary);
+  border-radius: 0;
+}
+
+*::-webkit-scrollbar {
+  width: 0.8rem;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--bg-color-secondary);
+  border-radius: 1rem;
+}
+*::-webkit-scrollbar-track {
+  padding-bottom: 4rem;
+  background: var(--bg-color-primary);
+  border-radius: 1rem;
 }
 
 :root {

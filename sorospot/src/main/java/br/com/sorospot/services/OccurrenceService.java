@@ -44,7 +44,11 @@ public class OccurrenceService {
     public Map<String, Object> createOccurrence(double lat, double lng, String title, 
                                                 String description, String color,
                                                 MultipartFile image, String userEmail) throws IOException {
-        // validações
+        
+        if (userEmail == null || userEmail.isBlank()) {
+            throw new SecurityException("Unauthorized");
+        }
+        
         if (title == null || title.trim().isEmpty()) {
             throw new IllegalArgumentException("Título obrigatório");
         }

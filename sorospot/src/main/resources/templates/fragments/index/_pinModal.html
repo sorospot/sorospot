@@ -32,11 +32,11 @@
       </div>
 
       <div class="colorImg">
-        <div style="display: flex !important; flex-direction: column">
-          <label for="pinColor" style="text-align: center"
+        <div class="colorImg_div">
+          <label for="pinColor" id="colorLabel" style="text-align: center"
             >Cor do pin<br
           /></label>
-          <input id="pinColor" name="color" type="color" value="#ff0000" />
+          <input class="pinColor" name="color" type="color" value="#ff0000" />
         </div>
 
         <div class="imgDiv">
@@ -44,7 +44,11 @@
           <label id="btnImg" type="button" for="pinImage">
             <span class="material-symbols-outlined"> add </span>
           </label>
-          <img id="previewImagem" />
+          <img
+            id="previewImagem"
+            alt="preview"
+            onclick="aumentarImagem(this)"
+          />
           <div id="btnsImg">
             <label
               id="trocarImagem"
@@ -66,8 +70,14 @@
       </div>
 
       <div class="modalFooter">
-        <button type="button" id="cancelPin">Cancelar</button>
-        <button type="submit">Salvar</button>
+        <button type="button" id="cancelPin">
+          Cancelar<span class="material-symbols-outlined">
+            arrow_left_alt
+          </span>
+        </button>
+        <button type="submit">
+          Salvar <span class="material-symbols-outlined"> done_outline </span>
+        </button>
       </div>
     </form>
   </div>

@@ -4,11 +4,13 @@ import br.com.sorospot.dtos.GeocodeResult;
 import br.com.sorospot.services.GoogleMapsService;
 import br.com.sorospot.services.OccurrenceService;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,21 +46,31 @@ public class MapsController {
 
     @PostMapping(value = "/markers", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
                  produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> addMarkerMultipart(@RequestParam double lat,
+    public ResponseEntity<Map<String, Object>> addMarkerMultipart(@RequestParam double lat,
                                                    @RequestParam double lng,
                                                    @RequestParam String title,
                                                    @RequestParam String description,
                                                    @RequestParam String color,
                                                    @RequestParam(required = false) MultipartFile image,
-                                                   @RequestHeader(value = "X-User-Email", required = false) String userEmail) 
+                                                   HttpSession session) 
             throws IOException {
-        return occurrenceService.createOccurrence(lat, lng, title, description, color, image, userEmail);
+        String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        if (userEmail == null || userEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(
+                occurrenceService.createOccurrence(lat, lng, title, description, color, image, userEmail)
+        );
     }
 
     @DeleteMapping(value = "/markers/{id}")
     public ResponseEntity<?> deleteMarker(@PathVariable Integer id,
-                                          @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
+                                          HttpSession session) {
         try {
+            String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+            if (userEmail == null || userEmail.isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             boolean deleted = occurrenceService.deleteOccurrence(id, userEmail);
             if (!deleted) {
                 return ResponseEntity.notFound().build();
@@ -70,8 +82,12 @@ public class MapsController {
     }
 
     @GetMapping(value = "/my-occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Map<String, Object>> myOccurrences(@RequestHeader(value = "X-User-Email", required = false) String userEmail) {
-        return occurrenceService.getMyOccurrences(userEmail);
+    public ResponseEntity<List<Map<String, Object>>> myOccurrences(HttpSession session) {
+        String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        if (userEmail == null || userEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(occurrenceService.getMyOccurrences(userEmail));
     }
 
     @PutMapping(value = "/markers/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
@@ -82,9 +98,13 @@ public class MapsController {
                                           @RequestParam(required = false) String color,
                                           @RequestParam(required = false) String removePhotos,
                                           @RequestParam(required = false) MultipartFile image,
-                                          @RequestHeader(value = "X-User-Email", required = false) String userEmail) 
+                                          HttpSession session) 
             throws IOException {
         try {
+            String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+            if (userEmail == null || userEmail.isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             Map<String, Object> result = occurrenceService.updateOccurrence(
                     id, title, description, color, removePhotos, image, userEmail);
             

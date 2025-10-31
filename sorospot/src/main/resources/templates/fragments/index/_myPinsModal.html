@@ -1,14 +1,16 @@
-<div id="myPinsModal" class="modal" th:fragment="myPinsModal" onclick="fechaModal(event, this)">
+<div
+  id="myPinsModal"
+  class="modal"
+  th:fragment="myPinsModal"
+  onclick="fechaModal(event, this)"
+>
   <div class="panel">
     <h2>Meus pins</h2>
-    <div id="myPinsList" style="max-height: 400px; overflow: auto"></div>
-    <div style="
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
-        margin-top: 8px;
-      ">
-      <button id="closeMyPins">Fechar</button>
+    <div id="myPinsList"></div>
+    <div class="modalFooter">
+      <button id="closeMyPins">
+        Fechar <span class="material-symbols-outlined"> arrow_left_alt </span>
+      </button>
     </div>
   </div>
 </div>
