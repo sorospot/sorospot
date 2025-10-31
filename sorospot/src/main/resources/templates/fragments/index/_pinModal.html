@@ -32,7 +32,7 @@
       </div>
 
       <div class="colorImg">
-        <div style="display: flex !important; flex-direction: column">
+        <div class="colorImg_div">
           <label for="pinColor" id="colorLabel" style="text-align: center"
             >Cor do pin<br
           /></label>
@@ -44,7 +44,11 @@
           <label id="btnImg" type="button" for="pinImage">
             <span class="material-symbols-outlined"> add </span>
           </label>
-          <img id="previewImagem" alt="preview" />
+          <img
+            id="previewImagem"
+            alt="preview"
+            onclick="aumentarImagem(this)"
+          />
           <div id="btnsImg">
             <label
               id="trocarImagem"

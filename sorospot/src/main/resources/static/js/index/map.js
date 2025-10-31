@@ -345,7 +345,7 @@ function openMyPinsModal() {
                 .slice(0, 3)
                 .map(
                   (p) =>
-                    `<img src="/uploads/${p}" class="map-thumb" style="margin-right:.8rem">`
+                    `<img src="/uploads/${p}" class="map-thumb" onclick="aumentarImagem(this)" style="margin-right:.8rem">`
                 )
                 .join("")
             : "";
@@ -423,7 +423,6 @@ function openEditModal(item) {
   const photosContainer = document.createElement("div");
   photosContainer.className = "edit-photos-container";
 
-  // Armazenar as fotos marcadas para remoção
   photosContainer.dataset.toRemove = "";
 
   const photos = item.photos || [];
@@ -440,7 +439,6 @@ function openEditModal(item) {
     deleteIcon.className = "material-symbols-outlined edit-photo-delete-icon";
     deleteIcon.textContent = "delete";
 
-    // Clicar na imagem inteira abre o modal de exclusão
     wrapper.addEventListener("click", () => {
       openDeletePhotoModal(wrapper, p, photosContainer);
     });
@@ -454,6 +452,7 @@ function openEditModal(item) {
 
   if (photos.length > 4) {
     const prevBtn = document.createElement("button");
+    photosDiv.style.justifyContent = "center";
     prevBtn.className = "carousel-nav carousel-prev";
     prevBtn.type = "button";
     prevBtn.innerHTML =
@@ -536,7 +535,6 @@ function openDeletePhotoModal(wrapper, photoPath, photosContainer) {
   };
 
   document.getElementById("confirmDeletePhoto").onclick = () => {
-    // Adicionar a foto à lista de remoção
     const currentToRemove = photosContainer.dataset.toRemove || "";
     const toRemoveList = currentToRemove ? currentToRemove.split(",") : [];
     if (!toRemoveList.includes(photoPath)) {
@@ -544,7 +542,6 @@ function openDeletePhotoModal(wrapper, photoPath, photosContainer) {
     }
     photosContainer.dataset.toRemove = toRemoveList.join(",");
 
-    // Remover a imagem visualmente (do DOM)
     wrapper.remove();
 
     deletePhotoModal.classList.remove("open");

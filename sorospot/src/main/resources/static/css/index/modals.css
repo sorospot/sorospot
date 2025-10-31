@@ -19,12 +19,14 @@
 
 .modal .panel {
   background: #fff;
-  padding: 1.6rem;
-  border-radius: 0.6rem;
-  row-gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  border-radius: 0.8rem;
+  row-gap: clamp(0.6rem, 25vw, 1rem);
   display: grid;
-  width: 40rem;
-  max-width: 95%;
+  width: clamp(20rem, 92vw, 42rem);
+  max-width: 100%;
+  max-height: 92vh;
+  overflow: auto;
   scale: 0.9;
   transition: 0.4s;
 }
@@ -133,6 +135,8 @@ input.pinColor {
 .imgDiv {
   display: grid !important;
   width: 100%;
+  column-gap: 3.5rem;
+  align-items: center;
   grid-template-areas:
     "label label label label"
     "btnAdd btnAdd btnAdd inputs"
@@ -245,8 +249,6 @@ label[state="enable"] {
 #previewImagem,
 #previewImagem_edit {
   height: 100%;
-  width: 12.9rem;
-  height: 8rem;
   max-height: 8rem;
   border-radius: 0.8rem;
   object-fit: cover;
@@ -274,7 +276,8 @@ label[state="enable"] {
 }
 
 #myPinsModal .panel {
-  max-width: 50rem;
+  width: clamp(22rem, 92vw, 56rem);
+  max-height: 92vh;
 }
 
 #myPinsList {
@@ -312,6 +315,7 @@ label[state="enable"] {
   box-shadow: inset 0 -30px 40px -40px var(--bg-color-primary);
   position: relative;
   max-width: 100%;
+  --thumb: 96px;
 }
 
 .edit-photos-container {
@@ -331,7 +335,7 @@ label[state="enable"] {
 }
 
 .edit-photos-container {
-  max-width: calc(96px * 4 + 0.8rem * 3);
+  max-width: calc(var(--thumb) * 4 + 0.8rem * 3);
 }
 
 .carousel-nav {
@@ -384,8 +388,8 @@ label[state="enable"] {
 }
 
 .edit-photo-img {
-  width: 96px;
-  height: 96px;
+  width: var(--thumb);
+  height: var(--thumb);
   object-fit: cover;
   border-radius: 6px;
   display: block;
@@ -431,4 +435,74 @@ label[state="enable"] {
 }
 .map-thumb:hover {
   opacity: 0.85;
+}
+
+.colorImg_div {
+  justify-content: start;
+  display: flex !important;
+  flex-direction: column;
+  align-items: self-start;
+}
+
+@media (max-width: 768px) {
+  #address {
+    position: relative;
+    z-index: 99;
+  }
+  .pinTooltipImg img:fullscreen {
+    padding: 0 !important;
+    object-fit: contain !important;
+  }
+  .modal .panel {
+    width: 83.5vw;
+    max-height: 92vh;
+    border-radius: 0.8rem;
+  }
+
+  .colorImg {
+    align-items: stretch !important;
+  }
+
+  #editPhotos {
+    --thumb: 80px;
+  }
+
+  .carousel-prev {
+    left: 0.2rem;
+  }
+  .carousel-next {
+    right: 0.2rem;
+  }
+  .carousel-nav {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+  .carousel-nav .material-symbols-outlined {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 420px) {
+  #editPhotos {
+    --thumb: 68px;
+  }
+  .modal .panel {
+    padding: 1rem;
+  }
+  .colorImg {
+    display: grid !important;
+    justify-content: normal !important;
+    align-items: self-start;
+    gap: 1rem;
+  }
+  .colorImg_div {
+    justify-content: start;
+  }
+  .pinColor {
+    all: unset !important;
+    border: 2px solid var(--bg-color-secondary) !important;
+    border-radius: 0.6rem !important;
+    height: 3rem !important;
+    width: 5.5rem !important;
+  }
 }
