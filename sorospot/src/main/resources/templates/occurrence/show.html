@@ -22,7 +22,11 @@
 
             <section th:replace="~{occurrence/show/_photos :: photos(occurrence=${occurrence})}"></section>
 
-            <section th:replace="~{occurrence/show/_history :: history(occurrence=${occurrence})}"></section>
+            <section>
+                <div th:if="${occurrence.lastUpdated != null}">
+                  <section th:replace="~{occurrence/show/_history :: history(occurrence=${occurrence})}"></section>
+                </div>
+            </section>
 
             <!-- <section th:replace="~{occurrence/show/_actions :: actions(occurrence=${occurrence}, user=${user})}"></section> -->
         </main>
