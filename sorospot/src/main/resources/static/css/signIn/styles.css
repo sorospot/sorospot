@@ -8,7 +8,10 @@ body {
     min-height: 100vh;
     margin: 0;
     font-family: "Poppins", sans-serif;
-    background-color: #a3d7ff;
+    background: radial-gradient(
+        var(--bg-color-primary),
+        var(--bg-color-secondary)
+    );
 }
 
 #formContent {
@@ -62,4 +65,34 @@ form button:hover {
 
 #formContent a:hover {
     color: #2596be;
+}
+
+.alert {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 7px;
+    font-size: 14px;
+    width: 270px;
+    box-sizing: border-box;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    color: #842029;
+}
+
+.alert-success {
+    background-color: #d1e7dd;
+    border: 1px solid #badbcc;
+    color: #0f5132;
+}
+
+.alert ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.alert li {
+    margin: 5px 0;
 }

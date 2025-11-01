@@ -3,7 +3,7 @@ package br.com.sorospot.services;
 import br.com.sorospot.domains.User;
 import br.com.sorospot.domains.UserRole;
 import br.com.sorospot.repositories.UserRepository;
-import br.com.sorospot.repositories.UserRoleRepository;
+import br.com.sorospot.repositories.user.UserRoleRepository;
 import org.springframework.stereotype.Service;
 
 @Service

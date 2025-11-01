@@ -1,7 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-br">
   <head>
+    <meta charset="UTF-8" />
     <title th:text="${pageTitle}">Sorospot</title>
+
+    <link
+      rel="icon"
+      href="@{/images/sorospot-lettering.png}"
+      type="image/x-icon"
+    />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
       rel="stylesheet"
@@ -20,6 +32,9 @@
       th:insert="fragments/index/_deleteModal :: deleteModal"
     ></th:block>
     <th:block
+      th:insert="fragments/index/_deletePhotoModal :: deletePhotoModal"
+    ></th:block>
+    <th:block
       th:insert="fragments/index/_myPinsModal :: myPinsModal"
     ></th:block>
     <th:block th:insert="fragments/index/_editModal :: editModal"></th:block>
@@ -30,17 +45,24 @@
 
     <script th:inline="javascript">
       /*<![CDATA[*/
-      // expose Thymeleaf variables on window for external JS
       window.SOROSPOT_GOOGLE_MAPS_API_KEY = /*[[${googleMapsApiKey}]]*/ "";
-      window.SOROSPOT_CURRENT_USER_EMAIL =
-        /*[[${currentUserEmail}]]*/ "demo@sorospot.local";
+      window.SOROSPOT_CURRENT_USER_EMAIL = /*[[${currentUserEmail}]]*/ "";
       /*]]>*/
     </script>
 
     <script th:src="@{/js/index/map.js}" defer></script>
     <script th:src="@{/js/index/images.js}" defer></script>
+
+    <script>
+      window.delayedInitMap = function () {
+        setTimeout(() => {
+          window.initMap();
+        }, 1000);
+      };
+    </script>
+
     <script
-      th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=initMap|"
+      th:src="|https://maps.googleapis.com/maps/api/js?key=${googleMapsApiKey}&callback=delayedInitMap|"
       async
       defer
     ></script>

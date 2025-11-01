@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
-    private static final long MAX_BYTES = 5L * 1024L * 1024L; // 5 MB
+    private static final long MAX_BYTES = 50L * 1024L * 1024L; // 50 MB
     private static final String UPLOAD_DIR = "uploads";
 
     public PhotoService(PhotoRepository photoRepository) {
