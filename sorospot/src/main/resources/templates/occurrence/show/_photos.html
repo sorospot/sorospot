@@ -8,7 +8,7 @@
 
         <div th:if="${!#lists.isEmpty(occurrence.photos)}" class="photo-grid">
             <img th:each="photo : ${occurrence.photos}"
-                 th:src="@{${photo.url}}"
+                 th:src="@{/uploads/{filename}(filename=${photo.filename})}"
                  th:alt="'Foto ' + ${photo.id}" />
         </div>
     </div>

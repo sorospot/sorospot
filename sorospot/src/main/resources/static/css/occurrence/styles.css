@@ -1,0 +1,297 @@
+/* Importar fonte */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Lilita+One&display=swap');
+
+/* Container com entrada sequencial tipo React */
+.occurrence-show-container {
+  max-width: 120rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  display: grid;
+  gap: 2rem;
+}
+
+/* Entrada staggered (escalonada) */
+.occurrence-summary {
+  animation: slideInFade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s backwards;
+}
+
+.occurrence-details {
+  animation: slideInFade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s backwards;
+}
+
+.occurrence-photos {
+  animation: slideInFade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s backwards;
+}
+
+.occurrence-history {
+  animation: slideInFade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s backwards;
+}
+
+.occurrence-actions {
+  animation: slideInFade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s backwards;
+}
+
+@keyframes slideInFade {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Cards tipo Material Design com elevation */
+.occurrence-summary,
+.occurrence-details,
+.occurrence-photos,
+.occurrence-history,
+.occurrence-actions {
+  background: #fff;
+  border-radius: 1.2rem;
+  padding: 2.4rem;
+  border-left: 4px solid #0c64de;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 2px 6px rgba(12, 100, 222, 0.08);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  will-change: transform, box-shadow;
+}
+
+/* Hover com elevation maior */
+.occurrence-summary:hover,
+.occurrence-details:hover,
+.occurrence-photos:hover,
+.occurrence-history:hover,
+.occurrence-actions:hover {
+  border-left-width: 6px;
+  transform: translateX(6px) translateY(-2px);
+  box-shadow: 
+    -3px 0 10px rgba(12, 100, 222, 0.12),
+    0 6px 20px rgba(12, 100, 222, 0.15);
+}
+
+/* Ripple effect ao clicar */
+.occurrence-summary:active,
+.occurrence-details:active,
+.occurrence-photos:active,
+.occurrence-history:active,
+.occurrence-actions:active {
+  transform: translateX(6px) scale(0.99);
+}
+
+/* Títulos tipo React component header */
+.occurrence-summary h1,
+.occurrence-details h2,
+.occurrence-photos h2,
+.occurrence-history h2,
+.occurrence-actions h2 {
+  font-family: 'Lato', sans-serif;
+  font-weight: 900;
+  color: #0c64de;
+  margin-bottom: 2rem;
+  font-size: 2.6rem;
+  letter-spacing: -0.5px;
+  position: relative;
+  padding-left: 1.2rem;
+}
+
+/* Indicador colorido tipo VS Code */
+.occurrence-summary h1::before,
+.occurrence-details h2::before,
+.occurrence-photos h2::before,
+.occurrence-history h2::before,
+.occurrence-actions h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 0;
+  background: linear-gradient(180deg, #0c64de, #65c1fa);
+  border-radius: 2px;
+  transition: height 0.3s ease;
+}
+
+.occurrence-summary:hover h1::before,
+.occurrence-details:hover h2::before,
+.occurrence-photos:hover h2::before,
+.occurrence-history:hover h2::before,
+.occurrence-actions:hover h2::before {
+  height: 100%;
+}
+
+.occurrence-summary h1 {
+  font-size: 3.2rem;
+}
+
+/* Data Grid tipo table/component */
+.occurrence-summary p,
+.occurrence-details p {
+  font-size: var(--fs-lg);
+  color: #2c3e50;
+  line-height: 1.9;
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+/* Labels com background azul clarinho (Modern Fluid style) */
+.occurrence-summary strong,
+.occurrence-details strong {
+  color: #0c64de;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  background: rgba(101, 193, 250, 0.12);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+  border-left: 3px solid #65c1fa;
+  margin-right: 0.4rem;
+}
+
+.occurrence-summary strong:hover,
+.occurrence-details strong:hover {
+  background: rgba(101, 193, 250, 0.25);
+  padding: 0.2rem 1rem;
+  transform: translateX(4px);
+}
+
+/* Values normais (SEM estilo de botão) - apenas texto */
+.occurrence-summary span,
+.occurrence-details span {
+  color: #374151;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+/* EXCEÇÃO: Badge de status com destaque */
+.occurrence-summary p:first-of-type span {
+  display: inline-block;
+  padding: 0.6rem 1.6rem;
+  background: linear-gradient(135deg, #0c64de, #65c1fa);
+  color: #fff;
+  border-radius: 10rem;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(12, 100, 222, 0.3);
+  transition: all 0.3s ease;
+}
+
+.occurrence-summary p:first-of-type span:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(12, 100, 222, 0.4);
+}
+
+/* Photos grid tipo gallery component */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(26rem, 1fr));
+  gap: 1.4rem;
+  margin-top: 1.6rem;
+}
+
+.photo-grid img {
+  width: 100%;
+  height: 26rem;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.photo-grid img:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: 0 8px 24px rgba(12, 100, 222, 0.25);
+  border-color: #0c64de;
+}
+
+/* Actions tipo button group */
+.occurrence-actions > div {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.6rem;
+}
+
+/* Botões tipo Material/Ant Design */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.1rem 2.2rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #fff;
+  background: #0c64de;
+  border: none;
+  border-radius: 0.6rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btn:hover::after {
+  opacity: 1;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(12, 100, 222, 0.35);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(12, 100, 222, 0.25);
+}
+
+.btn-danger {
+  background: #e74c3c;
+}
+
+.btn-danger:hover {
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);
+}
+
+.btn-secondary {
+  background: #6b7280;
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.35);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .occurrence-show-container {
+    padding: 1.2rem;
+  }
+
+  .occurrence-summary h1 {
+    font-size: 2.4rem;
+  }
+
+  .photo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
