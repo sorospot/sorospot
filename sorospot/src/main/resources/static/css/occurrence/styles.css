@@ -153,6 +153,7 @@
     row-gap: 1.2rem;
     column-gap: 4rem;
     margin-top: 1rem;
+    margin-left: 11px;
 }
 
 .occurrence-summary-grid > div {
@@ -221,9 +222,9 @@
 }
 
 .photo-grid img {
-    width: 100%;
-    height: 26rem;
-    object-fit: cover;
+    width: 100%;       /* ocupa toda a largura do card */
+    height: auto;      /* altura proporcional à largura */
+    object-fit: cover; /* mantém o corte centrado se necessário */
     border-radius: 0.8rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -327,7 +328,15 @@
     }
 
     .photo-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr;  /* uma coluna só */
+        max-width: 400px;            /* limitar largura total do grid */
+        margin: 0 auto;              /* centraliza */
+        gap: 1rem;
+    }
+
+    .photo-grid img {
+        width: 100%;  /* ocupa toda a largura do grid */
+        height: auto; /* mantém proporção */
     }
 
     .btn {
@@ -335,7 +344,7 @@
     }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 500px) {
     .occurrence-show-container {
         padding: 1.2rem;
     }
@@ -346,8 +355,57 @@
     .occurrence-last-update,
     .occurrence-actions {
         width: 100%;        /* ocupa toda a largura disponível */
-        max-width: 280px;   /* largura máxima do card */
+        max-width: 380px;   /* largura máxima do card */
         margin: 0 auto;     /* centraliza horizontalmente */
         padding: 1.2rem;
+    }
+
+    .photo-grid {
+        grid-template-columns: 1fr;      /* uma coluna só */
+        max-width: 260px;                /* largura máxima do grid */
+        margin: 0 auto;                  /* centraliza na tela */
+        gap: 1rem;                       /* espaçamento entre fotos */
+    }
+
+    .photo-grid img {
+        width: 100%;                      /* ocupa toda a largura do grid */
+        height: auto;                     /* mantém proporção */
+    }
+}
+
+@media (max-width: 420px) {
+    .occurrence-show-container {
+        padding: 1.2rem;
+    }
+
+    .occurrence-summary,
+    .occurrence-details,
+    .occurrence-photos,
+    .occurrence-last-update,
+    .occurrence-actions {
+        width: 100%;        /* ocupa toda a largura disponível */
+        max-width: 290px;   /* largura máxima do card */
+        margin: 0 auto;     /* centraliza horizontalmente */
+        padding: 1.2rem;
+    }
+
+    .occurrence-summary span,
+    .occurrence-details span,
+    .occurrence-last-update span {
+        font-size: 1.5rem;
+    }
+
+    .occurrence-summary strong,
+    .occurrence-details strong,
+    .occurrence-last-update strong {
+        font-size: 1.7rem;
+    }
+
+    .occurrence-summary h1,
+    .occurrence-details h2,
+    .occurrence-photos h2,
+    .occurrence-last-update h2,
+    .occurrence-actions h2 {
+        font-size: 2.7rem;
     }
 }
