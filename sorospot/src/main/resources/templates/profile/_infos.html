@@ -1,0 +1,98 @@
+<div th:fragment="content">
+    <div class="profile-container">
+        <div class="user-info-panel">
+            <nav class="sidebar-buttons" role="navigation" aria-label="Barra lateral de ações">
+                <button id="backToDetails" class="sidebar-btn">
+                   <span class="material-symbols-outlined">
+                        info
+                    </span>Ver Detalhes
+                </button>
+                <button id="openStats" class="sidebar-btn">
+                    <span class="material-symbols-outlined">
+                        equalizer
+                    </span>Ver Estatísticas
+                </button>
+                <button id="openActions" class="sidebar-btn">
+                    <span class="material-symbols-outlined">
+                        menu
+                    </span>Ver Ações
+                </button>
+            </nav>
+            <div class="actions-panel">
+                <h3>Suas Ações</h3>
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="window.location.href='/mapa'" role="button" tabindex="0" aria-label="Ver Mapa">
+                        <span class="material-symbols-outlined">map</span>
+                        <p class="stat-label">Ver Mapa</p>
+                    </div>
+                    <div class="stat-card" id="openMyPins" role="button" tabindex="0" aria-label="Meus Pins">
+                        <span class="material-symbols-outlined">format_list_bulleted</span>
+                        <p class="stat-label">Meus Pins</p>
+                    </div>
+                    <div class="stat-card" onclick="window.location.href='/logout'" role="button" tabindex="0" aria-label="Sair">
+                        <span class="material-symbols-outlined">logout</span>
+                        <p class="stat-label">Sair</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <h3>Suas Contribuições</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="material-symbols-outlined">location_on</span>
+                        <p class="stat-number">0</p>
+                        <p class="stat-label">Pins Criados</p>
+                    </div>
+                    <div class="stat-card">
+                        <span class="material-symbols-outlined">comment</span>
+                        <p class="stat-number">0</p>
+                        <p class="stat-label">Comentários</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-details">
+                <div class="profile-photo">
+                    <img th:if="${userPhoto != null}"
+                         th:src="@{/images/{filename}(filename=${userPhoto})}"
+                         alt="Foto de perfil"
+                         class="profile-img" />
+                    <img th:if="${userPhoto == null or #strings.isEmpty(userPhoto)}"
+                         th:src="@{/images/no-user.png}"
+                         alt="Foto padrão"
+                         class="profile-img default" />
+                </div>
+                <div class="info-row" id="userName">
+                    <span class="material-symbols-outlined">assignment_ind</span>
+                    <p th:text="${userName}">Nome do Usuário</p>
+                </div>
+                <div class="info-row" id="userEmail">
+                    <span class="material-symbols-outlined">email</span>
+                    <p th:text="${userEmail}">usuario@exemplo.com</p>
+                </div>
+                <div class="info-row" id="userCPF">
+                    <span class="material-symbols-outlined">id_card</span>
+                    <p th:text="${userCPF}">CPF Exemplo</p>
+                </div>
+                <div class="info-row" id="userTelephone">
+                    <span class="material-symbols-outlined">call</span>
+                    <p th:text="${userTelephone}">(XX)XXXXX-XXXX</p>
+                </div>
+                <div class="profile-edit" id="btnEditProfile">
+                    <button class="profile-btn" onclick="window.location.href='/perfil/editar'">
+                        <span class="material-symbols-outlined">edit</span>
+                        Alterar Cadastro
+                    </button>
+                    <button class="profile-btn" onclick="window.location.href='/perfil/senha'">
+                        <span class="material-symbols-outlined">key</span>
+                        Redefinir Senha
+                    </button>
+                </div>
+
+        
+        </div>
+        </div>
+    </div>
+    <script th:src="@{/js/profile/sidebar.js}"></script>
+</div>
