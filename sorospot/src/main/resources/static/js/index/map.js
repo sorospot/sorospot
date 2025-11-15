@@ -240,6 +240,10 @@ function addMarkerToMap(m) {
         <div class="pinTooltipOwner"><strong>Por:</strong> ${escapeHtml(
           m.user || "Anônimo"
         )}</div>
+        <div class="pinTooltipShow" data-id="${m.id}">
+            <span class="material-symbols-outlined">double_arrow</span>
+            <button class="show-btn">Detalhes</button>
+        </div>
         ${deleteBtn}
       </div>
     </div>`;
