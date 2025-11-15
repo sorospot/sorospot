@@ -242,7 +242,7 @@ function addMarkerToMap(m) {
         )}</div>
         <div class="pinTooltipShow" data-id="${m.id}">
             <span class="material-symbols-outlined">double_arrow</span>
-            <button class="show-btn">Detalhes</button>
+            <a href="/occurrence/show/${m.id}"><button class="show-btn">Detalhes</button></a>
         </div>
         ${deleteBtn}
       </div>
