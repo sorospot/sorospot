@@ -27,10 +27,26 @@
       </div>
       <div class="colorImg">
         <div class="colorImg_div">
-          <label for="pinColor" id="colorLabel_edit" style="text-align: center"
-            >Cor do pin<br
+          <label
+            for="editCategory"
+            id="categoryLabel_edit"
+            style="text-align: center"
+            >Categoria<br
           /></label>
-          <input class="pinColor" name="color" type="color" value="#ff0000" />
+          <select
+            class="editCategory"
+            name="categoryId"
+            id="editCategory"
+            required
+            style="
+              width: 100%;
+              padding: 0.5rem;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+            "
+          >
+            <option value="">Selecione uma categoria</option>
+          </select>
         </div>
 
         <div class="imgDiv">

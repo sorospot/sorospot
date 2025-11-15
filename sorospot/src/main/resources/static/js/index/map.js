@@ -5,12 +5,32 @@
 let map;
 let markers = [];
 let currentOpenInfoWindow = null;
+let categories = [];
 
 window.initMap = function () {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: { lat: -23.5015, lng: -47.4526 },
   });
+
+  // Categorias
+  fetch("/api/maps/categories")
+    .then((r) => r.json())
+    .then((cats) => {
+      categories = cats;
+      const categorySelect = document.getElementById("pinCategory");
+      if (categorySelect) {
+        cats.forEach((cat) => {
+          const option = document.createElement("option");
+          option.value = cat.id;
+          option.textContent = cat.type;
+          option.dataset.color = cat.color;
+          option.dataset.icon = cat.icon;
+          categorySelect.appendChild(option);
+        });
+      }
+    })
+    .catch((e) => console.error("Erro ao carregar categorias:", e));
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
@@ -47,6 +67,8 @@ window.initMap = function () {
             lat,
             lng,
             color: o.color || "#ff0000",
+            categoryIcon: o.categoryIcon || "location_on",
+            categoryColor: o.color || "#ff0000",
             photo: o.photo,
             user: o.user,
             ownerEmail: o.userEmail || null,
@@ -119,12 +141,14 @@ window.initMap = function () {
     const titleVal = document.getElementById("pinTitle").value;
     if (!titleVal || !titleVal.trim()) return alert("Título é obrigatório");
     if (!latVal || !lngVal) return alert("Localização inválida");
+    const categoryId = document.getElementById("pinCategory").value;
+    if (!categoryId) return alert("Selecione uma categoria");
     const f = new FormData();
     f.append("lat", document.getElementById("pinLat").value);
     f.append("lng", document.getElementById("pinLng").value);
     f.append("title", document.getElementById("pinTitle").value);
     f.append("description", document.getElementById("pinDesc").value);
-    f.append("color", document.querySelector(".pinColor").value);
+    f.append("categoryId", categoryId);
     const file = document.getElementById("pinImage").files[0];
     if (file) f.append("image", file);
 
@@ -140,6 +164,7 @@ window.initMap = function () {
         return r.json();
       })
       .then((m) => {
+        const selectedCat = categories.find((c) => c.id == categoryId);
         addMarkerToMap({
           id: m.id,
           title: m.title,
@@ -147,7 +172,10 @@ window.initMap = function () {
           description: m.description,
           lat: parseFloat(m.latitude),
           lng: parseFloat(m.longitude),
-          color: m.color || document.querySelector(".pinColor").value,
+          color: m.color || (selectedCat ? selectedCat.color : "#ff0000"),
+          categoryIcon: selectedCat ? selectedCat.icon : "location_on",
+          categoryColor:
+            m.color || (selectedCat ? selectedCat.color : "#ff0000"),
           photo: m.photo,
           user: m.user,
           ownerEmail: m.userEmail || null,
@@ -202,15 +230,26 @@ const aumentarImagem = (t) => {
 };
 
 function addMarkerToMap(m) {
+  const iconText = m.categoryIcon || "location_on";
+  const iconColor = m.categoryColor || m.color || "#ff0000";
+
   const gMarker = new google.maps.Marker({
     position: { lat: m.lat, lng: m.lng },
     map: map,
     title: m.title,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      fillColor: iconColor,
+      fillOpacity: 1,
+      strokeColor: "#ffffff",
+      strokeWeight: 2,
+      scale: 12,
+    },
     label: {
-      text: "\uF567",
+      text: iconText,
       fontFamily: "Material Symbols Outlined",
       color: "#ffffff",
-      fontSize: "18px",
+      fontSize: "16px",
     },
   });
 
@@ -242,7 +281,9 @@ function addMarkerToMap(m) {
         )}</div>
         <div class="pinTooltipShow" data-id="${m.id}">
             <span class="material-symbols-outlined">double_arrow</span>
-            <a href="/occurrence/show/${m.id}"><button class="show-btn">Detalhes</button></a>
+            <a href="/occurrence/show/${
+              m.id
+            }"><button class="show-btn">Detalhes</button></a>
         </div>
         ${deleteBtn}
       </div>
@@ -474,7 +515,24 @@ function openEditModal(item) {
   document.getElementById("editId").value = item.id;
   document.getElementById("editTitle").value = item.title || "";
   document.getElementById("editDesc").value = item.description || "";
-  document.querySelector(".pinColor").value = item.color || "#ff0000";
+
+  const categorySelect = document.getElementById("editCategory");
+  if (categorySelect && categories.length > 0) {
+    categorySelect.innerHTML =
+      '<option value="">Selecione uma categoria</option>';
+    categories.forEach((cat) => {
+      const option = document.createElement("option");
+      option.value = cat.id;
+      option.textContent = cat.type;
+      option.dataset.color = cat.color;
+      option.dataset.icon = cat.icon;
+      if (item.category === cat.type) {
+        option.selected = true;
+      }
+      categorySelect.appendChild(option);
+    });
+  }
+
   const photosDiv = document.getElementById("editPhotos");
   photosDiv.innerHTML = "";
 
@@ -544,10 +602,12 @@ function openEditModal(item) {
   document.getElementById("editForm").onsubmit = function (ev) {
     ev.preventDefault();
     const id = document.getElementById("editId").value;
+    const categoryId = document.getElementById("editCategory").value;
+    if (!categoryId) return alert("Selecione uma categoria");
     const fd = new FormData();
     fd.append("title", document.getElementById("editTitle").value);
     fd.append("description", document.getElementById("editDesc").value);
-    fd.append("color", document.querySelector(".pinColor").value);
+    fd.append("categoryId", categoryId);
     const file = document.getElementById("editImage").files[0];
     if (file) fd.append("image", file);
 

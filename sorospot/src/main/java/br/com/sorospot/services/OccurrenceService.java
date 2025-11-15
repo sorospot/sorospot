@@ -49,7 +49,7 @@ public class OccurrenceService {
     }
 
     public Map<String, Object> createOccurrence(double lat, double lng, String title, 
-                                                String description, String color,
+                                                String description, Integer categoryId,
                                                 MultipartFile image, String userEmail) throws IOException {
         
         if (userEmail == null || userEmail.isBlank()) {
@@ -60,9 +60,14 @@ public class OccurrenceService {
             throw new IllegalArgumentException("Título obrigatório");
         }
         if (description == null) description = "";
-        if (color == null || !color.matches("^#([0-9a-fA-F]{6})$")) color = "#ff0000";
 
-        Category cat = getOrCreateDefaultCategory();
+        Category cat = null;
+        if (categoryId != null) {
+            cat = categoryRepository.findById(categoryId).orElse(null);
+        }
+        if (cat == null) {
+            cat = getOrCreateDefaultCategory();
+        }
         
         Occurrence o = new Occurrence();
         o.setCategory(cat);
@@ -74,7 +79,7 @@ public class OccurrenceService {
         String resolvedAddress = resolveAddress(lat, lng);
         o.setAddress(resolvedAddress);
         o.setStatus("novo");
-        o.setColor(color);
+        o.setColor(cat.getColor());
 
         // handle image
         if (image != null && !image.isEmpty()) {
@@ -129,7 +134,7 @@ public class OccurrenceService {
     }
 
     public Map<String, Object> updateOccurrence(Integer id, String title, String description,
-                                                String color, String removePhotos,
+                                                Integer categoryId, String removePhotos,
                                                 MultipartFile image, String userEmail) throws IOException {
         var opt = occurrenceRepository.findById(id);
         if (opt.isEmpty()) return null;
@@ -144,7 +149,13 @@ public class OccurrenceService {
 
         if (title != null) occ.setTitle(title);
         if (description != null) occ.setDescription(description);
-        if (color != null && color.matches("^#([0-9a-fA-F]{6})$")) occ.setColor(color);
+        if (categoryId != null) {
+            Category cat = categoryRepository.findById(categoryId).orElse(null);
+            if (cat != null) {
+                occ.setCategory(cat);
+                occ.setColor(cat.getColor());
+            }
+        }
 
         // handle para remover foto
         if (removePhotos != null && !removePhotos.isBlank()) {
@@ -183,6 +194,7 @@ public class OccurrenceService {
         m.put("id", o.getId());
         m.put("title", o.getTitle());
         m.put("category", o.getCategory() != null ? o.getCategory().getType() : null);
+        m.put("categoryIcon", o.getCategory() != null ? o.getCategory().getIcon() : null);
         m.put("description", o.getDescription());
         m.put("address", o.getAddress());
         m.put("latitude", o.getLatitude());
