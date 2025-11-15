@@ -140,6 +140,12 @@ strong.pinTooltipTitle,
   padding: 10rem;
 }
 
+.pinTooltipActions {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row-reverse;
+}
+
 @media (max-width: 740px) {
   main {
     padding-top: 4rem;

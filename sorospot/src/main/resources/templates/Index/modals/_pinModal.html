@@ -33,23 +33,24 @@
 
       <div class="colorImg">
         <div class="colorImg_div">
-          <label for="pinCategory" id="categoryLabel" style="text-align: center"
-            >Categoria<br
-          /></label>
-          <select
-            class="pinCategory"
-            name="categoryId"
-            id="pinCategory"
-            required
-            style="
-              width: 100%;
-              padding: 0.5rem;
-              border: 1px solid #ccc;
-              border-radius: 4px;
-            "
-          >
-            <option value="">Selecione uma categoria...</option>
-          </select>
+          <label for="pinCategoryTrigger" id="categoryLabel">Categoria</label>
+          <div class="category-select-container">
+            <button
+              type="button"
+              id="pinCategoryTrigger"
+              class="category-trigger"
+            >
+              <span class="material-symbols-outlined icon"></span>
+              <span class="text">Selecionar</span>
+              <span
+                class="material-symbols-outlined chevron"
+                id="touch_icon"
+                style="border: 0 !important; transition: 0.4s"
+                >touch_app</span
+              >
+            </button>
+            <input type="hidden" name="categoryId" id="pinCategory" />
+          </div>
         </div>
 
         <div class="imgDiv">

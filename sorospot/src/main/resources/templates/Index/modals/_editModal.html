@@ -28,25 +28,23 @@
       <div class="colorImg">
         <div class="colorImg_div">
           <label
-            for="editCategory"
+            for="editCategoryTrigger"
             id="categoryLabel_edit"
             style="text-align: center"
             >Categoria<br
           /></label>
-          <select
-            class="editCategory"
-            name="categoryId"
-            id="editCategory"
-            required
-            style="
-              width: 100%;
-              padding: 0.5rem;
-              border: 1px solid #ccc;
-              border-radius: 4px;
-            "
-          >
-            <option value="">Selecione uma categoria</option>
-          </select>
+          <div class="category-select-container">
+            <button
+              type="button"
+              id="editCategoryTrigger"
+              class="category-trigger"
+            >
+              <span class="material-symbols-outlined icon"></span>
+              <span class="text">Selecione uma categoria</span>
+              <span class="material-symbols-outlined chevron">expand_more</span>
+            </button>
+            <input type="hidden" name="categoryId" id="editCategory" />
+          </div>
         </div>
 
         <div class="imgDiv">

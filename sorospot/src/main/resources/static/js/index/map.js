@@ -3,9 +3,24 @@
 //   window.SOROSPOT_CURRENT_USER_EMAIL (string)
 
 let map;
-let markers = [];
+let markers = {}; // { id: gMarker }
 let currentOpenInfoWindow = null;
 let categories = [];
+let categoryModalContext = null;
+
+function formatCategory(cat) {
+  if (!cat) return null;
+  const rawType = cat.type || "";
+  const displayName = rawType
+    ? rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase()
+    : "";
+  const iconRaw = cat.icon;
+  const displayIcon =
+    iconRaw && String(iconRaw).toLowerCase() !== "null" && iconRaw.trim() !== ""
+      ? iconRaw
+      : "location_on";
+  return { ...cat, displayName, displayIcon };
+}
 
 window.initMap = function () {
   map = new google.maps.Map(document.getElementById("map"), {
@@ -17,18 +32,7 @@ window.initMap = function () {
   fetch("/api/maps/categories")
     .then((r) => r.json())
     .then((cats) => {
-      categories = cats;
-      const categorySelect = document.getElementById("pinCategory");
-      if (categorySelect) {
-        cats.forEach((cat) => {
-          const option = document.createElement("option");
-          option.value = cat.id;
-          option.textContent = cat.type;
-          option.dataset.color = cat.color;
-          option.dataset.icon = cat.icon;
-          categorySelect.appendChild(option);
-        });
-      }
+      categories = cats.map(formatCategory);
     })
     .catch((e) => console.error("Erro ao carregar categorias:", e));
 
@@ -125,6 +129,15 @@ window.initMap = function () {
 
   // modal de novo pin
   const modal = document.getElementById("pinModal");
+  const pinTrigger = document.getElementById("pinCategoryTrigger");
+  if (pinTrigger) {
+    pinTrigger.addEventListener("click", () => {
+      openCategoryModal({
+        hiddenId: "pinCategory",
+        triggerId: "pinCategoryTrigger",
+      });
+    });
+  }
   document.getElementById("cancelPin").addEventListener("click", () => {
     if (
       window.SOROSPOT_IMAGE_PICKERS &&
@@ -193,6 +206,20 @@ window.initMap = function () {
     document.getElementById("pinTitle").value = "";
     document.getElementById("pinDesc").value = "";
     document.getElementById("pinImage").value = "";
+    const hidden = document.getElementById("pinCategory");
+    const trig = document.getElementById("pinCategoryTrigger");
+    if (hidden) hidden.value = "";
+    if (trig) {
+      const icon = trig.querySelector(".material-symbols-outlined.icon");
+      if (icon) {
+        icon.textContent = "";
+        icon.style.color = "var(--bg-color-secondary)";
+      }
+      const text = trig.querySelector(".text");
+      if (text) text.textContent = "Selecionar";
+      const chevron = trig.querySelector(".material-symbols-outlined.chevron");
+      if (chevron) chevron.style.display = "";
+    }
   }
 };
 
@@ -242,8 +269,8 @@ function addMarkerToMap(m) {
       fillColor: iconColor,
       fillOpacity: 1,
       strokeColor: "#ffffff",
-      strokeWeight: 2,
-      scale: 12,
+      strokeWeight: 4,
+      scale: 13,
     },
     label: {
       text: iconText,
@@ -279,13 +306,15 @@ function addMarkerToMap(m) {
         <div class="pinTooltipOwner"><strong>Por:</strong> ${escapeHtml(
           m.user || "Anônimo"
         )}</div>
-        <div class="pinTooltipShow" data-id="${m.id}">
-            <span class="material-symbols-outlined">double_arrow</span>
-            <a href="/occurrence/show/${
-              m.id
-            }"><button class="show-btn">Detalhes</button></a>
+        <div class="pinTooltipActions">
+          <div class="pinTooltipShow" data-id="${m.id}">
+              <span class="material-symbols-outlined">double_arrow</span>
+              <a href="/occurrence/show/${
+                m.id
+              }"><button class="show-btn">Detalhes</button></a>
+          </div>
+          ${deleteBtn}
         </div>
-        ${deleteBtn}
       </div>
     </div>`;
 
@@ -367,7 +396,7 @@ function addMarkerToMap(m) {
     }, 50);
   });
 
-  markers.push(gMarker);
+  markers[m.id] = gMarker; // Armazena marker por id
 }
 
 function escapeHtml(str) {
@@ -418,6 +447,7 @@ function openDeleteModal(id, onConfirm) {
 function openMyPinsModal() {
   const modal = document.getElementById("myPinsModal");
   const list = document.getElementById("myPinsList");
+  list.classList.remove("no-pins");
   list.innerHTML = "Carregando...";
   modal.classList.toggle("open");
   fetch("/api/maps/my-occurrences")
@@ -464,12 +494,16 @@ function openMyPinsModal() {
 
       list.querySelectorAll(".my-delete").forEach((b) =>
         b.addEventListener("click", (ev) => {
-          const id = ev.target.getAttribute("data-id");
+          const id = ev.currentTarget.getAttribute("data-id");
           openDeleteModal(id, () => {
             fetch("/api/maps/markers/" + id, {
               method: "DELETE",
             }).then((r) => {
               if (r.status === 204) {
+                if (markers[id]) {
+                  markers[id].setMap(null);
+                  delete markers[id];
+                }
                 openMyPinsModal();
               } else r.text().then((t) => alert("Erro: " + t));
             });
@@ -479,7 +513,7 @@ function openMyPinsModal() {
 
       list.querySelectorAll(".my-zoom").forEach((b) =>
         b.addEventListener("click", (ev) => {
-          const id = ev.target.getAttribute("data-id");
+          const id = ev.currentTarget.getAttribute("data-id");
           const item = arr.find((x) => x.id == id);
           modal.classList.toggle("open");
           if (item && item.latitude && item.longitude) {
@@ -494,7 +528,7 @@ function openMyPinsModal() {
 
       list.querySelectorAll(".my-edit").forEach((b) =>
         b.addEventListener("click", (ev) => {
-          const id = ev.target.getAttribute("data-id");
+          const id = ev.currentTarget.getAttribute("data-id");
           const item = arr.find((x) => x.id == id);
           if (!item) return;
           openEditModal(item);
@@ -516,21 +550,37 @@ function openEditModal(item) {
   document.getElementById("editTitle").value = item.title || "";
   document.getElementById("editDesc").value = item.description || "";
 
-  const categorySelect = document.getElementById("editCategory");
-  if (categorySelect && categories.length > 0) {
-    categorySelect.innerHTML =
-      '<option value="">Selecione uma categoria</option>';
-    categories.forEach((cat) => {
-      const option = document.createElement("option");
-      option.value = cat.id;
-      option.textContent = cat.type;
-      option.dataset.color = cat.color;
-      option.dataset.icon = cat.icon;
-      if (item.category === cat.type) {
-        option.selected = true;
+  const editHidden = document.getElementById("editCategory");
+  const editTrigger = document.getElementById("editCategoryTrigger");
+  if (editTrigger) {
+    editTrigger.onclick = () =>
+      openCategoryModal({
+        hiddenId: "editCategory",
+        triggerId: "editCategoryTrigger",
+      });
+  }
+  if (categories && categories.length) {
+    const currentCat = categories.find(
+      (c) => c.type === item.category || c.displayName === item.category
+    );
+    if (currentCat) {
+      if (editHidden) editHidden.value = currentCat.id;
+      if (editTrigger) {
+        const icon = editTrigger.querySelector(
+          ".material-symbols-outlined.icon"
+        );
+        const text = editTrigger.querySelector(".text");
+        const chevron = editTrigger.querySelector(
+          ".material-symbols-outlined.chevron"
+        );
+        if (icon) {
+          icon.textContent = currentCat.displayIcon;
+          icon.style.color = currentCat.color;
+        }
+        if (text) text.textContent = currentCat.displayName;
+        if (chevron) chevron.style.display = "none";
       }
-      categorySelect.appendChild(option);
-    });
+    }
   }
 
   const photosDiv = document.getElementById("editPhotos");
@@ -635,7 +685,6 @@ function openEditModal(item) {
         return r.json();
       })
       .then((res) => {
-        alert("Atualizado");
         modal.classList.toggle("open");
         openMyPinsModal();
         window.location.reload();
@@ -664,4 +713,48 @@ function openDeletePhotoModal(wrapper, photoPath, photosContainer) {
 
     deletePhotoModal.classList.remove("open");
   };
+}
+
+function openCategoryModal(context) {
+  categoryModalContext = context;
+  const modal = document.getElementById("categoryModal");
+  const list = document.getElementById("categoryList");
+  if (!modal || !list) return;
+  list.innerHTML = "";
+  if (!categories || !categories.length) {
+    list.innerHTML = "<p class='modalWarning'>Carregando categorias...</p>";
+  } else {
+    categories.forEach((cat) => {
+      const card = document.createElement("div");
+      card.className = "category-card";
+      card.innerHTML = `
+        <span class="material-symbols-outlined" style="color:${cat.color}">${cat.displayIcon}</span>
+        <span class="name">${cat.displayName}</span>
+        <span class="pill" style="background:${cat.color}"></span>
+      `;
+      card.addEventListener("click", () => {
+        const hidden = document.getElementById(context.hiddenId);
+        const trig = document.getElementById(context.triggerId);
+        if (hidden) hidden.value = cat.id;
+        if (trig) {
+          const iconEl = trig.querySelector(".material-symbols-outlined.icon");
+          const textEl = trig.querySelector(".text");
+          const chevronEl = trig.querySelector(
+            ".material-symbols-outlined.chevron"
+          );
+          if (iconEl) {
+            iconEl.textContent = cat.displayIcon;
+            iconEl.style.color = cat.color;
+          }
+          if (textEl) textEl.textContent = cat.displayName;
+          if (chevronEl) chevronEl.style.display = "none";
+        }
+        modal.classList.remove("open");
+      });
+      list.appendChild(card);
+    });
+  }
+  const cancel = document.getElementById("cancelCategory");
+  if (cancel) cancel.onclick = () => modal.classList.remove("open");
+  modal.classList.add("open");
 }
