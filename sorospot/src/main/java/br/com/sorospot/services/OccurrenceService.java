@@ -78,7 +78,7 @@ public class OccurrenceService {
         o.setLongitude(new BigDecimal(lng));
         String resolvedAddress = resolveAddress(lat, lng);
         o.setAddress(resolvedAddress);
-        o.setStatus("novo");
+        o.setStatus("Pendente");
         o.setColor(cat.getColor());
 
         // handle image

@@ -52,6 +52,28 @@
 .category-trigger .chevron {
   color: var(--bg-color-secondary);
 }
+.category-trigger.category-error {
+  border-color: #d32f2f;
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+input.input-error,
+textarea.input-error {
+  border-color: #d32f2f !important;
+  animation: shake 0.4s;
+}
 
 .category-grid {
   display: grid;

@@ -152,10 +152,26 @@ window.initMap = function () {
     const latVal = document.getElementById("pinLat").value;
     const lngVal = document.getElementById("pinLng").value;
     const titleVal = document.getElementById("pinTitle").value;
-    if (!titleVal || !titleVal.trim()) return alert("Título é obrigatório");
-    if (!latVal || !lngVal) return alert("Localização inválida");
+    const titleInput = document.getElementById("pinTitle");
+    if (!titleVal || !titleVal.trim()) {
+      if (titleInput) {
+        titleInput.classList.add("input-error");
+        setTimeout(() => titleInput.classList.remove("input-error"), 2000);
+      }
+      return;
+    }
+    if (!latVal || !lngVal) {
+      return alert("Localização inválida");
+    }
     const categoryId = document.getElementById("pinCategory").value;
-    if (!categoryId) return alert("Selecione uma categoria");
+    if (!categoryId) {
+      const trigger = document.getElementById("pinCategoryTrigger");
+      if (trigger) {
+        trigger.classList.add("category-error");
+        setTimeout(() => trigger.classList.remove("category-error"), 2000);
+      }
+      return;
+    }
     const f = new FormData();
     f.append("lat", document.getElementById("pinLat").value);
     f.append("lng", document.getElementById("pinLng").value);
@@ -652,8 +668,24 @@ function openEditModal(item) {
   document.getElementById("editForm").onsubmit = function (ev) {
     ev.preventDefault();
     const id = document.getElementById("editId").value;
+    const titleVal = document.getElementById("editTitle").value;
+    const titleInput = document.getElementById("editTitle");
+    if (!titleVal || !titleVal.trim()) {
+      if (titleInput) {
+        titleInput.classList.add("input-error");
+        setTimeout(() => titleInput.classList.remove("input-error"), 2000);
+      }
+      return;
+    }
     const categoryId = document.getElementById("editCategory").value;
-    if (!categoryId) return alert("Selecione uma categoria");
+    if (!categoryId) {
+      const trigger = document.getElementById("editCategoryTrigger");
+      if (trigger) {
+        trigger.classList.add("category-error");
+        setTimeout(() => trigger.classList.remove("category-error"), 2000);
+      }
+      return;
+    }
     const fd = new FormData();
     fd.append("title", document.getElementById("editTitle").value);
     fd.append("description", document.getElementById("editDesc").value);
