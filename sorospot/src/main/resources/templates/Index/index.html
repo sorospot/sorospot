@@ -66,5 +66,18 @@
       async
       defer
     ></script>
+
+    <script>
+        var reference = document.querySelector("header");
+        var myPinsButton = reference.querySelector("#myPinsBtn");
+        var centerBtn = reference.querySelector("#centerBtn");
+        var addressInput = reference.querySelector("#address");
+        var searchBtn = reference.querySelector("#searchBtn");
+
+        addressInput.removeAttribute("disabled");
+        searchBtn.removeAttribute("disabled");
+        myPinsButton.removeAttribute("disabled");
+        centerBtn.removeAttribute("disabled");
+    </script>
   </body>
 </html>
