@@ -1,0 +1,27 @@
+<section th:fragment="summary(occurrence)">
+  <div class="occurrence-summary">
+    <h1 th:text="${occurrence.title}">Título da ocorrência</h1>
+
+    <div class="occurrence-summary-grid">
+      <div>
+        <strong>Status:</strong>
+        <span th:text="${occurrence.status}"></span>
+      </div>
+
+      <div>
+        <strong>Categoria:</strong>
+        <span th:text="${occurrence.category.type}"></span>
+      </div>
+
+      <div>
+        <strong>Criada em:</strong>
+        <span th:text="${#temporals.format(occurrence.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+      </div>
+
+      <div>
+        <strong>Por:</strong>
+        <span th:text="${occurrence.user.name}"></span>
+      </div>
+    </div>
+  </div>
+</section>

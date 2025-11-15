@@ -1,0 +1,15 @@
+<section th:fragment="photos(occurrence)">
+    <div class="occurrence-photos">
+        <h2>Evidências</h2>
+
+        <div th:if="${#lists.isEmpty(occurrence.photos)}">
+            <p>Nenhuma foto adicionada.</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(occurrence.photos)}" class="photo-grid">
+            <img th:each="photo : ${occurrence.photos}"
+                 th:src="@{/uploads/{filename}(filename=${photo.filename})}"
+                 th:alt="'Foto ' + ${photo.id}" />
+        </div>
+    </div>
+</section>

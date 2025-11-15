@@ -1,0 +1,20 @@
+<section th:fragment="actions(occurrence, user)">
+    <div class="occurrence-actions" 
+         th:if="${user != null and (
+                 (user.role.userRole == 'USER' and user.id == occurrence.user.id) or
+                 user.role.userRole == 'ADMIN' or
+                 user.role.userRole == 'PUBLIC_ENTITIES'
+         )}">
+        <h2>Ações</h2>
+
+        <div th:if="${(user.role.userRole == 'USER' and user.id == occurrence.user.id) or 
+                      user.role.userRole == 'ADMIN'}">
+            <button class="btn" data-open-edit-modal>Editar</button>
+            <button class="btn btn-danger" data-open-delete-modal>Excluir</button>
+        </div>
+
+        <div>
+            <button class="btn btn-secondary" data-open-status-modal>Alterar Status</button>
+        </div>
+    </div>
+</section>
