@@ -1,29 +1,20 @@
 <section th:fragment="actions(occurrence, user)">
-    <div class="occurrence-actions">
+    <div class="occurrence-actions" 
+         th:if="${user != null and (
+                 (user.role.userRole == 'USER' and user.id == occurrence.user.id) or
+                 user.role.userRole == 'ADMIN' or
+                 user.role.userRole == 'PUBLIC_ENTITIES'
+         )}">
         <h2>Ações</h2>
 
-        <!-- Usuário simples dono da ocorrência -->
-        <div th:if="${user.role.userRole == 'USER' and user.id == occurrence.user.id}">
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/edit'}" class="btn">Editar</a>
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/delete'}" class="btn btn-danger">Excluir</a>
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/status'}" class="btn btn-secondary">Alterar Status</a>
+        <div th:if="${(user.role.userRole == 'USER' and user.id == occurrence.user.id) or 
+                      user.role.userRole == 'ADMIN'}">
+            <button class="btn" data-open-edit-modal>Editar</button>
+            <button class="btn btn-danger" data-open-delete-modal>Excluir</button>
         </div>
 
-        <!-- Usuário simples que não é dono -->
-        <div th:if="${user.role.userRole == 'USER' and user.id != occurrence.user.id}">
-            <p>Você pode apenas visualizar esta ocorrência.</p>
-        </div>
-
-        <!-- Usuário intermediário -->
-        <div th:if="${user.role.userRole == 'INTERMEDIATE'}">
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/status'}" class="btn btn-secondary">Alterar Status</a>
-        </div>
-
-        <!-- Admin -->
-        <div th:if="${user.role.userRole == 'ADMIN'}">
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/edit'}" class="btn">Editar</a>
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/delete'}" class="btn btn-danger">Excluir</a>
-            <a th:href="@{'/occurrences/' + ${occurrence.id} + '/status'}" class="btn btn-secondary">Alterar Status</a>
+        <div>
+            <button class="btn btn-secondary" data-open-status-modal>Alterar Status</button>
         </div>
     </div>
 </section>
