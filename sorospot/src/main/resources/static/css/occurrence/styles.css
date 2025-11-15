@@ -325,6 +325,41 @@
     margin-bottom: 1.2rem;
 }
 
+/* Botão de Voltar */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2rem;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #0c64de;
+    background: #fff;
+    border: 2px solid #0c64de;
+    border-radius: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(12, 100, 222, 0.1);
+    width: fit-content;
+    margin-bottom: 1rem;
+    animation: slideInFade 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s backwards;
+}
+
+.btn-back:hover {
+    background: #0c64de;
+    color: #fff;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 16px rgba(12, 100, 222, 0.25);
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-back:hover .material-symbols-outlined {
+    transform: translateX(-4px);
+}
 
 /* Responsividade */
 @media (max-width: 768px) {
@@ -363,6 +398,10 @@
     .btn {
         width: 100%;
     }
+
+    .btn-back {
+        margin-top: 20px;
+    }
 }
 
 @media (max-width: 500px) {
@@ -392,6 +431,15 @@
         width: 100%;                      /* ocupa toda a largura do grid */
         height: auto;                     /* mantém proporção */
     }
+
+    .btn-back {
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        justify-content: center;
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 420px) {
@@ -405,7 +453,7 @@
     .occurrence-last-update,
     .occurrence-actions {
         width: 100%;        /* ocupa toda a largura disponível */
-        max-width: 290px;   /* largura máxima do card */
+        max-width: 330px;   /* largura máxima do card */
         margin: 0 auto;     /* centraliza horizontalmente */
         padding: 1.2rem;
     }
@@ -428,5 +476,19 @@
     .occurrence-last-update h2,
     .occurrence-actions h2 {
         font-size: 2.7rem;
+    }
+
+    .btn-back {
+        font-size: 1.6rem;
+        padding: 0.6rem 1.2rem;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn-back .material-symbols-outlined {
+        font-size: 1.6rem;
     }
 }

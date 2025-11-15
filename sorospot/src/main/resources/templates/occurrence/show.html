@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title th:text="'Ocorrência #' + ${occurrence.id}"></title>
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
@@ -16,6 +17,11 @@
         <div th:replace="~{utils/_header :: header}"></div>
 
         <main class="occurrence-show-container">
+            <a href="/mapa" class="btn-back">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar ao Mapa
+            </a>
+
             <section th:replace="~{occurrence/show/_summary :: summary(occurrence=${occurrence})}"></section>
 
             <section th:replace="~{occurrence/show/_details :: details(occurrence=${occurrence})}"></section>
