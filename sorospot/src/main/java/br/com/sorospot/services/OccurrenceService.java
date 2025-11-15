@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
@@ -30,15 +34,18 @@ public class OccurrenceService {
     private final CategoryRepository categoryRepository;
     private final PhotoService photoService;
     private final UserService userService;
+    private final GoogleMapsService googleMapsService;
 
     public OccurrenceService(OccurrenceRepository occurrenceRepository,
                              CategoryRepository categoryRepository,
                              PhotoService photoService,
-                             UserService userService) {
+                             UserService userService,
+                             GoogleMapsService googleMapsService) {
         this.occurrenceRepository = occurrenceRepository;
         this.categoryRepository = categoryRepository;
         this.photoService = photoService;
         this.userService = userService;
+        this.googleMapsService = googleMapsService;
     }
 
     public Map<String, Object> createOccurrence(double lat, double lng, String title, 
@@ -64,8 +71,8 @@ public class OccurrenceService {
         o.setDeleted(false);
         o.setLatitude(new BigDecimal(lat));
         o.setLongitude(new BigDecimal(lng));
-        String addr = String.format("lat:%s,lng:%s", lat, lng);
-        o.setAddress(addr);
+        String resolvedAddress = resolveAddress(lat, lng);
+        o.setAddress(resolvedAddress);
         o.setStatus("novo");
         o.setColor(color);
 
@@ -203,5 +210,23 @@ public class OccurrenceService {
         }
         
         return m;
+    }
+
+    private String resolveAddress(double lat, double lng) {
+        try {
+            String json = googleMapsService.reverseGeocode(lat, lng).block();
+
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(json);
+
+            JsonNode results = root.path("results");
+            if (results.isArray() && results.size() > 0) {
+                return results.get(0).path("formatted_address").asText();
+            }
+
+            return String.format("Lat: %s, Lng: %s", lat, lng);
+        } catch (Exception e) {
+            return String.format("Lat: %s, Lng: %s", lat, lng);
+        }
     }
 }
