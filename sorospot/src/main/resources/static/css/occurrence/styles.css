@@ -318,6 +318,14 @@
     box-shadow: 0 4px 12px rgba(107, 114, 128, 0.35);
 }
 
+.lat-long {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 4rem;
+    margin-bottom: 1.2rem;
+}
+
+
 /* Responsividade */
 @media (max-width: 768px) {
     .occurrence-show-container {
@@ -329,6 +337,7 @@
         font-size: 2.4rem;
     }
 
+    .lat-long,
     .occurrence-summary-grid {
         grid-template-columns: 1fr; /* uma coluna só */
         column-gap: 0; /* remove o gap entre colunas, não necessário */
