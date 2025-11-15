@@ -1,6 +1,6 @@
 <section th:fragment="history(occurrence)">
     <div class="occurrence-last-update">
         <h2>Histórico</h2>
-        <p><strong>Atualizado em:</strong> <span th:text="${occurrence.lastUpdated}"></span></p>
+        <p><strong>Atualizado em:</strong> <span th:text="${#temporals.format(occurrence.lastUpdated, 'dd/MM/yyyy HH:mm')}"></span></p>
     </div>
 </section>
