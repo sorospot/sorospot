@@ -24,16 +24,27 @@ function formatCategory(cat) {
 }
 
 window.initMap = function () {
-    document.addEventListener("DOMContentLoaded", function() {
-        var editModal = document.getElementById("editModal");
-        if (editModal) {
-        editModal.addEventListener("click", function(event) {
-            fechaModal(event, this);
-        });
-        }
+  const editModal = document.getElementById("editModal");
+  if (editModal) {
+    editModal.addEventListener("click", function(event) {
+      const innerModal = editModal.firstElementChild;
+      if (!innerModal.contains(event.target)) {
+        fechaModal(event, editModal);
+      }
     });
+  }
+
+  const categoryModal = document.getElementById("categoryModal");
+  if (categoryModal) {
+    categoryModal.addEventListener("click", function(event) {
+      const innerModal = categoryModal.firstElementChild;
+      if (!innerModal.contains(event.target)) {
+        fechaModal(event, categoryModal);
+      }
+    });
+  }
   map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 13,
+    zoom: 17,
     center: { lat: -23.5015, lng: -47.4526 },
   });
 
@@ -50,7 +61,7 @@ window.initMap = function () {
       (pos) => {
         const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         map.setCenter(p);
-        map.setZoom(16);
+        map.setZoom(19);
         new google.maps.Marker({ position: p, map, title: "Você" });
       },
       (err) => console.warn("Geolocalização Falhou.", err)
