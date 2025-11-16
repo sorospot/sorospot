@@ -1,18 +1,23 @@
 package br.com.sorospot.controllers;
 
 import br.com.sorospot.dtos.GeocodeResult;
+import br.com.sorospot.repositories.CategoryRepository;
 import br.com.sorospot.services.GoogleMapsService;
 import br.com.sorospot.services.OccurrenceService;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/maps")
@@ -20,11 +25,14 @@ public class MapsController {
 
     private final GoogleMapsService googleMapsService;
     private final OccurrenceService occurrenceService;
+    private final CategoryRepository categoryRepository;
 
     public MapsController(GoogleMapsService googleMapsService,
-                          OccurrenceService occurrenceService) {
+                          OccurrenceService occurrenceService,
+                          CategoryRepository categoryRepository) {
         this.googleMapsService = googleMapsService;
         this.occurrenceService = occurrenceService;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping(value = "/geocode", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,21 +52,31 @@ public class MapsController {
 
     @PostMapping(value = "/markers", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
                  produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Object> addMarkerMultipart(@RequestParam double lat,
+    public ResponseEntity<Map<String, Object>> addMarkerMultipart(@RequestParam double lat,
                                                    @RequestParam double lng,
                                                    @RequestParam String title,
                                                    @RequestParam String description,
-                                                   @RequestParam String color,
+                                                   @RequestParam(required = false) Integer categoryId,
                                                    @RequestParam(required = false) MultipartFile image,
-                                                   @RequestHeader(value = "X-User-Email", required = false) String userEmail) 
+                                                   HttpSession session) 
             throws IOException {
-        return occurrenceService.createOccurrence(lat, lng, title, description, color, image, userEmail);
+        String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        if (userEmail == null || userEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(
+                occurrenceService.createOccurrence(lat, lng, title, description, categoryId, image, userEmail)
+        );
     }
 
     @DeleteMapping(value = "/markers/{id}")
     public ResponseEntity<?> deleteMarker(@PathVariable Integer id,
-                                          @RequestHeader(value = "X-User-Email", required = false) String userEmail) {
+                                          HttpSession session) {
         try {
+            String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+            if (userEmail == null || userEmail.isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             boolean deleted = occurrenceService.deleteOccurrence(id, userEmail);
             if (!deleted) {
                 return ResponseEntity.notFound().build();
@@ -70,8 +88,12 @@ public class MapsController {
     }
 
     @GetMapping(value = "/my-occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Map<String, Object>> myOccurrences(@RequestHeader(value = "X-User-Email", required = false) String userEmail) {
-        return occurrenceService.getMyOccurrences(userEmail);
+    public ResponseEntity<List<Map<String, Object>>> myOccurrences(HttpSession session) {
+        String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        if (userEmail == null || userEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(occurrenceService.getMyOccurrences(userEmail));
     }
 
     @PutMapping(value = "/markers/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
@@ -79,14 +101,18 @@ public class MapsController {
     public ResponseEntity<?> updateMarker(@PathVariable Integer id,
                                           @RequestParam(required = false) String title,
                                           @RequestParam(required = false) String description,
-                                          @RequestParam(required = false) String color,
+                                          @RequestParam(required = false) Integer categoryId,
                                           @RequestParam(required = false) String removePhotos,
                                           @RequestParam(required = false) MultipartFile image,
-                                          @RequestHeader(value = "X-User-Email", required = false) String userEmail) 
+                                          HttpSession session) 
             throws IOException {
         try {
+            String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+            if (userEmail == null || userEmail.isBlank()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
             Map<String, Object> result = occurrenceService.updateOccurrence(
-                    id, title, description, color, removePhotos, image, userEmail);
+                    id, title, description, categoryId, removePhotos, image, userEmail);
             
             if (result == null) {
                 return ResponseEntity.notFound().build();
@@ -103,5 +129,21 @@ public class MapsController {
     @GetMapping(value = "/occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Map<String, Object>> listOccurrences() {
         return occurrenceService.listAllOccurrences();
+    }
+
+    @GetMapping(value = "/categories", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, Object>>> getCategories() {
+        List<Map<String, Object>> categories = categoryRepository.findAll().stream()
+                .filter(c -> !c.getDeleted())
+                .map(c -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", c.getId());
+                    map.put("type", c.getType());
+                    map.put("color", c.getColor());
+                    map.put("icon", c.getIcon());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(categories);
     }
 }

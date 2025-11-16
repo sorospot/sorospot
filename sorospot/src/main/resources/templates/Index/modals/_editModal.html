@@ -1,0 +1,95 @@
+<div
+  id="editModal"
+  class="modal"
+  th:fragment="editModal"
+  onclick="fechaModal(event, this)"
+>
+  <div class="panel">
+    <h2>Editar ocorrência</h2>
+    <form id="editForm">
+      <input type="hidden" id="editId" />
+      <div>
+        <label>Título<br /><input id="editTitle" style="width: 100%" /></label>
+      </div>
+      <div>
+        <label
+          >Descrição<br /><textarea
+            id="editDesc"
+            style="width: 100%"
+          ></textarea>
+        </label>
+      </div>
+      <div>
+        <label
+          >Fotos atuais
+          <div id="editPhotos"></div>
+        </label>
+      </div>
+      <div class="colorImg">
+        <div class="colorImg_div">
+          <label
+            for="editCategoryTrigger"
+            id="categoryLabel_edit"
+            style="text-align: center"
+            >Categoria<br
+          /></label>
+          <div class="category-select-container">
+            <button
+              type="button"
+              id="editCategoryTrigger"
+              class="category-trigger"
+            >
+              <span class="material-symbols-outlined icon"></span>
+              <span class="text">Selecione uma categoria</span>
+              <span class="material-symbols-outlined chevron">expand_more</span>
+            </button>
+            <input type="hidden" name="categoryId" id="editCategory" />
+          </div>
+        </div>
+
+        <div class="imgDiv">
+          <label for="editImage" id="labelEditImage">Imagem<br /></label>
+          <label
+            id="btnImg_edit"
+            type="button"
+            for="editImage"
+            style="margin-bottom: 0; height: 8rem"
+          >
+            <span class="material-symbols-outlined"> add </span>
+          </label>
+          <img
+            id="previewImagem_edit"
+            alt="preview"
+            onclick="aumentarImagem(this)"
+          />
+          <div id="btnsImg_edit">
+            <label
+              id="trocarImagem_edit"
+              type="button"
+              for="editImage"
+              state="disabled"
+            >
+              Trocar imagem
+              <span class="material-symbols-outlined"> restart_alt </span>
+            </label>
+            <label id="removerImagem_edit" type="button" state="disabled">
+              <span class="material-symbols-outlined"> backspace </span>
+              Remover imagem
+            </label>
+          </div>
+
+          <input id="editImage" name="image" type="file" accept="image/*" />
+        </div>
+      </div>
+      <div class="modalFooter">
+        <button type="button" id="cancelEdit">
+          Cancelar
+          <span class="material-symbols-outlined"> arrow_left_alt </span>
+        </button>
+        <button type="submit">
+          Salvar <span class="material-symbols-outlined"> done_outline </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

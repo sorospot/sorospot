@@ -1,0 +1,20 @@
+<div
+  id="deletePhotoModal"
+  class="modal"
+  style="z-index: 1001"
+  th:fragment="deletePhotoModal"
+  onclick="fechaModal(event, this)"
+>
+  <div class="panel">
+    <h2>Confirmar exclusão</h2>
+    <p>Deseja realmente excluir esta foto?</p>
+    <div class="modalFooter">
+      <button id="cancelDeletePhoto">
+        Cancelar <span class="material-symbols-outlined">arrow_left_alt</span>
+      </button>
+      <button id="confirmDeletePhoto">
+        Excluir <span class="material-symbols-outlined">backspace</span>
+      </button>
+    </div>
+  </div>
+</div>

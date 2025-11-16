@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title th:text="'Ocorrência #' + ${occurrence.id}"></title>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"
+        />
+        <link rel="stylesheet" th:href="@{/css/occurrence/styles.css}">
+        <link rel="stylesheet" th:href="@{/css/utils/header.css}">
+        <link rel="stylesheet" th:href="@{/css/utils/variables.css}">
+        <link rel="stylesheet" th:href="@{/css/occurrence/styles.css}">
+    </head>
+    <body>
+        <div th:replace="~{utils/_header :: header}"></div>
+
+        <main class="occurrence-show-container">
+            <a href="/mapa" class="btn-back">
+                <span class="material-symbols-outlined">arrow_back</span>
+                Voltar ao Mapa
+            </a>
+
+            <section th:replace="~{occurrence/show/_summary :: summary(occurrence=${occurrence})}"></section>
+
+            <section th:replace="~{occurrence/show/_details :: details(occurrence=${occurrence})}"></section>
+
+            <section th:replace="~{occurrence/show/_photos :: photos(occurrence=${occurrence})}"></section>
+
+            <section>
+                <div th:if="${occurrence.lastUpdated != null}">
+                  <section th:replace="~{occurrence/show/_history :: history(occurrence=${occurrence})}"></section>
+                </div>
+            </section>
+
+            <!-- <section th:replace="~{occurrence/show/_actions :: actions(occurrence=${occurrence}, user=${user})}"></section> -->
+        </main>
+
+        <script src="/js/occurence/show/occurrence.js"></script>
+    </body>
+</html>

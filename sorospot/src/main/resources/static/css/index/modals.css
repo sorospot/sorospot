@@ -17,14 +17,114 @@
   pointer-events: auto;
 }
 
+.category-select-container {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+}
+.category-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.2rem;
+  width: 100%;
+  max-width: 14rem;
+  padding: 0.6rem 0.8rem;
+  height: 97.6%;
+  background: #fff;
+  color: var(--bg-color-secondary);
+  border: 2px solid var(--bg-color-secondary);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: 0.4s;
+}
+.category-trigger .icon {
+  color: var(--bg-color-secondary);
+}
+.category-trigger .text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.category-trigger .chevron {
+  color: var(--bg-color-secondary);
+}
+.category-trigger.category-error {
+  border-color: #d32f2f;
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+input.input-error,
+textarea.input-error {
+  border-color: #d32f2f !important;
+  animation: shake 0.4s;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+.category-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  cursor: pointer;
+  border: 2px solid var(--bg-color-secondary);
+  border-radius: 0.6rem;
+  background: #fff;
+  transition: 0.4s;
+}
+.category-card .material-symbols-outlined {
+  font-size: 2rem;
+}
+.category-card .name {
+  font-weight: 700;
+  color: var(--bg-color-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.category-card .pill {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.category-card:hover {
+  background: rgba(0, 126, 231, 0.06);
+}
+
 .modal .panel {
   background: #fff;
-  padding: 1.6rem;
-  border-radius: 0.6rem;
-  row-gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.6rem);
+  border-radius: 0.8rem;
+  row-gap: clamp(0.6rem, 25vw, 1rem);
   display: grid;
-  width: 40rem;
-  max-width: 95%;
+  width: clamp(20rem, 92vw, 42rem);
+  max-width: 100%;
+  max-height: 92vh;
+  overflow: auto;
+  overflow-x: hidden;
   scale: 0.9;
   transition: 0.4s;
 }
@@ -34,7 +134,13 @@
 
 .panel h2 {
   font-weight: 900;
+  font-size: calc(var(--fs-xl) - 0.2rem);
   color: var(--bg-color-secondary);
+}
+
+label#categoryLabel {
+  font-size: var(--fs-sm) !important;
+  margin-bottom: 0.26rem !important;
 }
 
 .color-swatch {
@@ -44,7 +150,7 @@
   display: inline-block;
   vertical-align: middle;
   margin-left: 0.8rem;
-  border: 0.1rem solid #ccc;
+  border: 0.1rem solid #554747;
 }
 
 .map-thumb {
@@ -55,22 +161,29 @@
   margin-right: 0.4rem;
 }
 
-form#pinForm {
+form#pinForm,
+form#editForm {
   display: grid;
   row-gap: 1rem;
 }
-form#pinForm label {
+form#pinForm label,
+form#editForm label,
+.panel p {
   font-weight: 600;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   color: var(--bg-color-secondary);
   margin-bottom: 0.4rem;
 }
-form#pinForm div {
+form#pinForm div,
+form#editForm div {
   display: grid;
 }
 form#pinForm input,
 form#pinForm textarea,
-#btnsImg label {
+#btnsImg label,
+form#editForm input,
+form#editForm textarea,
+#btnImg_edit label {
   background-color: unset;
   border: 2px solid var(--bg-color-secondary);
   color: var(--bg-color-secondary);
@@ -81,12 +194,17 @@ form#pinForm textarea,
 }
 form#pinForm input:focus,
 form#pinForm textarea:focus,
-#btnsImg label:focus {
+#btnsImg label:focus,
+form#editForm input:focus,
+form#editForm textarea:focus,
+#btnImg_edit label:focus {
   outline: none;
   border-color: var(--bg-color-primary);
 }
 form#pinForm input::placeholder,
-form#pinForm textarea::placeholder {
+form#pinForm textarea::placeholder,
+form#editForm input::placeholder,
+form#editForm textarea::placeholder {
   color: var(--bg-color-primary);
   font-weight: 500;
   font-family: "Lato", sans-serif;
@@ -101,30 +219,41 @@ form#pinForm textarea::placeholder {
 .colorImg div {
   height: 100%;
 }
-input#pinColor {
+input.pinColor {
   flex: 1;
   width: 8rem;
 }
 
-#imgLabel {
+#imgLabel,
+#labelEditImage {
   text-align: start;
   grid-area: label;
+  font-size: var(--fs-sm) !important;
+}
+#colorLabel,
+#colorLabel_edit {
+  font-size: var(--fs-sm) !important;
 }
 
 .imgDiv {
   display: grid !important;
   width: 100%;
+  column-gap: 3.5rem;
+  align-items: center;
   grid-template-areas:
     "label label label label"
     "btnAdd btnAdd btnAdd inputs"
     "btnAdd btnAdd btnAdd inputs";
 }
 #pinImage,
-#previewImagem {
+#previewImagem,
+#editImage,
+#previewImagem_edit {
   display: none;
 }
 
-#btnImg {
+#btnImg,
+#btnImg_edit {
   height: 100%;
   width: 100%;
   background: 0;
@@ -138,31 +267,80 @@ input#pinColor {
   transition: 0.4s;
 }
 #btnImg:hover,
-#btnsImg label:hover {
+#btnsImg label:hover,
+#btnImg_edit:hover,
+#btnsImg_edit label:hover,
+.category-trigger:hover,
+.category-trigger:hover #touch_icon {
   border: 2px solid var(--bg-color-primary);
   color: var(--bg-color-primary);
 }
 
+div#categoryModal {
+  z-index: 999;
+}
+
 .modalFooter {
   display: flex !important;
-  gap: 0.8rem;
+  gap: 1.8rem;
   justify-content: flex-end;
   margin-top: 0.8rem;
 }
+.modalFooter button,
+.my-edit,
+.my-delete,
+.my-zoom {
+  background: unset;
+  border-radius: 0.6rem;
+  border: 2px solid var(--bg-color-secondary);
+  color: var(--bg-color-secondary);
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  max-height: 4rem;
+  max-width: 12rem;
+  align-items: center;
+  align-self: end;
+  position: relative;
+  transition: 0.4s;
+}
+.modalFooter button:hover,
+.my-edit:hover,
+.my-delete:hover,
+.my-zoom:hover {
+  border: 2px solid var(--bg-color-primary);
+  color: var(--bg-color-primary);
+}
 
-#btnsImg {
+.modalFooter button span,
+.my-edit span,
+.my-delete span,
+.my-zoom span {
+  position: absolute;
+  right: -0.86rem;
+  font-size: var(--fs-lg);
+  background: var(--fs-color-primary);
+  border-radius: 100vw;
+  transition: 0.4s;
+}
+
+#btnsImg,
+#btnsImg_edit {
   justify-content: end;
   grid-area: inputs;
   height: 100%;
   gap: 0.4rem;
 }
-#btnsImg label {
+#btnsImg label,
+#btnsImg_edit label {
   text-align: center;
   margin-bottom: 0 !important;
   position: relative;
   transition: 0.4s;
 }
-#btnsImg label span {
+#btnsImg label span,
+#btnsImg_edit label span {
   position: absolute;
   left: -3.2rem;
   align-self: center;
@@ -177,11 +355,264 @@ label[state="enable"] {
   opacity: 1;
 }
 
-#previewImagem {
+#previewImagem,
+#previewImagem_edit {
   height: 100%;
-  width: 12.9rem;
-  max-height: 7rem;
+  max-height: 8rem;
   border-radius: 0.8rem;
   object-fit: cover;
   grid-area: btnAdd;
+  max-width: 12rem;
+}
+
+.modalWarning {
+  color: var(--bg-color-secondary);
+  font-size: var(--fs-lg);
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+.modalWarning span {
+  font-size: var(--fs-xl);
+}
+
+.no-pins {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+#myPinsModal .panel {
+  width: clamp(22rem, 92vw, 56rem);
+  max-height: 92vh;
+}
+
+#myPinsList {
+  display: grid;
+  row-gap: 1rem;
+  max-height: 60vh;
+  border-bottom: 2px solid var(--bg-color-secondary);
+  border-bottom-left-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0.5rem;
+  padding-left: 0;
+  box-shadow: inset 0 -30px 40px -40px var(--bg-color-primary);
+}
+#myPinsList > div {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: 1rem;
+  word-break: break-all;
+  border: 2px solid var(--bg-color-secondary);
+  font-size: var(--fs-md);
+  color: var(--bg-color-secondary);
+}
+#myPinsList strong {
+  font-size: var(--fs-lg);
+  color: var(--fs-color-secondary) !important;
+  font-weight: 800;
+}
+
+#editPhotos {
+  border-radius: 1rem;
+  padding: 0.8rem;
+  margin-top: 0.6rem;
+  box-shadow: inset 0 -30px 40px -40px var(--bg-color-primary);
+  position: relative;
+  max-width: 100%;
+  --thumb: 96px;
+}
+
+.edit-photos-container {
+  display: flex !important;
+  flex-wrap: nowrap;
+  gap: 0.8rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  max-width: 100%;
+  padding: 0.4rem 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.edit-photos-container::-webkit-scrollbar {
+  display: none;
+}
+
+.edit-photos-container {
+  max-width: calc(var(--thumb) * 4 + 0.8rem * 3);
+}
+
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 3.2rem;
+  height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s ease, 0.4s;
+}
+
+.carousel-nav:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.carousel-prev {
+  left: -1rem;
+}
+
+.carousel-next {
+  right: -1rem;
+}
+
+.carousel-nav .material-symbols-outlined {
+  font-size: 2.4rem;
+}
+
+.edit-photo-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  transition: opacity 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.edit-photo-wrapper:hover {
+  transform: scale(1.02);
+}
+
+.edit-photo-wrapper.marked-for-removal {
+  opacity: 0.3;
+}
+
+.edit-photo-img {
+  width: var(--thumb);
+  height: var(--thumb);
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+  transition: opacity 0.3s ease, filter 0.2s ease;
+}
+
+.edit-photo-delete-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2.4rem;
+  color: #ff4444;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+}
+
+.edit-photo-wrapper:hover .edit-photo-img {
+  filter: brightness(0.5);
+}
+
+.edit-photo-wrapper:hover .edit-photo-delete-icon {
+  opacity: 1;
+}
+
+#btnsImg_edit label {
+  border: 2px solid var(--bg-color-secondary);
+  border-radius: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  color: var(--bg-color-secondary);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+}
+
+.map-thumb {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.map-thumb:hover {
+  opacity: 0.85;
+}
+
+.colorImg_div {
+  justify-content: start;
+  display: flex !important;
+  flex-direction: column;
+  align-items: self-start;
+}
+
+@media (max-width: 768px) {
+  #address {
+    position: relative;
+    z-index: 99;
+  }
+  .pinTooltipImg img:fullscreen {
+    padding: 0 !important;
+    object-fit: contain !important;
+  }
+  .modal .panel {
+    width: 83.5vw;
+    max-height: 92vh;
+    border-radius: 0.8rem;
+  }
+
+  .colorImg {
+    align-items: stretch !important;
+  }
+
+  #editPhotos {
+    --thumb: 80px;
+  }
+
+  .carousel-prev {
+    left: 0.2rem;
+  }
+  .carousel-next {
+    right: 0.2rem;
+  }
+  .carousel-nav {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+  .carousel-nav .material-symbols-outlined {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 420px) {
+  #editPhotos {
+    --thumb: 68px;
+  }
+  .modal .panel {
+    padding: 1rem;
+  }
+  .colorImg {
+    display: grid !important;
+    justify-content: normal !important;
+    align-items: self-start;
+    gap: 1rem;
+  }
+  .colorImg_div {
+    justify-content: start;
+  }
+  .pinColor {
+    all: unset !important;
+    border: 2px solid var(--bg-color-secondary) !important;
+    border-radius: 0.6rem !important;
+    height: 3rem !important;
+    width: 5.5rem !important;
+  }
 }

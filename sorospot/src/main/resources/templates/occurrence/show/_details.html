@@ -1,0 +1,20 @@
+<section th:fragment="details(occurrence)">
+    <div class="occurrence-details">
+        <h2>Detalhes</h2>
+        <div class="occurrence-details-grid">
+            <p><strong>Endereço:</strong><span data-address th:text="${occurrence.address}"></span></p>
+            <div class="lat-long">
+                <div>
+                    <strong>Latitude:</strong>
+                    <span th:text="${occurrence.latitude}"></span>
+                </div>
+
+                <div>
+                    <strong>Longitude:</strong>
+                    <span th:text="${occurrence.longitude}"></span>
+                </div>
+            </div>
+            <p><strong>Descrição:</strong> <span th:text="${occurrence.description}"></span></p>
+        </div>
+    </div>
+</section>

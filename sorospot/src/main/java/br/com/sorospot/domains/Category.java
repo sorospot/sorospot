@@ -16,6 +16,9 @@ public class Category {
     @Column(nullable = false, length = 50)
     private String color;
 
+    @Column(length = 100)
+    private String icon;
+
     @Column(nullable = false)
     private Boolean deleted;
 
@@ -33,9 +36,10 @@ public class Category {
 
     public Category() {}
 
-    public Category(String type, String color, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
+    public Category(String type, String color, String icon, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.type = type;
         this.color = color;
+        this.icon = icon;
         this.deleted = deleted;
         this.createdAt = createdAt;
         this.lastUpdated = lastUpdated;
@@ -63,6 +67,14 @@ public class Category {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public Boolean getDeleted() {
@@ -95,6 +107,7 @@ public class Category {
                 "id=" + id +
                 ", type='" + type + '\'' +
                 ", color='" + color + '\'' +
+                ", icon='" + icon + '\'' +
                 ", deleted=" + deleted +
                 ", createdAt=" + createdAt +
                 ", lastUpdated=" + lastUpdated +

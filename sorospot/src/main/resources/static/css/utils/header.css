@@ -1,8 +1,8 @@
 header {
   display: grid;
-  padding: 2rem;
+  padding: 1rem 2rem;
   gap: 0.6rem;
-  height: 10rem;
+  height: 12rem;
   color: var(--fs-color-primary);
 }
 
@@ -126,6 +126,51 @@ span#searchBtn:hover {
   transition: 0.2s 0.2s;
 }
 
+#centerBtn:disabled,
+#myPinsBtn:disabled,
+#accountBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+#centerBtn:disabled::before,
+#myPinsBtn:disabled::before,
+#accountBtn:disabled::before {
+  display: none;
+}
+
+#centerBtn:disabled #locationIcon,
+#myPinsBtn:disabled #pinsIcon,
+#accountBtn:disabled #accountIcon {
+  background-color: #969696;
+  border-color: #4d4b4b;
+}
+
+/* Input de busca desabilitado */
+#address:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #e0e0e0;
+    border-color: #6d6363;
+    pointer-events: none;
+}
+
+#address:disabled::placeholder {
+  color: #534343;
+}
+
+/* Botão de busca desabilitado */
+span#searchBtn:disabled,
+span#searchBtn[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+    background-color: #b6b6b6;
+    color: #4d4b4b;
+    pointer-events: none;
+}
+
+
 #pinsIcon,
 #locationIcon,
 #accountIcon {
@@ -149,9 +194,6 @@ span#searchBtn:hover {
     height: 10rem;
     justify-content: unset;
     align-self: unset;
-  }
-  main {
-    padding-top: 8rem;
   }
 
   #myPinsBtn:hover::before,
