@@ -96,7 +96,6 @@ function OccurrenceController(reference) {
     };
 
     openEditModal = function() {
-        console.log("Abrindo modal de editar");
     }
 
     getOccurrenceIdFromPage = function() {
@@ -131,6 +130,7 @@ function OccurrenceController(reference) {
             body: JSON.stringify({ status: status })
         }).then(response => {
             if (response.ok) {
+                alert("Status da ocorrência alterado com sucesso.");
                 window.location.reload();
             } else {
                 alert('Erro ao alterar status da ocorrência.');
