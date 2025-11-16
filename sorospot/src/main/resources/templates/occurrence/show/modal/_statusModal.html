@@ -1,0 +1,47 @@
+<div
+  id="statusModal"
+  class="modal"
+  th:fragment="statusModal"
+>
+  <div class="panel">
+    <h2>Alterar Status da Ocorrência</h2>
+    <form id="statusForm">
+      <input type="hidden" id="statusOccurrenceId" />
+
+      <div>
+        <label for="statusSelect">Selecione o novo status<br /></label>
+        <select
+          id="statusSelect"
+          name="status"
+          style="
+            width: 100%;
+            padding: 0.6rem;
+            border: 2px solid var(--bg-color-secondary);
+            border-radius: 0.6rem;
+            background: #fff;
+            color: var(--bg-color-secondary);
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            font-size: var(--fs-md);
+          "
+        >
+          <option value="PENDING">Pendente</option>
+          <option value="IN_PROGRESS">Em andamento</option>
+          <option value="RESOLVED">Resolvida</option>
+          <option value="CLOSED">Encerrada</option>
+          <option value="REOPENED">Reaberta</option>
+        </select>
+      </div>
+
+      <div class="modalFooter">
+        <button type="button" id="cancelStatus">
+          Cancelar
+          <span class="material-symbols-outlined"> arrow_left_alt </span>
+        </button>
+        <button type="submit">
+          Salvar <span class="material-symbols-outlined"> done_outline </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
