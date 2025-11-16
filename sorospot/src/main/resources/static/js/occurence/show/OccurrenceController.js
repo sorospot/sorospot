@@ -19,24 +19,18 @@ function OccurrenceController(reference) {
     };
 
     setupModalControls = function() {
-        // Botões de abrir modais
         const btnOpenEdit = reference.querySelector("[data-open-edit-modal]");
         const btnOpenDelete = reference.querySelector("[data-open-delete-modal]");
         const btnOpenStatus = reference.querySelector("[data-open-status-modal]");
 
-        // Modais
-        console.log(reference);
-        console.log(reference.querySelector("#editModal"));
         const editModal = reference.querySelector("#editModal");
         const deleteModal = reference.querySelector("#deleteModal");
         const statusModal = reference.querySelector("#statusModal");
 
-        // Botões de cancelar
         const btnCancelEdit = reference.querySelector("#cancelEdit");
         const btnCancelDelete = reference.querySelector("#cancelDelete");
         const btnCancelStatus = reference.querySelector("#cancelStatus");
 
-        // Abrir modal de editar
         if (btnOpenEdit) {
             btnOpenEdit.addEventListener("click", function() {
                 console.log("Abrindo modal de editar1");
@@ -44,7 +38,6 @@ function OccurrenceController(reference) {
             });
         }
 
-        // Abrir modal de excluir
         if (btnOpenDelete) {
             btnOpenDelete.addEventListener("click", function() {
                 if (deleteModal) {
@@ -56,12 +49,10 @@ function OccurrenceController(reference) {
             });
         }
 
-        // Abrir modal de status
         if (btnOpenStatus) {
             btnOpenStatus.addEventListener("click", function() {
                 if (statusModal) {
                     statusModal.classList.add("open");
-                    // Pegar o ID e status atual da ocorrência
                     const occurrenceId = getOccurrenceIdFromPage();
                     const currentStatus = getCurrentStatus();
                     reference.querySelector("#statusOccurrenceId").value = occurrenceId;
@@ -70,28 +61,24 @@ function OccurrenceController(reference) {
             });
         }
 
-        // Fechar modal de editar
         if (btnCancelEdit && editModal) {
             btnCancelEdit.addEventListener("click", function() {
                 editModal.classList.remove("open");
             });
         }
 
-        // Fechar modal de excluir
         if (btnCancelDelete && deleteModal) {
             btnCancelDelete.addEventListener("click", function() {
                 deleteModal.classList.remove("open");
             });
         }
 
-        // Fechar modal de status
         if (btnCancelStatus && statusModal) {
             btnCancelStatus.addEventListener("click", function() {
                 statusModal.classList.remove("open");
             });
         }
 
-        // Submit do form de status
         const statusForm = reference.querySelector("#statusForm");
         if (statusForm) {
             statusForm.addEventListener("submit", function(e) {
@@ -100,7 +87,6 @@ function OccurrenceController(reference) {
             });
         }
 
-        // Submit do form de excluir
         const deleteForm = reference.querySelector("#deleteForm");
         if (deleteForm) {
             deleteForm.addEventListener("submit", function(e) {
@@ -114,7 +100,6 @@ function OccurrenceController(reference) {
         console.log("Abrindo modal de editar");
     }
 
-    // Função auxiliar para pegar o ID da ocorrência da URL
     getOccurrenceIdFromPage = function() {
         const url = window.location.pathname;
         const matches = url.match(/\/occurrence\/show\/(\d+)/);
@@ -133,7 +118,6 @@ function OccurrenceController(reference) {
         return "PENDING";
     };
 
-    // Função para lidar com alteração de status
     handleStatusChange = function() {
         const occurrenceId = reference.querySelector("#statusOccurrenceId").value;
         const newStatus = reference.querySelector("#statusSelect").value;
@@ -155,23 +139,24 @@ function OccurrenceController(reference) {
         reference.querySelector("#statusModal").classList.remove("open");
     };
 
-    // Função para lidar com exclusão
     handleDelete = function() {
         const occurrenceId = reference.querySelector("#deleteOccurrenceId").value;
         
-        console.log("Excluindo ocorrência", occurrenceId);
-        
-        // TODO: Implementar chamada API
-        // fetch(`/api/occurrence/${occurrenceId}`, {
-        //     method: 'DELETE'
-        // }).then(response => {
-        //     if (response.ok) {
-        //         window.location.href = '/mapa';
-        //     }
-        // });
-
-        // Por enquanto, apenas fecha o modal
-        reference.querySelector("#deleteModal").classList.remove("open");
+        fetch("/api/maps/markers/" + occurrenceId, {
+            method: "DELETE",
+            headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
+        }).then(response => {
+            if (response.ok) {
+                alert("Ocorrência excluída com sucesso.");
+                window.location.href = '/mapa';
+            } else {
+                alert("Erro no else ao excluir ocorrência.");
+                reference.querySelector("#deleteModal").classList.remove("open");
+            }
+        }).catch(() => {
+            alert("Erro ao excluir ocorrência.");
+            reference.querySelector("#deleteModal").classList.remove("open");
+        });
     };
 
     init();
