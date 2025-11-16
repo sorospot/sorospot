@@ -151,7 +151,7 @@ public class ValidationService {
         return Character.getNumericValue(cpf.charAt(10)) == secondDigit;
     }
 
-    private boolean isPasswordStrong(String password) {
+    public boolean isPasswordStrong(String password) {
         // Verifica se tem pelo menos uma letra maiúscula, uma minúscula e um número
         boolean hasUpper = password.chars().anyMatch(Character::isUpperCase);
         boolean hasLower = password.chars().anyMatch(Character::isLowerCase);
