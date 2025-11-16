@@ -1,4 +1,5 @@
 function OccurrenceController(reference) {
+    let categories = [];
     
     var init = function() {
         toggleHeaderButtonsOnShowOccurrence(reference);
@@ -94,119 +95,123 @@ function OccurrenceController(reference) {
         }
     };
 
+    formatCategory = function(cat) {
+        console.log("[formatCategory] INPUT =", cat);
+
+        if (!cat) {
+            console.warn("[formatCategory] cat é null/undefined");
+            return null;
+        }
+
+        const rawType = cat.type || "";
+        const displayName = rawType
+            ? rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase()
+            : "";
+
+        const iconRaw = cat.icon;
+        const displayIcon =
+            iconRaw && String(iconRaw).toLowerCase() !== "null" && iconRaw.trim() !== ""
+                ? iconRaw
+                : "location_on";
+
+        const result = { ...cat, displayName, displayIcon };
+
+        console.log("[formatCategory] OUTPUT =", result);
+        return result;
+    };
+
     openOccurrenceEditModal = function() {
+        const editModal = reference.querySelector("#editModal");
+        const categoryModal = reference.querySelector("#categoryModal");
+
+        console.log("===== [openOccurrenceEditModal] Iniciado =====");
+
         const occurrenceId = getOccurrenceIdFromPage();
+        console.log("[openOccurrenceEditModal] occurrenceId =", occurrenceId);
+
         if (!occurrenceId) {
-            console.warn("Nenhuma ocorrência encontrada na URL.");
+            console.warn("[openOccurrenceEditModal] Nenhuma ocorrência encontrada na URL.");
             return;
         }
 
-        // Usa a mesma rota do map.js
-        fetch("/api/maps/my-occurrences")
+        const categoriesPromise = fetch("/api/maps/categories")
             .then(r => {
+                console.log("[openOccurrenceEditModal] /categories status =", r.status);
+                return r.json();
+            })
+            .then(cats => {
+                console.log("[openOccurrenceEditModal] Categorias cruas recebidas:", cats);
+                categories = cats.map(formatCategory);
+                window.categories = categories;
+                console.log("[openOccurrenceEditModal] Categorias formatadas:", categories);
+            })
+            .catch(e => console.error("[openOccurrenceEditModal] Erro ao carregar categorias:", e));
+
+        const occurrencePromise = fetch("/api/maps/my-occurrences")
+            .then(r => {
+                console.log("[openOccurrenceEditModal] /my-occurrences status =", r.status);
                 if (!r.ok) {
                     return r.text().then(t => {
+                        console.error("[openOccurrenceEditModal] Erro bruto da API:", t);
                         throw new Error(t || "Não autorizado");
                     });
                 }
                 return r.json();
             })
             .then(arr => {
-                const item = arr.find(x => x.id == occurrenceId);
-                
+                console.log("[openOccurrenceEditModal] Ocorrências recebidas:", arr);
+                const found = arr.find(x => x.id == occurrenceId);
+                console.log("[openOccurrenceEditModal] Ocorrência encontrada:", found);
+                return found;
+            });
+
+        Promise.all([categoriesPromise, occurrencePromise])
+            .then(([_, item]) => {
+                console.log("===== [openOccurrenceEditModal] Tudo carregado =====");
+                console.log("[openOccurrenceEditModal] item final =", item);
+
                 if (!item) {
                     throw new Error("Ocorrência não encontrada ou você não tem permissão para editá-la.");
                 }
+
+                // Preencher os campos do modal
+                populateEditModal(item);
                 
-                // Tenta usar a função global do map.js
-                if (window.openEditModal) {
-                    window.openEditModal(item);
-                } else {
-                    // Fallback caso map.js não esteja carregado
-                    openEditModalFallback(item);
-                }
+                // Abrir o modal
+                editModal.classList.add("open");
             })
             .catch(e => {
-                console.error("Erro ao buscar ocorrência:", e);
+                console.error("===== [openOccurrenceEditModal] ERRO =====", e);
                 alert("Erro: " + e.message);
             });
     };
 
-    // Fallback completo (cópia do map.js)
-    function openEditModalFallback(item) {
-        const modal = document.getElementById("editModal");
-        if (!modal) return;
+    populateEditModal = function(item) {
+        console.log("[populateEditModal] Preenchendo modal com:", item);
 
-        modal.classList.add("open");
-        
-        document.getElementById("editId").value = item.id;
-        document.getElementById("editTitle").value = item.title || "";
-        document.getElementById("editDesc").value = item.description || "";
+        // Preencher campos básicos
+        reference.querySelector("#editId").value = item.id;
+        reference.querySelector("#editTitle").value = item.title || "";
+        reference.querySelector("#editDesc").value = item.description || "";
 
-        const editHidden = document.getElementById("editCategory");
-        const editTrigger = document.getElementById("editCategoryTrigger");
+        // Configurar categoria
+        const editHidden = reference.querySelector("#editCategory");
+        const editTrigger = reference.querySelector("#editCategoryTrigger");
         
         if (editTrigger) {
-            editTrigger.onclick = () => {
-                if (window.openCategoryModal) {
-                    window.openCategoryModal({
-                        hiddenId: "editCategory",
-                        triggerId: "editCategoryTrigger"
-                    });
-                }
-            };
+            editTrigger.onclick = () => openCategoryModal();
         }
 
-        // Carregar categorias se necessário
-        if (!window.categories || !window.categories.length) {
-            fetch("/api/maps/categories")
-                .then(r => r.json())
-                .then(cats => {
-                    window.categories = cats.map(cat => ({
-                        ...cat,
-                        displayName: cat.type ? cat.type.charAt(0).toUpperCase() + cat.type.slice(1).toLowerCase() : "",
-                        displayIcon: cat.icon && String(cat.icon).toLowerCase() !== "null" && cat.icon.trim() !== "" ? cat.icon : "location_on"
-                    }));
-                    setCurrentCategory(item, editHidden, editTrigger);
-                });
-        } else {
-            setCurrentCategory(item, editHidden, editTrigger);
-        }
-
-        setupPhotosForEdit(item);
-
-        const cancelBtn = document.getElementById("cancelEdit");
-        if (cancelBtn) {
-            cancelBtn.onclick = () => {
-                if (window.SOROSPOT_IMAGE_PICKERS && window.SOROSPOT_IMAGE_PICKERS["editImage"]) {
-                    window.SOROSPOT_IMAGE_PICKERS["editImage"].reset();
-                }
-                modal.classList.remove("open");
-            };
-        }
-
-        const editForm = document.getElementById("editForm");
-        if (editForm) {
-            editForm.onsubmit = function(ev) {
-                ev.preventDefault();
-                handleEditSubmit();
-            };
-        }
-    }
-
-    function setCurrentCategory(item, editHidden, editTrigger) {
-        if (window.categories && window.categories.length) {
-            const currentCat = window.categories.find(
-                c => c.type === item.category || c.displayName === item.category
+        if (categories && categories.length) {
+            const currentCat = categories.find(
+                (c) => c.type === item.category || c.displayName === item.category
             );
-            
             if (currentCat) {
                 if (editHidden) editHidden.value = currentCat.id;
                 if (editTrigger) {
                     const icon = editTrigger.querySelector(".material-symbols-outlined.icon");
                     const text = editTrigger.querySelector(".text");
                     const chevron = editTrigger.querySelector(".material-symbols-outlined.chevron");
-                    
                     if (icon) {
                         icon.textContent = currentCat.displayIcon;
                         icon.style.color = currentCat.color;
@@ -216,12 +221,9 @@ function OccurrenceController(reference) {
                 }
             }
         }
-    }
 
-    function setupPhotosForEdit(item) {
-        const photosDiv = document.getElementById("editPhotos");
-        if (!photosDiv) return;
-
+        // Preencher fotos existentes
+        const photosDiv = reference.querySelector("#editPhotos");
         photosDiv.innerHTML = "";
 
         const photosContainer = document.createElement("div");
@@ -229,8 +231,7 @@ function OccurrenceController(reference) {
         photosContainer.dataset.toRemove = "";
 
         const photos = item.photos || [];
-        
-        photos.forEach(p => {
+        photos.forEach((p) => {
             const wrapper = document.createElement("div");
             wrapper.className = "edit-photo-wrapper";
             wrapper.dataset.photo = p;
@@ -244,19 +245,7 @@ function OccurrenceController(reference) {
             deleteIcon.textContent = "delete";
 
             wrapper.addEventListener("click", () => {
-                if (window.openDeletePhotoModal) {
-                    window.openDeletePhotoModal(wrapper, p, photosContainer);
-                } else {
-                    if (confirm("Remover esta foto?")) {
-                        const currentToRemove = photosContainer.dataset.toRemove || "";
-                        const toRemoveList = currentToRemove ? currentToRemove.split(",") : [];
-                        if (!toRemoveList.includes(p)) {
-                            toRemoveList.push(p);
-                        }
-                        photosContainer.dataset.toRemove = toRemoveList.join(",");
-                        wrapper.remove();
-                    }
-                }
+                openDeletePhotoModal(wrapper, p, photosContainer);
             });
 
             wrapper.appendChild(img);
@@ -266,7 +255,10 @@ function OccurrenceController(reference) {
 
         photosDiv.appendChild(photosContainer);
 
+        // Adicionar botões de navegação se houver mais de 4 fotos
         if (photos.length > 4) {
+            photosDiv.style.justifyContent = "center";
+            
             const prevBtn = document.createElement("button");
             prevBtn.className = "carousel-nav carousel-prev";
             prevBtn.type = "button";
@@ -283,78 +275,166 @@ function OccurrenceController(reference) {
                 photosContainer.scrollBy({ left: 200, behavior: "smooth" });
             });
 
-            photosDiv.style.justifyContent = "center";
             photosDiv.appendChild(prevBtn);
             photosDiv.appendChild(nextBtn);
         }
-    }
 
-    function handleEditSubmit() {
-        const id = document.getElementById("editId").value;
-        const titleVal = document.getElementById("editTitle").value;
-        const titleInput = document.getElementById("editTitle");
+        // Configurar submit do formulário
+        setupEditFormSubmit();
+    };
+
+    openDeletePhotoModal = function(wrapper, photoPath, photosContainer) {
+        const deletePhotoModal = reference.querySelector("#deletePhotoModal");
+        if (!deletePhotoModal) return;
         
-        if (!titleVal || !titleVal.trim()) {
-            if (titleInput) {
-                titleInput.classList.add("input-error");
-                setTimeout(() => titleInput.classList.remove("input-error"), 2000);
+        deletePhotoModal.classList.add("open");
+
+        reference.querySelector("#cancelDeletePhoto").onclick = () => {
+            deletePhotoModal.classList.remove("open");
+        };
+
+        reference.querySelector("#confirmDeletePhoto").onclick = () => {
+            const currentToRemove = photosContainer.dataset.toRemove || "";
+            const toRemoveList = currentToRemove ? currentToRemove.split(",") : [];
+            if (!toRemoveList.includes(photoPath)) {
+                toRemoveList.push(photoPath);
             }
-            return;
+            photosContainer.dataset.toRemove = toRemoveList.join(",");
+
+            wrapper.remove();
+            deletePhotoModal.classList.remove("open");
+        };
+    };
+
+    openCategoryModal = function() {
+        const categoryModal = reference.querySelector("#categoryModal");
+        const categoryList = reference.querySelector("#categoryList");
+        
+        if (!categoryModal || !categoryList) return;
+        
+        categoryList.innerHTML = "";
+        
+        if (!categories || !categories.length) {
+            categoryList.innerHTML = "<p class='modalWarning'>Carregando categorias...</p>";
+        } else {
+            categories.forEach((cat) => {
+                const card = document.createElement("div");
+                card.className = "category-card";
+                card.innerHTML = `
+                    <span class="material-symbols-outlined" style="color:${cat.color}">${cat.displayIcon}</span>
+                    <span class="name">${cat.displayName}</span>
+                    <span class="pill" style="background:${cat.color}"></span>
+                `;
+                card.addEventListener("click", () => {
+                    const hidden = reference.querySelector("#editCategory");
+                    const trig = reference.querySelector("#editCategoryTrigger");
+                    
+                    if (hidden) hidden.value = cat.id;
+                    if (trig) {
+                        const iconEl = trig.querySelector(".material-symbols-outlined.icon");
+                        const textEl = trig.querySelector(".text");
+                        const chevronEl = trig.querySelector(".material-symbols-outlined.chevron");
+                        
+                        if (iconEl) {
+                            iconEl.textContent = cat.displayIcon;
+                            iconEl.style.color = cat.color;
+                        }
+                        if (textEl) textEl.textContent = cat.displayName;
+                        if (chevronEl) chevronEl.style.display = "none";
+                    }
+                    categoryModal.classList.remove("open");
+                });
+                categoryList.appendChild(card);
+            });
         }
-        
-        const categoryId = document.getElementById("editCategory").value;
-        if (!categoryId) {
-            const trigger = document.getElementById("editCategoryTrigger");
-            if (trigger) {
-                trigger.classList.add("category-error");
-                setTimeout(() => trigger.classList.remove("category-error"), 2000);
-            }
-            return;
+
+        const cancelBtn = reference.querySelector("#cancelCategory");
+        if (cancelBtn) {
+            cancelBtn.onclick = () => categoryModal.classList.remove("open");
         }
-        
-        const fd = new FormData();
-        fd.append("title", titleVal);
-        fd.append("description", document.getElementById("editDesc").value);
-        fd.append("categoryId", categoryId);
-        
-        const file = document.getElementById("editImage").files[0];
-        if (file) {
-            const maxBytes = 10 * 1024 * 1024;
-            if (file.size > maxBytes) {
-                alert("Arquivo muito grande! Máximo 10MB");
+
+        categoryModal.classList.add("open");
+    };
+
+    setupEditFormSubmit = function() {
+        const editForm = reference.querySelector("#editForm");
+        if (!editForm) return;
+
+        editForm.onsubmit = function(ev) {
+            ev.preventDefault();
+            
+            const id = reference.querySelector("#editId").value;
+            const titleVal = reference.querySelector("#editTitle").value;
+            const titleInput = reference.querySelector("#editTitle");
+            
+            if (!titleVal || !titleVal.trim()) {
+                if (titleInput) {
+                    titleInput.classList.add("input-error");
+                    setTimeout(() => titleInput.classList.remove("input-error"), 2000);
+                }
                 return;
             }
-            fd.append("image", file);
-        }
 
-        const photosContainer = document.querySelector("#editPhotos .edit-photos-container");
-        if (photosContainer && photosContainer.dataset.toRemove) {
-            const toRemove = photosContainer.dataset.toRemove.split(",").filter(x => x.trim());
-            if (toRemove.length) {
-                fd.append("removePhotos", toRemove.join(","));
+            const categoryId = reference.querySelector("#editCategory").value;
+            if (!categoryId) {
+                const trigger = reference.querySelector("#editCategoryTrigger");
+                if (trigger) {
+                    trigger.classList.add("category-error");
+                    setTimeout(() => trigger.classList.remove("category-error"), 2000);
+                }
+                return;
             }
-        }
 
-        fetch("/api/maps/markers/" + id, {
-            method: "PUT",
-            body: fd
-        })
-        .then(r => {
-            if (!r.ok) {
-                return r.text().then(t => { throw new Error(t); });
+            const fd = new FormData();
+            fd.append("title", reference.querySelector("#editTitle").value);
+            fd.append("description", reference.querySelector("#editDesc").value);
+            fd.append("categoryId", categoryId);
+
+            const file = reference.querySelector("#editImage").files[0];
+            if (file) {
+                const maxBytes = 10 * 1024 * 1024; // 10MB
+                if (file.size > maxBytes) {
+                    const input = reference.querySelector("#editImage");
+                    if (input) {
+                        input.classList.add("input-error");
+                        setTimeout(() => input.classList.remove("input-error"), 2500);
+                    }
+                    return;
+                }
+                fd.append("image", file);
             }
-            return r.json();
-        })
-        .then(() => {
-            alert("Ocorrência editada com sucesso!");
-            document.getElementById("editModal").classList.remove("open");
-            window.location.reload();
-        })
-        .catch(e => {
-            console.error("Erro ao editar:", e);
-            alert("Erro: " + e.message);
-        });
-    }
+
+            const photosContainerElement = reference.querySelector("#editPhotos .edit-photos-container");
+            if (photosContainerElement && photosContainerElement.dataset.toRemove) {
+                const toRemove = photosContainerElement.dataset.toRemove
+                    .split(",")
+                    .filter((x) => x.trim());
+                if (toRemove.length) {
+                    fd.append("removePhotos", toRemove.join(","));
+                }
+            }
+
+            fetch("/api/maps/markers/" + id, {
+                method: "PUT",
+                body: fd,
+            })
+                .then((r) => {
+                    if (!r.ok) {
+                        return r.text().then((t) => {
+                            throw new Error(t || "Erro ao salvar");
+                        });
+                    }
+                    return r.json();
+                })
+                .then((res) => {
+                    alert("Ocorrência atualizada com sucesso!");
+                    window.location.reload();
+                })
+                .catch((e) => {
+                    alert("Erro ao salvar: " + e.message);
+                });
+        };
+    };
 
     getOccurrenceIdFromPage = function() {
         const url = window.location.pathname;
