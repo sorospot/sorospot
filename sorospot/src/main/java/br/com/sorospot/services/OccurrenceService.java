@@ -29,6 +29,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class OccurrenceService {
+    @Transactional
+    public boolean changeOccurrenceStatus(Integer occurrenceId, String status, String userEmail) {
+        checkAuthorization(occurrenceId, userEmail);
+        var occurrenceOpt = occurrenceRepository.findById(occurrenceId);
+        if (occurrenceOpt.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Occurrence não encontrada!");
+        }
+        var occurrence = occurrenceOpt.get();
+        occurrence.setStatus(status);
+        occurrenceRepository.save(occurrence);
+        occurrenceRepository.flush();
+        return true;
+    }
 
     private final OccurrenceRepository occurrenceRepository;
     private final CategoryRepository categoryRepository;

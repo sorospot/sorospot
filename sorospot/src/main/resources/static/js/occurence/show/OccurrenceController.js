@@ -42,7 +42,6 @@ function OccurrenceController(reference) {
             btnOpenDelete.addEventListener("click", function() {
                 if (deleteModal) {
                     deleteModal.classList.add("open");
-                    // Pegar o ID da ocorrência da URL ou de um atributo data
                     const occurrenceId = getOccurrenceIdFromPage();
                     reference.querySelector("#deleteOccurrenceId").value = occurrenceId;
                 }
@@ -109,42 +108,46 @@ function OccurrenceController(reference) {
     getCurrentStatus = function() {
         const statusBadge = reference.querySelector(".status-badge");
         if (statusBadge) {
-            if (statusBadge.classList.contains("pending")) return "PENDING";
-            if (statusBadge.classList.contains("in-progress")) return "IN_PROGRESS";
-            if (statusBadge.classList.contains("resolved")) return "RESOLVED";
-            if (statusBadge.classList.contains("closed")) return "CLOSED";
-            if (statusBadge.classList.contains("reopened")) return "REOPENED";
+            if (statusBadge.classList.contains("pending")) return "Pendente";
+            if (statusBadge.classList.contains("in-progress")) return "Em andamento";
+            if (statusBadge.classList.contains("resolved")) return "Resolvida";
+            if (statusBadge.classList.contains("closed")) return "Cancelada";
+            if (statusBadge.classList.contains("reopened")) return "Reaberta";
         }
         return "PENDING";
     };
 
     handleStatusChange = function() {
         const occurrenceId = reference.querySelector("#statusOccurrenceId").value;
-        const newStatus = reference.querySelector("#statusSelect").value;
-        
-        console.log("Alterando status da ocorrência", occurrenceId, "para", newStatus);
-        
-        // TODO: Implementar chamada API
-        // fetch(`/api/occurrence/${occurrenceId}/status`, {
-        //     method: 'PATCH',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ status: newStatus })
-        // }).then(response => {
-        //     if (response.ok) {
-        //         window.location.reload();
-        //     }
-        // });
+        const status = reference.querySelector("#statusSelect").value;
+        const userEmail = window.SOROSPOT_CURRENT_USER_EMAIL;
 
-        // Por enquanto, apenas fecha o modal
-        reference.querySelector("#statusModal").classList.remove("open");
+        fetch(`/api/occurrence/${occurrenceId}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User-Email': userEmail
+            },
+            body: JSON.stringify({ status: status })
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Erro ao alterar status da ocorrência.');
+                reference.querySelector("#statusModal").classList.remove("open");
+            }
+        }).catch(() => {
+            alert('Erro ao alterar status da ocorrência.');
+            reference.querySelector("#statusModal").classList.remove("open");
+        });
     };
 
     handleDelete = function() {
         const occurrenceId = reference.querySelector("#deleteOccurrenceId").value;
-        
+        console.log(window.SOROSPOT_CURRENT_USER_EMAIL)
         fetch("/api/maps/markers/" + occurrenceId, {
             method: "DELETE",
-            headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL },
+            headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL }
         }).then(response => {
             if (response.ok) {
                 alert("Ocorrência excluída com sucesso.");
