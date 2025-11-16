@@ -179,7 +179,18 @@ window.initMap = function () {
     f.append("description", document.getElementById("pinDesc").value);
     f.append("categoryId", categoryId);
     const file = document.getElementById("pinImage").files[0];
-    if (file) f.append("image", file);
+    if (file) {
+      const maxBytes = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxBytes) {
+        const input = document.getElementById("pinImage");
+        if (input) {
+          input.classList.add("input-error");
+          setTimeout(() => input.classList.remove("input-error"), 2500);
+        }
+        return;
+      }
+      f.append("image", file);
+    }
 
     fetch("/api/maps/markers", {
       method: "POST",
@@ -691,7 +702,18 @@ function openEditModal(item) {
     fd.append("description", document.getElementById("editDesc").value);
     fd.append("categoryId", categoryId);
     const file = document.getElementById("editImage").files[0];
-    if (file) fd.append("image", file);
+    if (file) {
+      const maxBytes = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxBytes) {
+        const input = document.getElementById("editImage");
+        if (input) {
+          input.classList.add("input-error");
+          setTimeout(() => input.classList.remove("input-error"), 2500);
+        }
+        return;
+      }
+      fd.append("image", file);
+    }
 
     const photosContainerElement = document.querySelector(
       "#editPhotos .edit-photos-container"
