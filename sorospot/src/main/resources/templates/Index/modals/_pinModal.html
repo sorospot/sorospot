@@ -15,7 +15,6 @@
         <input
           id="pinTitle"
           name="title"
-          required
           style="width: 100%"
           placeholder="Insira um breve título..."
         />
@@ -33,10 +32,24 @@
 
       <div class="colorImg">
         <div class="colorImg_div">
-          <label for="pinColor" id="colorLabel" style="text-align: center"
-            >Cor do pin<br
-          /></label>
-          <input class="pinColor" name="color" type="color" value="#ff0000" />
+          <label for="pinCategoryTrigger" id="categoryLabel">Categoria</label>
+          <div class="category-select-container">
+            <button
+              type="button"
+              id="pinCategoryTrigger"
+              class="category-trigger"
+            >
+              <span class="material-symbols-outlined icon"></span>
+              <span class="text">Selecionar</span>
+              <span
+                class="material-symbols-outlined chevron"
+                id="touch_icon"
+                style="border: 0 !important; transition: 0.4s"
+                >touch_app</span
+              >
+            </button>
+            <input type="hidden" name="categoryId" id="pinCategory" />
+          </div>
         </div>
 
         <div class="imgDiv">

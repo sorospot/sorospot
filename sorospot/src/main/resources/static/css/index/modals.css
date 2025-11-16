@@ -17,6 +17,103 @@
   pointer-events: auto;
 }
 
+.category-select-container {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  min-width: 0;
+}
+.category-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.2rem;
+  width: 100%;
+  max-width: 14rem;
+  padding: 0.6rem 0.8rem;
+  height: 97.6%;
+  background: #fff;
+  color: var(--bg-color-secondary);
+  border: 2px solid var(--bg-color-secondary);
+  border-radius: 0.6rem;
+  cursor: pointer;
+  transition: 0.4s;
+}
+.category-trigger .icon {
+  color: var(--bg-color-secondary);
+}
+.category-trigger .text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.category-trigger .chevron {
+  color: var(--bg-color-secondary);
+}
+.category-trigger.category-error {
+  border-color: #d32f2f;
+  animation: shake 0.4s;
+}
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+}
+
+input.input-error,
+textarea.input-error {
+  border-color: #d32f2f !important;
+  animation: shake 0.4s;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+}
+.category-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  cursor: pointer;
+  border: 2px solid var(--bg-color-secondary);
+  border-radius: 0.6rem;
+  background: #fff;
+  transition: 0.4s;
+}
+.category-card .material-symbols-outlined {
+  font-size: 2rem;
+}
+.category-card .name {
+  font-weight: 700;
+  color: var(--bg-color-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.category-card .pill {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.category-card:hover {
+  background: rgba(0, 126, 231, 0.06);
+}
+
 .modal .panel {
   background: #fff;
   padding: clamp(1rem, 2vw, 1.6rem);
@@ -27,6 +124,7 @@
   max-width: 100%;
   max-height: 92vh;
   overflow: auto;
+  overflow-x: hidden;
   scale: 0.9;
   transition: 0.4s;
 }
@@ -38,6 +136,11 @@
   font-weight: 900;
   font-size: calc(var(--fs-xl) - 0.2rem);
   color: var(--bg-color-secondary);
+}
+
+label#categoryLabel {
+  font-size: var(--fs-sm) !important;
+  margin-bottom: 0.26rem !important;
 }
 
 .color-swatch {
@@ -166,9 +269,15 @@ input.pinColor {
 #btnImg:hover,
 #btnsImg label:hover,
 #btnImg_edit:hover,
-#btnsImg_edit label:hover {
+#btnsImg_edit label:hover,
+.category-trigger:hover,
+.category-trigger:hover #touch_icon {
   border: 2px solid var(--bg-color-primary);
   color: var(--bg-color-primary);
+}
+
+div#categoryModal {
+  z-index: 999;
 }
 
 .modalFooter {
@@ -253,6 +362,7 @@ label[state="enable"] {
   border-radius: 0.8rem;
   object-fit: cover;
   grid-area: btnAdd;
+  max-width: 12rem;
 }
 
 .modalWarning {

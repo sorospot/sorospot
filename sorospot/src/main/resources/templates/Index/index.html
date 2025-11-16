@@ -27,17 +27,20 @@
   <body>
     <th:block th:insert="~{utils/_header :: header}"></th:block>
 
-    <th:block th:insert="fragments/index/_pinModal :: pinModal"></th:block>
+    <th:block th:insert="~{Index/modals/_pinModal :: pinModal}"></th:block>
     <th:block
-      th:insert="fragments/index/_deleteModal :: deleteModal"
+      th:insert="~{Index/modals/_categoryModal :: categoryModal}"
     ></th:block>
     <th:block
-      th:insert="fragments/index/_deletePhotoModal :: deletePhotoModal"
+      th:insert="~{Index/modals/_deleteModal :: deleteModal}"
     ></th:block>
     <th:block
-      th:insert="fragments/index/_myPinsModal :: myPinsModal"
+      th:insert="~{Index/modals/_deletePhotoModal :: deletePhotoModal}"
     ></th:block>
-    <th:block th:insert="fragments/index/_editModal :: editModal"></th:block>
+    <th:block
+      th:insert="~{Index/modals/_myPinsModal :: myPinsModal}"
+    ></th:block>
+    <th:block th:insert="~{Index/modals/_editModal :: editModal}"></th:block>
 
     <main>
       <th:block th:insert="${contentTemplate} :: content"></th:block>
@@ -68,16 +71,16 @@
     ></script>
 
     <script>
-        var reference = document.querySelector("header");
-        var myPinsButton = reference.querySelector("#myPinsBtn");
-        var centerBtn = reference.querySelector("#centerBtn");
-        var addressInput = reference.querySelector("#address");
-        var searchBtn = reference.querySelector("#searchBtn");
+      var reference = document.querySelector("header");
+      var myPinsButton = reference.querySelector("#myPinsBtn");
+      var centerBtn = reference.querySelector("#centerBtn");
+      var addressInput = reference.querySelector("#address");
+      var searchBtn = reference.querySelector("#searchBtn");
 
-        addressInput.removeAttribute("disabled");
-        searchBtn.removeAttribute("disabled");
-        myPinsButton.removeAttribute("disabled");
-        centerBtn.removeAttribute("disabled");
+      addressInput.removeAttribute("disabled");
+      searchBtn.removeAttribute("disabled");
+      myPinsButton.removeAttribute("disabled");
+      centerBtn.removeAttribute("disabled");
     </script>
   </body>
 </html>
