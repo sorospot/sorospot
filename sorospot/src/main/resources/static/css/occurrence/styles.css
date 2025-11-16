@@ -296,13 +296,6 @@
 
 /* ==================== AÇÕES ==================== */
 
-.occurrence-actions > div {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 1.6rem;
-}
-
 .occurrence-photos > div > p {
     color: #6b7280;
     font-size: 2rem;
@@ -313,6 +306,20 @@
     border-radius: 0.8rem;
     border: 2px dashed rgba(107, 114, 128, 0.3);
     margin-top: 1.6rem;
+}
+
+.occurrence-actions > div.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1.6rem;
+}
+
+.occurrence-actions > div.action-buttons > div {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 /* ==================== BOTÕES ==================== */

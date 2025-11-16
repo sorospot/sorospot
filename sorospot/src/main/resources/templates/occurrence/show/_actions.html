@@ -7,13 +7,18 @@
          )}">
         <h2>Ações</h2>
 
-        <div th:if="${(user.role.userRole == 'USER' and user.id == occurrence.user.id) or 
-                      user.role.userRole == 'ADMIN'}">
-            <button class="btn" data-open-edit-modal>Editar</button>
-            <button class="btn btn-danger" data-open-delete-modal>Excluir</button>
-        </div>
-
-        <div>
+        <div class="action-buttons">
+            <button class="btn" data-open-edit-modal
+                    th:if="${(user.role.userRole == 'USER' and user.id == occurrence.user.id) or 
+                             user.role.userRole == 'ADMIN'}">
+                Editar
+            </button>
+            <button class="btn btn-danger" data-open-delete-modal
+                    th:if="${(user.role.userRole == 'USER' and user.id == occurrence.user.id) or 
+                             user.role.userRole == 'ADMIN'}">
+                Excluir
+            </button>
+            
             <button class="btn btn-secondary" data-open-status-modal>Alterar Status</button>
         </div>
     </div>
