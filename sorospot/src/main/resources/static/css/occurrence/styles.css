@@ -1,6 +1,77 @@
 /* Importar fonte */
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Lilita+One&display=swap');
 
+.occurrence-summary p:first-of-type span {
+    display: inline-block;
+    padding: 0.6rem 1.6rem;
+    background: linear-gradient(135deg, #0c64de, #65c1fa);
+    color: #fff;
+    border-radius: 10rem;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(12, 100, 222, 0.3);
+    transition: all 0.3s ease;
+}
+
+.occurrence-summary p:first-of-type span:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 16px rgba(12, 100, 222, 0.4);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.6rem 1.6rem;
+    border-radius: 10rem;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.status-badge:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.status-badge.pending {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: #fff;
+}
+
+.status-badge.in-progress {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    color: #fff;
+}
+
+.status-badge.resolved {
+    background: linear-gradient(135deg, #087e3d, #26c563);
+    color: #fff;
+}
+
+.status-badge.canceled {
+    background: linear-gradient(135deg, #6b7280, #9ca3af);
+    color: #fff;
+}
+
+.status-badge.reopened {
+    background: linear-gradient(135deg, #6517a5, #bb6dfa);
+    color: #fff;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 0.6rem 1.6rem;
+    border-radius: 10rem;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.category-badge:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
 /* Container com entrada sequencial tipo React */
 .occurrence-show-container {
     max-width: 120rem;
@@ -191,7 +262,6 @@
 .occurrence-summary span,
 .occurrence-details span,
 .occurrence-last-update span {
-    color: #374151;
     font-weight: 600;
     font-size: 1.8rem;
 }
