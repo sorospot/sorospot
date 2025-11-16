@@ -33,8 +33,7 @@ function OccurrenceController(reference) {
 
         if (btnOpenEdit) {
             btnOpenEdit.addEventListener("click", function() {
-                console.log("Abrindo modal de editar1");
-                openEditModal();
+                openOccurrenceEditModal();
             });
         }
 
@@ -95,7 +94,266 @@ function OccurrenceController(reference) {
         }
     };
 
-    openEditModal = function() {
+    openOccurrenceEditModal = function() {
+        const occurrenceId = getOccurrenceIdFromPage();
+        if (!occurrenceId) {
+            console.warn("Nenhuma ocorrência encontrada na URL.");
+            return;
+        }
+
+        // Usa a mesma rota do map.js
+        fetch("/api/maps/my-occurrences")
+            .then(r => {
+                if (!r.ok) {
+                    return r.text().then(t => {
+                        throw new Error(t || "Não autorizado");
+                    });
+                }
+                return r.json();
+            })
+            .then(arr => {
+                const item = arr.find(x => x.id == occurrenceId);
+                
+                if (!item) {
+                    throw new Error("Ocorrência não encontrada ou você não tem permissão para editá-la.");
+                }
+                
+                // Tenta usar a função global do map.js
+                if (window.openEditModal) {
+                    window.openEditModal(item);
+                } else {
+                    // Fallback caso map.js não esteja carregado
+                    openEditModalFallback(item);
+                }
+            })
+            .catch(e => {
+                console.error("Erro ao buscar ocorrência:", e);
+                alert("Erro: " + e.message);
+            });
+    };
+
+    // Fallback completo (cópia do map.js)
+    function openEditModalFallback(item) {
+        const modal = document.getElementById("editModal");
+        if (!modal) return;
+
+        modal.classList.add("open");
+        
+        document.getElementById("editId").value = item.id;
+        document.getElementById("editTitle").value = item.title || "";
+        document.getElementById("editDesc").value = item.description || "";
+
+        const editHidden = document.getElementById("editCategory");
+        const editTrigger = document.getElementById("editCategoryTrigger");
+        
+        if (editTrigger) {
+            editTrigger.onclick = () => {
+                if (window.openCategoryModal) {
+                    window.openCategoryModal({
+                        hiddenId: "editCategory",
+                        triggerId: "editCategoryTrigger"
+                    });
+                }
+            };
+        }
+
+        // Carregar categorias se necessário
+        if (!window.categories || !window.categories.length) {
+            fetch("/api/maps/categories")
+                .then(r => r.json())
+                .then(cats => {
+                    window.categories = cats.map(cat => ({
+                        ...cat,
+                        displayName: cat.type ? cat.type.charAt(0).toUpperCase() + cat.type.slice(1).toLowerCase() : "",
+                        displayIcon: cat.icon && String(cat.icon).toLowerCase() !== "null" && cat.icon.trim() !== "" ? cat.icon : "location_on"
+                    }));
+                    setCurrentCategory(item, editHidden, editTrigger);
+                });
+        } else {
+            setCurrentCategory(item, editHidden, editTrigger);
+        }
+
+        setupPhotosForEdit(item);
+
+        const cancelBtn = document.getElementById("cancelEdit");
+        if (cancelBtn) {
+            cancelBtn.onclick = () => {
+                if (window.SOROSPOT_IMAGE_PICKERS && window.SOROSPOT_IMAGE_PICKERS["editImage"]) {
+                    window.SOROSPOT_IMAGE_PICKERS["editImage"].reset();
+                }
+                modal.classList.remove("open");
+            };
+        }
+
+        const editForm = document.getElementById("editForm");
+        if (editForm) {
+            editForm.onsubmit = function(ev) {
+                ev.preventDefault();
+                handleEditSubmit();
+            };
+        }
+    }
+
+    function setCurrentCategory(item, editHidden, editTrigger) {
+        if (window.categories && window.categories.length) {
+            const currentCat = window.categories.find(
+                c => c.type === item.category || c.displayName === item.category
+            );
+            
+            if (currentCat) {
+                if (editHidden) editHidden.value = currentCat.id;
+                if (editTrigger) {
+                    const icon = editTrigger.querySelector(".material-symbols-outlined.icon");
+                    const text = editTrigger.querySelector(".text");
+                    const chevron = editTrigger.querySelector(".material-symbols-outlined.chevron");
+                    
+                    if (icon) {
+                        icon.textContent = currentCat.displayIcon;
+                        icon.style.color = currentCat.color;
+                    }
+                    if (text) text.textContent = currentCat.displayName;
+                    if (chevron) chevron.style.display = "none";
+                }
+            }
+        }
+    }
+
+    function setupPhotosForEdit(item) {
+        const photosDiv = document.getElementById("editPhotos");
+        if (!photosDiv) return;
+
+        photosDiv.innerHTML = "";
+
+        const photosContainer = document.createElement("div");
+        photosContainer.className = "edit-photos-container";
+        photosContainer.dataset.toRemove = "";
+
+        const photos = item.photos || [];
+        
+        photos.forEach(p => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "edit-photo-wrapper";
+            wrapper.dataset.photo = p;
+
+            const img = document.createElement("img");
+            img.src = "/uploads/" + p;
+            img.className = "edit-photo-img";
+
+            const deleteIcon = document.createElement("span");
+            deleteIcon.className = "material-symbols-outlined edit-photo-delete-icon";
+            deleteIcon.textContent = "delete";
+
+            wrapper.addEventListener("click", () => {
+                if (window.openDeletePhotoModal) {
+                    window.openDeletePhotoModal(wrapper, p, photosContainer);
+                } else {
+                    if (confirm("Remover esta foto?")) {
+                        const currentToRemove = photosContainer.dataset.toRemove || "";
+                        const toRemoveList = currentToRemove ? currentToRemove.split(",") : [];
+                        if (!toRemoveList.includes(p)) {
+                            toRemoveList.push(p);
+                        }
+                        photosContainer.dataset.toRemove = toRemoveList.join(",");
+                        wrapper.remove();
+                    }
+                }
+            });
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(deleteIcon);
+            photosContainer.appendChild(wrapper);
+        });
+
+        photosDiv.appendChild(photosContainer);
+
+        if (photos.length > 4) {
+            const prevBtn = document.createElement("button");
+            prevBtn.className = "carousel-nav carousel-prev";
+            prevBtn.type = "button";
+            prevBtn.innerHTML = '<span class="material-symbols-outlined">chevron_left</span>';
+            prevBtn.addEventListener("click", () => {
+                photosContainer.scrollBy({ left: -200, behavior: "smooth" });
+            });
+
+            const nextBtn = document.createElement("button");
+            nextBtn.className = "carousel-nav carousel-next";
+            nextBtn.type = "button";
+            nextBtn.innerHTML = '<span class="material-symbols-outlined">chevron_right</span>';
+            nextBtn.addEventListener("click", () => {
+                photosContainer.scrollBy({ left: 200, behavior: "smooth" });
+            });
+
+            photosDiv.style.justifyContent = "center";
+            photosDiv.appendChild(prevBtn);
+            photosDiv.appendChild(nextBtn);
+        }
+    }
+
+    function handleEditSubmit() {
+        const id = document.getElementById("editId").value;
+        const titleVal = document.getElementById("editTitle").value;
+        const titleInput = document.getElementById("editTitle");
+        
+        if (!titleVal || !titleVal.trim()) {
+            if (titleInput) {
+                titleInput.classList.add("input-error");
+                setTimeout(() => titleInput.classList.remove("input-error"), 2000);
+            }
+            return;
+        }
+        
+        const categoryId = document.getElementById("editCategory").value;
+        if (!categoryId) {
+            const trigger = document.getElementById("editCategoryTrigger");
+            if (trigger) {
+                trigger.classList.add("category-error");
+                setTimeout(() => trigger.classList.remove("category-error"), 2000);
+            }
+            return;
+        }
+        
+        const fd = new FormData();
+        fd.append("title", titleVal);
+        fd.append("description", document.getElementById("editDesc").value);
+        fd.append("categoryId", categoryId);
+        
+        const file = document.getElementById("editImage").files[0];
+        if (file) {
+            const maxBytes = 10 * 1024 * 1024;
+            if (file.size > maxBytes) {
+                alert("Arquivo muito grande! Máximo 10MB");
+                return;
+            }
+            fd.append("image", file);
+        }
+
+        const photosContainer = document.querySelector("#editPhotos .edit-photos-container");
+        if (photosContainer && photosContainer.dataset.toRemove) {
+            const toRemove = photosContainer.dataset.toRemove.split(",").filter(x => x.trim());
+            if (toRemove.length) {
+                fd.append("removePhotos", toRemove.join(","));
+            }
+        }
+
+        fetch("/api/maps/markers/" + id, {
+            method: "PUT",
+            body: fd
+        })
+        .then(r => {
+            if (!r.ok) {
+                return r.text().then(t => { throw new Error(t); });
+            }
+            return r.json();
+        })
+        .then(() => {
+            alert("Ocorrência editada com sucesso!");
+            document.getElementById("editModal").classList.remove("open");
+            window.location.reload();
+        })
+        .catch(e => {
+            console.error("Erro ao editar:", e);
+            alert("Erro: " + e.message);
+        });
     }
 
     getOccurrenceIdFromPage = function() {
@@ -130,30 +388,30 @@ function OccurrenceController(reference) {
             body: JSON.stringify({ status: status })
         }).then(response => {
             if (response.ok) {
-                alert("Status da ocorrência alterado com sucesso.");
+                alert("Status alterado com sucesso!");
                 window.location.reload();
             } else {
-                alert('Erro ao alterar status da ocorrência.');
+                alert('Erro ao alterar status.');
                 reference.querySelector("#statusModal").classList.remove("open");
             }
         }).catch(() => {
-            alert('Erro ao alterar status da ocorrência.');
+            alert('Erro ao alterar status.');
             reference.querySelector("#statusModal").classList.remove("open");
         });
     };
 
     handleDelete = function() {
         const occurrenceId = reference.querySelector("#deleteOccurrenceId").value;
-        console.log(window.SOROSPOT_CURRENT_USER_EMAIL)
+        
         fetch("/api/maps/markers/" + occurrenceId, {
             method: "DELETE",
             headers: { "X-User-Email": window.SOROSPOT_CURRENT_USER_EMAIL }
         }).then(response => {
             if (response.ok) {
-                alert("Ocorrência excluída com sucesso.");
+                alert("Ocorrência excluída com sucesso!");
                 window.location.href = '/mapa';
             } else {
-                alert("Erro no else ao excluir ocorrência.");
+                alert("Erro ao excluir ocorrência.");
                 reference.querySelector("#deleteModal").classList.remove("open");
             }
         }).catch(() => {
