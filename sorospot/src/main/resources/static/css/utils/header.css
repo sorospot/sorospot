@@ -17,7 +17,7 @@ header nav {
   gap: 2rem;
   height: 4rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .searchBar {
@@ -67,7 +67,7 @@ span#searchBtn:hover {
   display: flex;
   gap: 1.2rem;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   height: 100%;
 }
 #centerBtn,

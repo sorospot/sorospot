@@ -125,12 +125,18 @@ public class OccurrenceService {
     }
 
     public List<Map<String, Object>> getMyOccurrences(String userEmail) {
-        final String header = (userEmail != null && !userEmail.isBlank()) ? userEmail : "demo@sorospot.local";
-        
-        return occurrenceRepository.findAll().stream()
-                .filter(o -> o.getUser() != null && header.equals(o.getUser().getEmail()))
-                .map(this::buildOccurrenceResponse)
-                .collect(Collectors.toList());
+    // normalize header email to avoid case/whitespace mismatches
+    final String header = (userEmail != null && !userEmail.isBlank())
+        ? userEmail.trim().toLowerCase()
+        : "demo@sorospot.local";
+
+    return occurrenceRepository.findAll().stream()
+        .filter(o -> {
+            if (o.getUser() == null || o.getUser().getEmail() == null) return false;
+            return header.equals(o.getUser().getEmail().trim().toLowerCase());
+        })
+        .map(this::buildOccurrenceResponse)
+        .collect(Collectors.toList());
     }
 
     public Map<String, Object> updateOccurrence(Integer id, String title, String description,

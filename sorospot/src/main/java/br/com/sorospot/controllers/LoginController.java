@@ -42,6 +42,9 @@ public class LoginController {
                 session.setAttribute("userName", user.getName());
                 session.setAttribute("userEmail", user.getEmail());
                 session.setAttribute("userRole", user.getRole().getUserRole());
+                session.setAttribute("userCPF", user.getCpf());
+                session.setAttribute("userTelephone", user.getTelephone());
+                session.setAttribute("userPhoto", user.getPhoto());
                 return "redirect:/mapa";
             }
         } catch (AuthenticationException e) {

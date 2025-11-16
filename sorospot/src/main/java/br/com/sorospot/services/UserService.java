@@ -18,13 +18,15 @@ public class UserService {
     }
 
     public User findOrCreateUser(String userEmail) {
-        final String headerEmail = (userEmail != null && !userEmail.isBlank()) 
-                ? userEmail : "demo@sorospot.local";
-        
+        // normalize incoming email to lower-case and trimmed to avoid duplicates
+        final String headerEmail = (userEmail != null && !userEmail.isBlank())
+                ? userEmail.trim().toLowerCase()
+                : "demo@sorospot.local";
+
         // tenta achar um usuario
         User found = null;
         for (User u : userRepository.findAll()) {
-            if (headerEmail.equals(u.getEmail())) {
+            if (u.getEmail() != null && headerEmail.equals(u.getEmail().trim().toLowerCase())) {
                 found = u;
                 break;
             }
@@ -33,6 +35,7 @@ public class UserService {
         // senao cria um
         if (found == null) {
             User nu = new User();
+            // store normalized email
             nu.setEmail(headerEmail);
             
             // seta um nome

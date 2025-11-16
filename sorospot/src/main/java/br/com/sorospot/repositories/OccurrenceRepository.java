@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OccurrenceRepository extends JpaRepository<Occurrence, Integer> {
+	long countByUser_IdAndDeletedFalse(Integer userId);
+	long countByUser_EmailAndDeletedFalse(String email);
 }
