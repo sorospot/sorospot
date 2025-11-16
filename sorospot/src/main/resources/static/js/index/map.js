@@ -1,3 +1,4 @@
+// Exporta a função para o escopo global
 // Esse arquivo depende das seguintes variáveis globais:
 //   window.SOROSPOT_GOOGLE_MAPS_API_KEY (string)
 //   window.SOROSPOT_CURRENT_USER_EMAIL (string)
@@ -23,6 +24,14 @@ function formatCategory(cat) {
 }
 
 window.initMap = function () {
+    document.addEventListener("DOMContentLoaded", function() {
+        var editModal = document.getElementById("editModal");
+        if (editModal) {
+        editModal.addEventListener("click", function(event) {
+            fechaModal(event, this);
+        });
+        }
+    });
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 13,
     center: { lat: -23.5015, lng: -47.4526 },
