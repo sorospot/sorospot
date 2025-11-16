@@ -12,9 +12,21 @@
 	<link rel="stylesheet" th:href="@{/css/utils/variables.css}" />
 	<link rel="stylesheet" th:href="@{/css/utils/header.css}" />
 	<link rel="stylesheet" th:href="@{/css/profile/style.css}">
+	<link rel="stylesheet" th:href="@{/css/index/modals.css}" />
 </head>
 <body>
 	<th:block th:insert="~{utils/_header :: header}"></th:block>
 	<th:block th:insert="~{${contentTemplate} :: content}"></th:block>
+	<th:block
+      th:insert="fragments/index/_myPinsModal :: myPinsModal"
+    ></th:block>
+		<th:block th:insert="fragments/index/_changePasswordModal :: changePasswordModal"></th:block>
 </body>
+	<script th:inline="javascript">
+	  /*<![CDATA[*/
+	  // expose current user email so map.js's openMyPinsModal can send it
+	  window.SOROSPOT_CURRENT_USER_EMAIL = /*[[${userEmail}]]*/ "demo@sorospot.local";
+	  /*]]>*/
+	</script>
+	<script th:src="@{/js/index/map.js}" defer></script>
 </html>

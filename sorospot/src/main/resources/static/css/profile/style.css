@@ -30,6 +30,16 @@
     display: flex;
     justify-content: center;
     margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.photo-edit-icon {
+    position: absolute;
+    right: 8px;
+    bottom: 4px; /* a bit lower */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (max-width: 768px) {
@@ -265,6 +275,52 @@
 
 .profile-btn .material-symbols-outlined {
     font-size: 20px;
+}
+
+/* Input style for inline edit */
+.profile-input {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(0,0,0,0.08);
+    font-size: 20px;
+    box-sizing: border-box;
+    background: #fff;
+    color: var(--on-surface);
+}
+
+.info-row p {
+    flex: 1 1 auto;
+    text-align: center; /* center data in the field */
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.info-row input.profile-input {
+    text-align: center; /* keep text centered during edit */
+    background: transparent;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Button variants for edit/save/cancel */
+.profile-btn.saving {
+    /* keep site blue for save */
+    background-color: var(--primary, #1a73e8);
+    color: var(--on-primary, #ffffff);
+}
+
+.profile-btn.cancel {
+    /* also blue variant but muted */
+    background-color: rgba(26,115,232,0.08);
+    color: var(--primary, #1a73e8);
+    box-shadow: none;
+    border: 1px solid rgba(26,115,232,0.12);
+}
+
+.profile-btn.saving:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
 }
 
 @media (max-width: 768px) {

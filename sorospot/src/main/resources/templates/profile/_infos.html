@@ -41,7 +41,7 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <span class="material-symbols-outlined">location_on</span>
-                        <p class="stat-number">0</p>
+                        <p class="stat-number" th:text="${occurrenceCount}">0</p>
                         <p class="stat-label">Pins Criados</p>
                     </div>
                     <div class="stat-card">
@@ -80,11 +80,11 @@
                     <p th:text="${userTelephone}">(XX)XXXXX-XXXX</p>
                 </div>
                 <div class="profile-edit" id="btnEditProfile">
-                    <button class="profile-btn" onclick="window.location.href='/perfil/editar'">
+                    <button id="editProfileBtn" class="profile-btn" type="button">
                         <span class="material-symbols-outlined">edit</span>
                         Alterar Cadastro
                     </button>
-                    <button class="profile-btn" onclick="window.location.href='/perfil/senha'">
+                    <button id="passwordBtn" class="profile-btn" type="button">
                         <span class="material-symbols-outlined">key</span>
                         Redefinir Senha
                     </button>
@@ -94,5 +94,6 @@
         </div>
         </div>
     </div>
+    <script th:src="@{/js/profile/profileService.js}"></script>
     <script th:src="@{/js/profile/sidebar.js}"></script>
 </div>
