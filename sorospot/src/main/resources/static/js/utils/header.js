@@ -5,11 +5,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const centerBtn = document.getElementById('centerBtn');
     const myPinsBtn = document.getElementById('myPinsBtn');
     const accountBtn = document.getElementById('accountBtn');
+    
 
     // Only adjust when on /mapa
     if (path.startsWith('/perfil')) {
       // hide search input / navbar area but keep buttons visible
       if (searchBar) searchBar.style.display = 'none';
+
+      // ensure any disabled attributes are removed so buttons become clickable
+      try {
+        if (centerBtn) centerBtn.disabled = false;
+      } catch (e) {}
+      try {
+        if (myPinsBtn) myPinsBtn.disabled = false;
+      } catch (e) {}
+      // also enable search input/button if present (harmless even if hidden)
+      try {
+        const addr = document.getElementById('address');
+        if (addr) addr.disabled = false;
+      } catch (e) {}
+      try {
+        const sbtn = document.getElementById('searchBtn');
+        if (sbtn) sbtn.disabled = false;
+      } catch (e) {}
 
       // centerBtn should act as "Ir ao Mapa" (navigate to /mapa)
       if (centerBtn) {
@@ -40,6 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         };
       }
+
+      
     }
   } catch (e) {
     // silent
