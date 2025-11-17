@@ -189,23 +189,6 @@
 }
 
 @media (max-width: 500px) {
-    .sidebar-buttons {
-        position: static;
-        flex-direction: row;
-        gap: 0.4rem;
-        margin-bottom: 0.5rem;
-    }
-    .sidebar-btn {
-        min-width: auto;
-        padding: 0.5rem 0.6rem;
-        font-size: 13px;
-    }
-    .user-details {
-        width: 100%; /* Em mobile, ocupa toda largura */
-        margin-left: 0;
-        padding-right: 0;
-    }
-
     .stats-grid {
         flex-direction: column;
         gap: 0.1rem !important;
