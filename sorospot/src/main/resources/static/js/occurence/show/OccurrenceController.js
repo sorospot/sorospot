@@ -448,7 +448,7 @@ function OccurrenceController(reference) {
             if (statusBadge.classList.contains("pending")) return "Pendente";
             if (statusBadge.classList.contains("in-progress")) return "Em andamento";
             if (statusBadge.classList.contains("resolved")) return "Resolvida";
-            if (statusBadge.classList.contains("closed")) return "Cancelada";
+            if (statusBadge.classList.contains("canceled")) return "Cancelada";
             if (statusBadge.classList.contains("reopened")) return "Reaberta";
         }
         return "PENDING";
