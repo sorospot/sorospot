@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="${profileUser.name} + ' - Perfil'">Perfil</title>
+
+    <link rel="icon" th:href="@{/images/sorospot-nobg.png}" type="image/png" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" th:href="@{/css/utils/variables.css}" />
+    <link rel="stylesheet" th:href="@{/css/index/modals.css}" />
+    <link rel="stylesheet" th:href="@{/css/profile/styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/utils/header.css}" />
+  </head>
+
+  <body
+    th:data-profile-email="${profileUser.email}"
+    th:data-current-email="${currentUserEmail}"
+  >
+    <th:block th:insert="~{utils/_header :: header}"></th:block>
+
+    <!-- Modais para gerenciamento de pins (reutilizados do index) -->
+    <th:block th:if="${isAdmin}">
+      <th:block th:insert="~{Index/modals/_editModal :: editModal}"></th:block>
+      <th:block
+        th:insert="~{Index/modals/_deleteModal :: deleteModal}"
+      ></th:block>
+      <th:block
+        th:insert="~{Index/modals/_categoryModal :: categoryModal}"
+      ></th:block>
+      <th:block
+        th:insert="~{Index/modals/_deletePhotoModal :: deletePhotoModal}"
+      ></th:block>
+
+      <!-- Modais específicos do perfil -->
+      <th:block
+        th:insert="~{profile/modals/_editUserModal :: editUserModal}"
+      ></th:block>
+      <th:block
+        th:insert="~{profile/modals/_deleteUserModal :: deleteUserModal}"
+      ></th:block>
+    </th:block>
+
+    <main>
+      <th:block th:insert="~{profile/_content :: content}"></th:block>
+    </main>
+
+    <script th:if="${isAdmin}" th:inline="javascript">
+      /*<![CDATA[*/
+      window.PROFILE_USER_DATA = {
+        name: /*[[${profileUser.name}]]*/ "",
+        email: /*[[${profileUser.email}]]*/ "",
+        telephone: /*[[${profileUser.telephone}]]*/ "",
+        cpf: /*[[${profileUser.cpf}]]*/ "",
+      };
+      /*]]>*/
+    </script>
+
+    <script
+      th:if="${isAdmin}"
+      th:src="@{/js/profile/profile.js}"
+      defer
+    ></script>
+  </body>
+</html>

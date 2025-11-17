@@ -104,8 +104,14 @@ public class OccurrenceService {
         var occ = opt.get();
         var ownerEmail = occ.getUser() != null ? occ.getUser().getEmail() : null;
         final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail : "";
-        
-        if (ownerEmail == null || !ownerEmail.equals(actor)) {
+        // Permite admin independente do dono
+        boolean isAdmin = false;
+        try {
+            var user = userService.findOrCreateUser(actor);
+            isAdmin = userService.isAdmin(user);
+        } catch (Exception ignored) {}
+
+        if (!isAdmin && (ownerEmail == null || !ownerEmail.equals(actor))) {
             throw new SecurityException("Unauthorized");
         }
     }
@@ -148,8 +154,12 @@ public class OccurrenceService {
         var occ = opt.get();
         var ownerEmail = occ.getUser() != null ? occ.getUser().getEmail() : null;
         final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail : "";
-        
-        if (ownerEmail == null || !ownerEmail.equals(actor)) {
+        boolean isAdmin = false;
+        try {
+            var user = userService.findOrCreateUser(actor);
+            isAdmin = userService.isAdmin(user);
+        } catch (Exception ignored) {}
+        if (!isAdmin && (ownerEmail == null || !ownerEmail.equals(actor))) {
             throw new SecurityException("Unauthorized");
         }
 
@@ -179,7 +189,10 @@ public class OccurrenceService {
     }
 
     public List<Map<String, Object>> listAllOccurrences() {
-        return occurrenceRepository.findAll().stream()
+        var activeOccurrences = occurrenceRepository.findAllActiveWithActiveUsers();
+        System.out.println("[LIST OCCURRENCES] Retornando " + activeOccurrences.size() + " pins ativos de usuários ativos");
+        
+        return activeOccurrences.stream()
                 .map(this::buildOccurrenceResponse)
                 .collect(Collectors.toList());
     }

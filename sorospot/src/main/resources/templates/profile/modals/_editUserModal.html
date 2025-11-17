@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="editUserModal"
+  lang="pt-BR"
+>
+  <body>
+    <div th:fragment="editUserModal" id="editUserModal" class="modal">
+      <div class="panel">
+        <h2>Editar Usuário</h2>
+        <form id="editUserForm">
+          <div>
+            <label
+              >Nome<br /><input id="editUserName" style="width: 100%" required
+            /></label>
+          </div>
+          <div>
+            <label
+              >Telefone<br /><input id="editUserPhone" style="width: 100%"
+            /></label>
+          </div>
+          <div>
+            <label
+              >CPF<br /><input id="editUserCpf" style="width: 100%"
+            /></label>
+          </div>
+          <div class="modalFooter">
+            <button type="button" id="cancelEditUser">
+              Cancelar
+              <span class="material-symbols-outlined">arrow_left_alt</span>
+            </button>
+            <button type="submit">
+              Salvar <span class="material-symbols-outlined">done_outline</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

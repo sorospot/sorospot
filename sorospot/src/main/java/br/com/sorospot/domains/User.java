@@ -50,6 +50,11 @@ public class User {
         createdAt = LocalDateTime.now();
     }
 
+    @PreUpdate
+    public void preUpdate() {
+        lastUpdated = LocalDateTime.now();
+    }
+
     public User(Integer id, String name, String cpf, String telephone, String email, String password, String photo,
     UserRole role, Boolean deleted, LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.id = id;

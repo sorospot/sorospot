@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="profileContent"
+  lang="pt-BR"
+>
+  <body>
+    <div th:fragment="content" class="profile-container">
+      <div class="profile-header">
+        <div>
+          <img
+            th:if="${profileUser.photo}"
+            th:src="${profileUser.photo}"
+            alt="Foto"
+          />
+          <img
+            th:if="${profileUser.photo == null}"
+            th:src="@{/images/no-user.png}"
+            alt="Foto"
+          />
+        </div>
+        <div>
+          <h1 style="margin: 0 0 6px" th:text="${profileUser.name}">Nome</h1>
+          <p
+            style="margin: 0 0 10px; color: #444"
+            th:text="${profileUser.email}"
+          >
+            email
+          </p>
+          <span
+            class="badge"
+            th:classappend=" ${profileUser.role.userRole == 'ADMIN'} ? ' role-admin'"
+            th:text="${profileUser.role.userRole}"
+            >ROLE</span
+          >
+        </div>
+      </div>
+
+      <div class="profile-stats">
+        <div class="stat">
+          <h3>Pins Ativos</h3>
+          <p th:text="${totalPins}">0</p>
+        </div>
+      </div>
+
+      <div class="pins-section" th:if="${isAdmin}">
+        <h2>Pins do Usuário</h2>
+        <div id="pinsList" class="pins-list">Carregando...</div>
+      </div>
+
+      <div class="admin-actions" th:if="${isAdmin}">
+        <button class="button" onclick="openEditUserModal()">
+          Editar Usuário <span class="material-symbols-outlined">edit</span>
+        </button>
+        <button class="button danger" onclick="openDeleteUserModal()">
+          Excluir Usuário <span class="material-symbols-outlined">delete</span>
+        </button>
+      </div>
+
+      <div class="back-link">
+        <a href="/" class="button">Voltar ao mapa</a>
+      </div>
+    </div>
+  </body>
+</html>

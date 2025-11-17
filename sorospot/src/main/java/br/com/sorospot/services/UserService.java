@@ -51,9 +51,8 @@ public class UserService {
             // senha minima
             nu.setPassword("changeme");
             
-            // tenta colocar o role do user
-            UserRole userRole = getOrCreateUserRole();
-            nu.setRole(userRole);
+            // Por padrão, novos usuários são USER
+            nu.setRole(getOrCreateUserRole());
             
             found = userRepository.save(nu);
         }
@@ -77,5 +76,9 @@ public class UserService {
         }
         
         return userRole;
+    }
+
+    public boolean isAdmin(User user) {
+        return user != null && user.getRole() != null && user.getRole().getId() != null && user.getRole().getId() == 2;
     }
 }

@@ -289,7 +289,8 @@ div#categoryModal {
 .modalFooter button,
 .my-edit,
 .my-delete,
-.my-zoom {
+.my-zoom,
+.my-profile {
   background: unset;
   border-radius: 0.6rem;
   border: 2px solid var(--bg-color-secondary);
@@ -308,7 +309,8 @@ div#categoryModal {
 .modalFooter button:hover,
 .my-edit:hover,
 .my-delete:hover,
-.my-zoom:hover {
+.my-zoom:hover,
+.my-profile:hover {
   border: 2px solid var(--bg-color-primary);
   color: var(--bg-color-primary);
 }
@@ -316,7 +318,8 @@ div#categoryModal {
 .modalFooter button span,
 .my-edit span,
 .my-delete span,
-.my-zoom span {
+.my-zoom span,
+.my-profile span {
   position: absolute;
   right: -0.86rem;
   font-size: var(--fs-lg);

@@ -4,6 +4,7 @@ import br.com.sorospot.dtos.GeocodeResult;
 import br.com.sorospot.repositories.CategoryRepository;
 import br.com.sorospot.services.GoogleMapsService;
 import br.com.sorospot.services.OccurrenceService;
+import br.com.sorospot.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.MediaType;
@@ -25,14 +26,17 @@ public class MapsController {
 
     private final GoogleMapsService googleMapsService;
     private final OccurrenceService occurrenceService;
+    private final UserService userService;
     private final CategoryRepository categoryRepository;
 
     public MapsController(GoogleMapsService googleMapsService,
                           OccurrenceService occurrenceService,
-                          CategoryRepository categoryRepository) {
+                          CategoryRepository categoryRepository,
+                          UserService userService) {
         this.googleMapsService = googleMapsService;
         this.occurrenceService = occurrenceService;
         this.categoryRepository = categoryRepository;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/geocode", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -96,6 +100,30 @@ public class MapsController {
         return ResponseEntity.ok(occurrenceService.getMyOccurrences(userEmail));
     }
 
+    @GetMapping(value = "/admin/occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, Object>>> adminOccurrences(@RequestParam(required = false) String userEmailFilter,
+                                                                      HttpSession session) {
+        String sessionEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        if (sessionEmail == null || sessionEmail.isBlank()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        var user = userService.findOrCreateUser(sessionEmail);
+        if (!userService.isAdmin(user)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        List<Map<String, Object>> all = occurrenceService.listAllOccurrences();
+        if (userEmailFilter != null && !userEmailFilter.isBlank()) {
+            String norm = userEmailFilter.trim().toLowerCase();
+            all = all.stream()
+                    .filter(m -> {
+                        Object email = m.get("userEmail");
+                        return email != null && email.toString().trim().toLowerCase().contains(norm);
+                    })
+                    .toList();
+        }
+        return ResponseEntity.ok(all);
+    }
+
     @PutMapping(value = "/markers/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, 
                 produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateMarker(@PathVariable Integer id,
@@ -127,8 +155,35 @@ public class MapsController {
     }
 
     @GetMapping(value = "/occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Map<String, Object>> listOccurrences() {
-        return occurrenceService.listAllOccurrences();
+    public ResponseEntity<List<Map<String, Object>>> listOccurrences(HttpSession session) {
+        // Endpoint público para mapa - retorna todos pins mas sem dados sensíveis de usuário
+        // Apenas admin pode ver detalhes completos via /admin/occurrences
+        List<Map<String, Object>> occurrences = occurrenceService.listAllOccurrences();
+        
+        // Filtra informações sensíveis para usuários não-admin
+        String sessionEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        boolean isAdmin = false;
+        if (sessionEmail != null && !sessionEmail.isBlank()) {
+            var user = userService.findOrCreateUser(sessionEmail);
+            isAdmin = userService.isAdmin(user);
+        }
+        
+        if (!isAdmin) {
+            // Para não-admins, mantém userEmail apenas se for o próprio usuário
+            final String currentUserEmail = sessionEmail;
+            occurrences = occurrences.stream()
+                    .peek(occ -> {
+                        Object occEmail = occ.get("userEmail");
+                        // Remove email se não for o próprio usuário
+                        if (occEmail == null || currentUserEmail == null || 
+                            !occEmail.toString().equalsIgnoreCase(currentUserEmail)) {
+                            occ.remove("userEmail");
+                        }
+                    })
+                    .collect(Collectors.toList());
+        }
+        
+        return ResponseEntity.ok(occurrences);
     }
 
     @GetMapping(value = "/categories", produces = MediaType.APPLICATION_JSON_VALUE)

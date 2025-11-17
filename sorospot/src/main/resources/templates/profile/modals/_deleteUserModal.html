@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="deleteUserModal"
+  lang="pt-BR"
+>
+  <body>
+    <div
+      th:fragment="deleteUserModal"
+      id="deleteUserModal"
+      class="modal"
+      style="z-index: 1000"
+    >
+      <div class="panel">
+        <h2>Confirmar exclusão de usuário</h2>
+        <p>
+          Deseja realmente excluir este usuário? Esta ação é
+          <strong>irreversível</strong>!
+        </p>
+        <div class="modalFooter">
+          <button id="cancelDeleteUser">
+            Cancelar
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+          </button>
+          <button id="confirmDeleteUser">
+            Excluir <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

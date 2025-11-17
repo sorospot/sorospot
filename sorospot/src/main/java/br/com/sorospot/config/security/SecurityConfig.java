@@ -14,7 +14,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/signIn", "/signUp", "/home", "/mapa", "/perfil", "/api/**", "/css/**", "/js/**", "/images/**", "/static/**", "/uploads/**", "/occurrence/show/**").permitAll()
+                .requestMatchers("/", "/signIn", "/signUp", "/home", "/mapa", "/perfil", "/profile/**", "/users/**", "/api/**", "/css/**", "/js/**", "/images/**", "/static/**", "/uploads/**", "/occurrence/show/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -27,7 +27,8 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
             )
-            .csrf(csrf -> csrf.disable());
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable());
 
         return http.build();
     }

@@ -75,7 +75,7 @@ window.initMap = function () {
             categoryColor: o.color || "#ff0000",
             photo: o.photo,
             user: o.user,
-            ownerEmail: o.userEmail || null,
+            userEmail: o.userEmail || null,
           });
       });
     });
@@ -218,7 +218,7 @@ window.initMap = function () {
             m.color || (selectedCat ? selectedCat.color : "#ff0000"),
           photo: m.photo,
           user: m.user,
-          ownerEmail: m.userEmail || null,
+          userEmail: m.userEmail || null,
         });
         modal.classList.remove("open");
       })
@@ -308,8 +308,10 @@ function addMarkerToMap(m) {
   });
 
   const isOwner =
-    (m.ownerEmail && m.ownerEmail === window.SOROSPOT_CURRENT_USER_EMAIL) ||
+    window.SOROSPOT_IS_ADMIN ||
+    (m.userEmail && m.userEmail === window.SOROSPOT_CURRENT_USER_EMAIL) ||
     false;
+
   const deleteBtn = isOwner
     ? `<div class="pinTooltipDelete" data-id="${m.id}">
         <span class="material-symbols-outlined">delete</span>
@@ -477,6 +479,132 @@ function openMyPinsModal() {
   list.classList.remove("no-pins");
   list.innerHTML = "Carregando...";
   modal.classList.toggle("open");
+  // Admin: usa endpoint especial e filtro por email
+  if (window.SOROSPOT_IS_ADMIN) {
+    // cria filtro se não existir
+    if (!document.getElementById("adminFilterWrap")) {
+      const wrap = document.createElement("div");
+      wrap.id = "adminFilterWrap";
+      wrap.style.display = "flex";
+      wrap.style.gap = "0.6rem";
+      wrap.style.marginBottom = "0.6rem";
+      wrap.innerHTML = `
+        <input id="adminUserFilter" placeholder="Filtrar por email" style="flex:1;padding:.5rem;border:2px solid var(--bg-color-secondary);border-radius:.5rem" />
+        <button id="adminUserFilterBtn" type="button" style="padding:.5rem 1rem;border:2px solid var(--bg-color-secondary);background:var(--bg-color-secondary);color:#fff;border-radius:.5rem;cursor:pointer">Filtrar</button>
+      `;
+      list.parentElement.insertBefore(wrap, list);
+      const doFilter = () => {
+        const v = document.getElementById("adminUserFilter").value.trim();
+        loadAdminPins(v);
+      };
+      document.getElementById("adminUserFilterBtn").onclick = doFilter;
+      document
+        .getElementById("adminUserFilter")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") doFilter();
+        });
+    }
+    const loadAdminPins = (filter) => {
+      list.innerHTML = "Carregando...";
+      const url = filter
+        ? `/api/maps/admin/occurrences?userEmailFilter=${encodeURIComponent(
+            filter
+          )}`
+        : "/api/maps/admin/occurrences";
+      fetch(url)
+        .then((r) => {
+          if (!r.ok)
+            return r.text().then((t) => {
+              throw t || "Não autorizado";
+            });
+          return r.json();
+        })
+        .then((arr) => renderAdminPins(arr))
+        .catch((e) => (list.innerHTML = "Erro: " + e));
+    };
+    const renderAdminPins = (arr) => {
+      if (!arr.length) {
+        list.classList.add("no-pins");
+        list.innerHTML =
+          "<h3 class='modalWarning'>Nenhum pin encontrado <span class='material-symbols-outlined'>chat_error</span></h3>";
+        return;
+      }
+      list.innerHTML = "";
+      arr.forEach((item) => {
+        const div = document.createElement("div");
+        const thumbs =
+          item.photos && item.photos.length
+            ? item.photos
+                .slice(0, 3)
+                .map(
+                  (p) =>
+                    `<img src="/uploads/${p}" class="map-thumb" onclick="aumentarImagem(this)" style="margin-right:.8rem">`
+                )
+                .join("")
+            : "";
+        div.innerHTML = `<div style="display:flex;align-items:center"><div>${thumbs}</div><div style="flex:1"><strong>${escapeHtml(
+          item.title || "Sem título"
+        )}</strong><div style="font-size:0.9em">${escapeHtml(
+          item.description || ""
+        )}</div><div style="font-size:0.7em;color:#555">${escapeHtml(
+          item.userEmail || ""
+        )}</div></div></div><div style="margin-top:6px;display:flex;flex-wrap:wrap;gap: 1.2rem;"><button data-id="${
+          item.id
+        }" class="my-edit">Editar <span class="material-symbols-outlined">edit</span></button> <button data-id="${
+          item.id
+        }" class="my-delete">Excluir <span class="material-symbols-outlined">delete</span></button> <button data-id="${
+          item.id
+        }" class="my-zoom">Ir para <span class="material-symbols-outlined">zoom_in</span></button> <a href="/users/${encodeURIComponent(
+          item.userEmail || ""
+        )}" style="text-decoration:none"><button type="button" class="my-profile">Perfil <span class="material-symbols-outlined">person</span></button></a></div>`;
+        list.appendChild(div);
+      });
+      attachPinsEvents(arr);
+    };
+    const attachPinsEvents = (arr) => {
+      list.querySelectorAll(".my-delete").forEach((b) =>
+        b.addEventListener("click", (ev) => {
+          const id = ev.currentTarget.getAttribute("data-id");
+          openDeleteModal(id, () => {
+            fetch("/api/maps/markers/" + id, { method: "DELETE" }).then((r) => {
+              if (r.status === 204) {
+                if (markers[id]) {
+                  markers[id].setMap(null);
+                  delete markers[id];
+                }
+                openMyPinsModal();
+              } else r.text().then((t) => alert("Erro: " + t));
+            });
+          });
+        })
+      );
+      list.querySelectorAll(".my-zoom").forEach((b) =>
+        b.addEventListener("click", (ev) => {
+          const id = ev.currentTarget.getAttribute("data-id");
+          const item = arr.find((x) => x.id == id);
+          modal.classList.toggle("open");
+          if (item && item.latitude && item.longitude) {
+            map.setCenter({
+              lat: parseFloat(item.latitude),
+              lng: parseFloat(item.longitude),
+            });
+            map.setZoom(16);
+          }
+        })
+      );
+      list.querySelectorAll(".my-edit").forEach((b) =>
+        b.addEventListener("click", (ev) => {
+          const id = ev.currentTarget.getAttribute("data-id");
+          const item = arr.find((x) => x.id == id);
+          if (!item) return;
+          openEditModal(item);
+        })
+      );
+    };
+    // primeira carga
+    loadAdminPins("");
+    return;
+  }
   fetch("/api/maps/my-occurrences")
     .then((r) => {
       if (!r.ok)

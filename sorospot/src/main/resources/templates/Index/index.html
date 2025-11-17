@@ -4,11 +4,7 @@
     <meta charset="UTF-8" />
     <title th:text="${pageTitle}">Sorospot</title>
 
-    <link
-      rel="icon"
-      href="@{/images/sorospot-lettering.png}"
-      type="image/x-icon"
-    />
+    <link rel="icon" th:href="@{/images/sorospot-nobg.png}" type="image/png" />
 
     <meta
       name="viewport"
@@ -50,6 +46,7 @@
       /*<![CDATA[*/
       window.SOROSPOT_GOOGLE_MAPS_API_KEY = /*[[${googleMapsApiKey}]]*/ "";
       window.SOROSPOT_CURRENT_USER_EMAIL = /*[[${currentUserEmail}]]*/ "";
+      window.SOROSPOT_IS_ADMIN = /*[[${isAdmin}]]*/ false;
       /*]]>*/
     </script>
 
