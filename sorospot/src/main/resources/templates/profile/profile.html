@@ -18,7 +18,7 @@
 	<th:block th:insert="~{utils/_header :: header}"></th:block>
 	<th:block th:insert="~{${contentTemplate} :: content}"></th:block>
 	<th:block
-      th:insert="/Index/modals/_myPinsModal :: myPinsModal"
+      th:insert="fragments/index/_myPinsModal :: myPinsModal"
     ></th:block>
 		<th:block th:insert="fragments/index/_changePasswordModal :: changePasswordModal"></th:block>
 </body>
