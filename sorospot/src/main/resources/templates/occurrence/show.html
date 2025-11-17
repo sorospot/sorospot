@@ -12,8 +12,12 @@
         <link rel="stylesheet" th:href="@{/css/utils/header.css}">
         <link rel="stylesheet" th:href="@{/css/utils/variables.css}">
         <link rel="stylesheet" th:href="@{/css/occurrence/styles.css}">
+        <script>
+          window.SOROSPOT_CURRENT_USER_EMAIL = "[[${user.email}]]";
+        </script>
+        <link rel="stylesheet" th:href="@{/css/index/modals.css}">
     </head>
-    <body>
+    <body class="occurrence">
         <div th:replace="~{utils/_header :: header}"></div>
 
         <main class="occurrence-show-container">
@@ -34,9 +38,13 @@
                 </div>
             </section>
 
-            <!-- <section th:replace="~{occurrence/show/_actions :: actions(occurrence=${occurrence}, user=${user})}"></section> -->
-        </main>
+            <section th:replace="~{occurrence/show/_actions :: actions(occurrence=${occurrence}, user=${user})}"></section>
 
-        <script src="/js/occurence/show/occurrence.js"></script>
+            <div th:replace="~{Index/modals/_editModal :: editModal}"></div>
+            <div th:replace="~{occurrence/show/modal/_deleteModal :: deleteModal}"></div>
+            <div th:replace="~{occurrence/show/modal/_statusModal :: statusModal}"></div>
+            <div th:replace="~{Index/modals/_categoryModal :: categoryModal}"></div>
+        </main>
+        <script src="/js/occurence/show/OccurrenceController.js"></script>
     </body>
 </html>

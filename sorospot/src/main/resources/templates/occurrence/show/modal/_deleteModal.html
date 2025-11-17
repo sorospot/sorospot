@@ -1,0 +1,28 @@
+<div
+  id="deleteModal"
+  class="modal"
+  th:fragment="deleteModal"
+>
+  <div class="panel">
+    <h2>Excluir Ocorrência</h2>
+    
+    <div class="modalWarning">
+      <span class="material-symbols-outlined">warning</span>
+      <p>Tem certeza que deseja excluir esta ocorrência? Esta ação não pode ser desfeita.</p>
+    </div>
+
+    <form id="deleteForm">
+      <input type="hidden" id="deleteOccurrenceId" />
+      
+      <div class="modalFooter">
+        <button type="button" id="cancelDelete">
+          Cancelar
+          <span class="material-symbols-outlined"> arrow_left_alt </span>
+        </button>
+        <button type="submit" class="btn-danger" style="background: #e74c3c; color: #fff;">
+          Excluir
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

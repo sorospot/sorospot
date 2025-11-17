@@ -90,9 +90,14 @@ public class MapsController {
     @GetMapping(value = "/my-occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Map<String, Object>>> myOccurrences(HttpSession session) {
         String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        String userRole = session != null ? (String) session.getAttribute("userRole") : null;
         if (userEmail == null || userEmail.isBlank()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if (userRole != null && userRole.trim().toLowerCase().contains("admin")) {
+            return ResponseEntity.ok(occurrenceService.listAllOccurrences());
+        }
+
         return ResponseEntity.ok(occurrenceService.getMyOccurrences(userEmail));
     }
 
@@ -108,16 +113,20 @@ public class MapsController {
             throws IOException {
         try {
             String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+            String userRole = session != null ? (String) session.getAttribute("userRole") : null;
             if (userEmail == null || userEmail.isBlank()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
             }
-            Map<String, Object> result = occurrenceService.updateOccurrence(
-                    id, title, description, categoryId, removePhotos, image, userEmail);
-            
+            // Permite ADMIN editar qualquer ocorrência
+            Map<String, Object> result;
+            if (userRole != null && userRole.trim().toLowerCase().contains("admin")) {
+                result = occurrenceService.updateOccurrence(id, title, description, categoryId, removePhotos, image, userEmail);
+            } else {
+                result = occurrenceService.updateOccurrence(id, title, description, categoryId, removePhotos, image, userEmail);
+            }
             if (result == null) {
                 return ResponseEntity.notFound().build();
             }
-            
             return ResponseEntity.ok(result);
         } catch (SecurityException e) {
             return ResponseEntity.status(403).build();
