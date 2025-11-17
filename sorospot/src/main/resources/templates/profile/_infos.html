@@ -1,6 +1,10 @@
 <div th:fragment="content">
     <div class="profile-container">
         <div class="user-info-panel">
+            <!-- Mobile: show a single menu button that toggles the sidebar actions -->
+            <button id="sidebarMenuBtn" class="sidebar-menu-btn" aria-label="Mostrar ações" aria-expanded="false" type="button">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
             <nav class="sidebar-buttons" role="navigation" aria-label="Barra lateral de ações">
                 <button id="backToDetails" class="sidebar-btn">
                    <span class="material-symbols-outlined">
