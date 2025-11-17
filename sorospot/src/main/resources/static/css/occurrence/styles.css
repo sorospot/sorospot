@@ -550,7 +550,7 @@ select#statusSelect:hover {
     margin: 0;
     font-size: 1.6rem;
     line-height: 1.6;
-    color: #374151;
+    color: #be2020 !important;
 }
 
 /* Footer dos modais */
@@ -598,10 +598,6 @@ select#statusSelect:hover {
 .modalFooter button.btn-danger:hover {
     background: #c0392b;
     border-color: #c0392b;
-}
-
-.modalFooter button.btn-danger span {
-    background: transparent;
 }
 
 /* ==================== RESPONSIVIDADE ==================== */
