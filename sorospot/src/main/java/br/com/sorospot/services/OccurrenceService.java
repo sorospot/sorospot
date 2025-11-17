@@ -131,15 +131,12 @@ public class OccurrenceService {
         boolean isOwner = ownerEmail != null && ownerEmail.equalsIgnoreCase(actor);
 
         if (isAdmin) {
-            System.out.println("[AUTH] Acesso liberado: usuário ADMIN");
             return;
         }
         if (isOwner) {
-            System.out.println("[AUTH] Acesso liberado: usuário é o proprietário");
             return;
         }
 
-        System.out.println("[AUTH] Acesso NEGADO");
         throw new SecurityException("Unauthorized");
     }
 
@@ -180,12 +177,11 @@ public class OccurrenceService {
         
         var occ = opt.get();
         var ownerEmail = occ.getUser() != null ? occ.getUser().getEmail() : null;
-        final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail : "";
+        final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail.trim() : "";
         
         User actorUser = userService.findOrCreateUser(actor);
-        String role = actorUser.getRole() != null ? actorUser.getRole().toString() : "UNKNOWN";
-        boolean isAdmin = role.equalsIgnoreCase("ADMIN");
-        boolean isOwner = ownerEmail != null && ownerEmail.equals(actor);
+        boolean isAdmin = isAdmin(actorUser);
+        boolean isOwner = ownerEmail != null && ownerEmail.equalsIgnoreCase(actor);
 
         if (!isAdmin && !isOwner) {
             throw new SecurityException("Unauthorized");

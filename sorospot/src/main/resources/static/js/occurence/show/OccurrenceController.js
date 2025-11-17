@@ -339,85 +339,93 @@ function OccurrenceController(reference) {
         categoryModal.classList.add("open");
     };
 
-    setupEditFormSubmit = function() {
-        const editForm = reference.querySelector("#editForm");
-        if (!editForm) return;
+        setupEditFormSubmit = function() {
+            const editForm = reference.querySelector("#editForm");
+            if (!editForm) return;
 
-        editForm.onsubmit = function(ev) {
-            ev.preventDefault();
-            
-            const id = reference.querySelector("#editId").value;
-            const titleVal = reference.querySelector("#editTitle").value;
-            const titleInput = reference.querySelector("#editTitle");
-            
-            if (!titleVal || !titleVal.trim()) {
-                if (titleInput) {
-                    titleInput.classList.add("input-error");
-                    setTimeout(() => titleInput.classList.remove("input-error"), 2000);
-                }
-                return;
-            }
+            editForm.onsubmit = function(ev) {
+                ev.preventDefault();
 
-            const categoryId = reference.querySelector("#editCategory").value;
-            if (!categoryId) {
-                const trigger = reference.querySelector("#editCategoryTrigger");
-                if (trigger) {
-                    trigger.classList.add("category-error");
-                    setTimeout(() => trigger.classList.remove("category-error"), 2000);
-                }
-                return;
-            }
+                const id = reference.querySelector("#editId").value;
+                const titleVal = reference.querySelector("#editTitle").value;
+                const titleInput = reference.querySelector("#editTitle");
 
-            const fd = new FormData();
-            fd.append("title", reference.querySelector("#editTitle").value);
-            fd.append("description", reference.querySelector("#editDesc").value);
-            fd.append("categoryId", categoryId);
-
-            const file = reference.querySelector("#editImage").files[0];
-            if (file) {
-                const maxBytes = 10 * 1024 * 1024; // 10MB
-                if (file.size > maxBytes) {
-                    const input = reference.querySelector("#editImage");
-                    if (input) {
-                        input.classList.add("input-error");
-                        setTimeout(() => input.classList.remove("input-error"), 2500);
+                if (!titleVal || !titleVal.trim()) {
+                    console.warn("[EDIT] Título inválido");
+                    if (titleInput) {
+                        titleInput.classList.add("input-error");
+                        setTimeout(() => titleInput.classList.remove("input-error"), 2000);
                     }
                     return;
                 }
-                fd.append("image", file);
-            }
 
-            const photosContainerElement = reference.querySelector("#editPhotos .edit-photos-container");
-            if (photosContainerElement && photosContainerElement.dataset.toRemove) {
-                const toRemove = photosContainerElement.dataset.toRemove
-                    .split(",")
-                    .filter((x) => x.trim());
-                if (toRemove.length) {
-                    fd.append("removePhotos", toRemove.join(","));
-                }
-            }
+                const categoryId = reference.querySelector("#editCategory").value;
 
-            fetch("/api/maps/markers/" + id, {
-                method: "PUT",
-                body: fd,
-            })
-                .then((r) => {
-                    if (!r.ok) {
-                        return r.text().then((t) => {
-                            throw new Error(t || "Erro ao salvar");
-                        });
+                if (!categoryId) {
+                    console.warn("[EDIT] Categoria não selecionada");
+                    const trigger = reference.querySelector("#editCategoryTrigger");
+                    if (trigger) {
+                        trigger.classList.add("category-error");
+                        setTimeout(() => trigger.classList.remove("category-error"), 2000);
                     }
-                    return r.json();
+                    return;
+                }
+
+                const fd = new FormData();
+                fd.append("title", reference.querySelector("#editTitle").value);
+                fd.append("description", reference.querySelector("#editDesc").value);
+                fd.append("categoryId", categoryId);
+
+                const file = reference.querySelector("#editImage").files[0];
+
+                if (file) {
+                    const maxBytes = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxBytes) {
+                        console.warn("[EDIT] Arquivo maior que 10MB:", file.size);
+                        const input = reference.querySelector("#editImage");
+                        if (input) {
+                            input.classList.add("input-error");
+                            setTimeout(() => input.classList.remove("input-error"), 2500);
+                        }
+                        return;
+                    }
+                    fd.append("image", file);
+                }
+
+                const photosContainerElement = reference.querySelector("#editPhotos .edit-photos-container");
+                if (photosContainerElement && photosContainerElement.dataset.toRemove) {
+                    const toRemove = photosContainerElement.dataset.toRemove
+                        .split(",")
+                        .filter((x) => x.trim());
+
+                    if (toRemove.length) {
+                        fd.append("removePhotos", toRemove.join(","));
+                    }
+                }
+
+                fetch("/api/maps/markers/" + id, {
+                    method: "PUT",
+                    body: fd,
                 })
-                .then((res) => {
-                    alert("Ocorrência atualizada com sucesso!");
-                    window.location.reload();
-                })
-                .catch((e) => {
-                    alert("Erro ao salvar: " + e.message);
-                });
+                    .then((r) => {
+                        if (!r.ok) {
+                            return r.text().then((t) => {
+                                console.error("[EDIT] Erro do servidor:", t);
+                                throw new Error(t || "Erro ao salvar");
+                            });
+                        }
+                        return r.json();
+                    })
+                    .then((res) => {
+                        alert("Ocorrência atualizada com sucesso!");
+                        window.location.reload();
+                    })
+                    .catch((e) => {
+                        console.error("[EDIT] Erro final:", e);
+                        alert("Erro ao salvar: " + e.message);
+                    });
+            };
         };
-    };
 
     getOccurrenceIdFromPage = function() {
         const url = window.location.pathname;
