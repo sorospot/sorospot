@@ -1,7 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // trigger profile page enter animation (if element exists)
+    try {
+        const pc = document.querySelector('.profile-container');
+        if (pc) {
+            // run on next frame so CSS transition applies
+            requestAnimationFrame(() => {
+                pc.classList.add('enter');
+            });
+        }
+    } catch (e) {
+        // ignore
+    }
     const openStatsBtn = document.getElementById('openStats');
     const backBtn = document.getElementById('backToDetails');
     const openActions = document.getElementById('openActions');
+    const sidebarMenuBtn = document.getElementById('sidebarMenuBtn');
+    const sidebarButtonsWrap = document.querySelector('.sidebar-buttons');
     const userName = document.getElementById('userName');
     const userCPF = document.getElementById('userCPF');
     const userEmail = document.getElementById('userEmail');
@@ -114,6 +128,33 @@ document.addEventListener('DOMContentLoaded', function () {
     if (openStatsBtn) openStatsBtn.addEventListener('click', showStats);
     if (backBtn) backBtn.addEventListener('click', showDetails);
     if (openActions) openActions.addEventListener('click', showActions);
+
+    // mobile sidebar menu toggle
+    if (sidebarMenuBtn && sidebarButtonsWrap) {
+        sidebarMenuBtn.addEventListener('click', function (ev) {
+            ev.stopPropagation();
+            const isOpen = sidebarButtonsWrap.classList.toggle('open');
+            sidebarMenuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        document.addEventListener('click', function (ev) {
+            if (!sidebarButtonsWrap.classList.contains('open')) return;
+            const inside = sidebarButtonsWrap.contains(ev.target) || sidebarMenuBtn.contains(ev.target);
+            if (!inside) sidebarButtonsWrap.classList.remove('open');
+        });
+
+        document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape' && sidebarButtonsWrap.classList.contains('open')) sidebarButtonsWrap.classList.remove('open');
+        });
+
+        // close dropdown when any action inside is clicked (mobile)
+        sidebarButtonsWrap.addEventListener('click', function (ev) {
+            const btn = ev.target.closest('.sidebar-btn');
+            if (btn && sidebarButtonsWrap.classList.contains('open')) {
+                sidebarButtonsWrap.classList.remove('open');
+            }
+        });
+    }
 
     // If the profile page has the 'Meus Pins' stat-card, wire it to open the modal.
     const openMyPinsCard = document.getElementById('openMyPins');
