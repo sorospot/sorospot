@@ -315,15 +315,15 @@ function addMarkerToMap(m) {
       path: google.maps.SymbolPath.CIRCLE,
       fillColor: iconColor,
       fillOpacity: 1,
-      strokeColor: "#ffffff",
+      strokeColor: "#949494",
       strokeWeight: 4,
-      scale: 13,
+      scale: 17,
     },
     label: {
       text: iconText,
       fontFamily: "Material Symbols Outlined",
       color: "#ffffff",
-      fontSize: "16px",
+      fontSize: "25px",
     },
   });
 
