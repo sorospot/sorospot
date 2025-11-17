@@ -29,6 +29,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class OccurrenceService {
+    private boolean isAdmin(User user) {
+        if (user == null || user.getRole() == null || user.getRole().getUserRole() == null) {
+            return false;
+        }
+        String roleStr = user.getRole().getUserRole().trim().toLowerCase();
+        return roleStr.equals("admin");
+    }
+
     @Transactional
     public boolean changeOccurrenceStatus(Integer occurrenceId, String status, String userEmail) {
         checkAuthorization(occurrenceId, userEmail);
@@ -113,14 +121,26 @@ public class OccurrenceService {
         if (opt.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Occurrence não encontrada!");
         }
-        
+
         var occ = opt.get();
         var ownerEmail = occ.getUser() != null ? occ.getUser().getEmail() : null;
-        final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail : "";
-        
-        if (ownerEmail == null || !ownerEmail.equals(actor)) {
-            throw new SecurityException("Unauthorized");
+        final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail.trim() : "";
+
+        User actorUser = userService.findOrCreateUser(actor);
+        boolean isAdmin = isAdmin(actorUser);
+        boolean isOwner = ownerEmail != null && ownerEmail.equalsIgnoreCase(actor);
+
+        if (isAdmin) {
+            System.out.println("[AUTH] Acesso liberado: usuário ADMIN");
+            return;
         }
+        if (isOwner) {
+            System.out.println("[AUTH] Acesso liberado: usuário é o proprietário");
+            return;
+        }
+
+        System.out.println("[AUTH] Acesso NEGADO");
+        throw new SecurityException("Unauthorized");
     }
 
     @Transactional
@@ -162,7 +182,12 @@ public class OccurrenceService {
         var ownerEmail = occ.getUser() != null ? occ.getUser().getEmail() : null;
         final String actor = (userEmail != null && !userEmail.isBlank()) ? userEmail : "";
         
-        if (ownerEmail == null || !ownerEmail.equals(actor)) {
+        User actorUser = userService.findOrCreateUser(actor);
+        String role = actorUser.getRole() != null ? actorUser.getRole().toString() : "UNKNOWN";
+        boolean isAdmin = role.equalsIgnoreCase("ADMIN");
+        boolean isOwner = ownerEmail != null && ownerEmail.equals(actor);
+
+        if (!isAdmin && !isOwner) {
             throw new SecurityException("Unauthorized");
         }
 

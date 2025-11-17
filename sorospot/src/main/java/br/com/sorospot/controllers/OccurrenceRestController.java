@@ -22,7 +22,9 @@ public class OccurrenceRestController {
     ) {
         String status = body.get("status");
         boolean ok = occurrenceService.changeOccurrenceStatus(id, status, userEmail);
-        if (ok) return ResponseEntity.ok().build();
+        if (ok) {
+            return ResponseEntity.ok().build();
+        }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

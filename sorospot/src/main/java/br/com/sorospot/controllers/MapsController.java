@@ -90,9 +90,14 @@ public class MapsController {
     @GetMapping(value = "/my-occurrences", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Map<String, Object>>> myOccurrences(HttpSession session) {
         String userEmail = session != null ? (String) session.getAttribute("userEmail") : null;
+        String userRole = session != null ? (String) session.getAttribute("userRole") : null;
         if (userEmail == null || userEmail.isBlank()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if (userRole != null && userRole.trim().toLowerCase().contains("admin")) {
+            return ResponseEntity.ok(occurrenceService.listAllOccurrences());
+        }
+
         return ResponseEntity.ok(occurrenceService.getMyOccurrences(userEmail));
     }
 
