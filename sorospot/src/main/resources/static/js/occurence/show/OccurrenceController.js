@@ -96,8 +96,6 @@ function OccurrenceController(reference) {
     };
 
     formatCategory = function(cat) {
-        console.log("[formatCategory] INPUT =", cat);
-
         if (!cat) {
             console.warn("[formatCategory] cat é null/undefined");
             return null;
@@ -116,7 +114,6 @@ function OccurrenceController(reference) {
 
         const result = { ...cat, displayName, displayIcon };
 
-        console.log("[formatCategory] OUTPUT =", result);
         return result;
     };
 
@@ -124,10 +121,7 @@ function OccurrenceController(reference) {
         const editModal = reference.querySelector("#editModal");
         const categoryModal = reference.querySelector("#categoryModal");
 
-        console.log("===== [openOccurrenceEditModal] Iniciado =====");
-
         const occurrenceId = getOccurrenceIdFromPage();
-        console.log("[openOccurrenceEditModal] occurrenceId =", occurrenceId);
 
         if (!occurrenceId) {
             console.warn("[openOccurrenceEditModal] Nenhuma ocorrência encontrada na URL.");
@@ -136,20 +130,16 @@ function OccurrenceController(reference) {
 
         const categoriesPromise = fetch("/api/maps/categories")
             .then(r => {
-                console.log("[openOccurrenceEditModal] /categories status =", r.status);
                 return r.json();
             })
             .then(cats => {
-                console.log("[openOccurrenceEditModal] Categorias cruas recebidas:", cats);
                 categories = cats.map(formatCategory);
                 window.categories = categories;
-                console.log("[openOccurrenceEditModal] Categorias formatadas:", categories);
             })
             .catch(e => console.error("[openOccurrenceEditModal] Erro ao carregar categorias:", e));
 
         const occurrencePromise = fetch("/api/maps/my-occurrences")
             .then(r => {
-                console.log("[openOccurrenceEditModal] /my-occurrences status =", r.status);
                 if (!r.ok) {
                     return r.text().then(t => {
                         console.error("[openOccurrenceEditModal] Erro bruto da API:", t);
@@ -159,17 +149,12 @@ function OccurrenceController(reference) {
                 return r.json();
             })
             .then(arr => {
-                console.log("[openOccurrenceEditModal] Ocorrências recebidas:", arr);
                 const found = arr.find(x => x.id == occurrenceId);
-                console.log("[openOccurrenceEditModal] Ocorrência encontrada:", found);
                 return found;
             });
 
         Promise.all([categoriesPromise, occurrencePromise])
             .then(([_, item]) => {
-                console.log("===== [openOccurrenceEditModal] Tudo carregado =====");
-                console.log("[openOccurrenceEditModal] item final =", item);
-
                 if (!item) {
                     throw new Error("Ocorrência não encontrada ou você não tem permissão para editá-la.");
                 }
@@ -187,8 +172,6 @@ function OccurrenceController(reference) {
     };
 
     populateEditModal = function(item) {
-        console.log("[populateEditModal] Preenchendo modal com:", item);
-
         // Preencher campos básicos
         reference.querySelector("#editId").value = item.id;
         reference.querySelector("#editTitle").value = item.title || "";
